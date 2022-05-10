@@ -80,7 +80,8 @@
     "test": "node scripts/test.js --coverage",
     "format": "prettier --write \"src/**/*.+(ts{,x}|(sa|sc)ss)\"",
     "lint": "eslint src",
-    "lint-fix": "eslint src --quiet --fix"
+    "lint-fix": "eslint src --quiet --fix",
+    "prepare": "husky install"
   },
   "eslintConfig": {
     "extends": [
@@ -176,7 +177,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.28.0",
     "eslint-plugin-react-hooks": "^4.3.0",
-    "husky": "^7.0.4",
+    "husky": "^8.0.1",
     "prettier": "^2.6.2",
     "svg-url-loader": "^7.1.1",
     "typescript": "^4.6.4",
