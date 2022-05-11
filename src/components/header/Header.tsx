@@ -1,24 +1,28 @@
 import React from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
+import { useAppSelector } from '../../hooks/appHooks';
 import cl from './Header.module.scss';
 
 function Header(): JSX.Element {
-  const navigate = useNavigate();
+  const isAuth = useAppSelector((store) => store.user.isAuthorized);
 
   return (
     <header className={cl.container}>
-      <NavLink className={cl.headerLink} to="/main">
-        Main
-      </NavLink>
-      <NavLink className={cl.headerLink} to="/board">
-        Board
-      </NavLink>
-      <button className={cl.headerLink} onClick={() => navigate(`/sign/in`)}>
-        Sign In
-      </button>
-      <button className={cl.headerLink} onClick={() => navigate(`/sign/up`)}>
-        Sign Up
-      </button>
+      {!isAuth && (
+        <>
+          <NavLink className={cl.headerLink} to="/main">
+            Go to Main Page
+          </NavLink>
+          <NavLink className={cl.headerLink} to="/board">
+            Board
+          </NavLink>
+        </>
+      )}
+      {!isAuth && (
+        <NavLink className={cl.headerLink} to="/auth">
+          Authorization
+        </NavLink>
+      )}
     </header>
   );
 }

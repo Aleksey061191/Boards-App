@@ -1,7 +1,7 @@
 import React from 'react';
-import cl from './SignInUpPage.module.scss';
+import cl from './AuthPage.module.scss';
 
-function SignInUpPage(): JSX.Element {
+function AuthPage(): JSX.Element {
   return (
     <main className={cl.container} data-testid="about-page">
       <h1>Sign In/Up</h1>
@@ -9,4 +9,4 @@ function SignInUpPage(): JSX.Element {
   );
 }
 
-export default SignInUpPage;
+export default AuthPage;

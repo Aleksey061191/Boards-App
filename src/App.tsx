@@ -9,7 +9,7 @@ import NotFound from './pages/notFound/NotFound';
 import WelcomePage from './pages/welcomePage/WelcomePage';
 import MainPage from './pages/mainPage/MainPage';
 import BoardPage from './pages/boardPage/BoardPage';
-import SignInUpPage from './pages/signInOutPage/SignInUpPage';
+import AuthPage from './pages/authPage/AuthPage';
 
 function App(): JSX.Element {
   return (
@@ -18,7 +18,7 @@ function App(): JSX.Element {
         <Routes>
           <Route path="/" element={<Root />}>
             <Route path="/" element={<WelcomePage />} />
-            <Route path="sign/:id" element={<SignInUpPage />} />
+            <Route path="auth" element={<AuthPage />} />
             <Route path="main" element={<MainPage />} />
             <Route path="board" element={<BoardPage />} />
             <Route path="*" element={<NotFound />} />
