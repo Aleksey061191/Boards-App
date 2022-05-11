@@ -1,0 +1,58 @@
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  background-color: rgb(71, 65, 65);
+  height: 10vh;
+  padding: 0 20px;
+}
+
+.containerFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  color: #ffffff;
+  width: 100%;
+  margin: 0 auto;
+  a {
+    text-decoration: none;
+    color: #fff;
+    &:hover {
+      color: #278d9f;
+    }
+  }
+  @media (max-width: 875px) {
+    justify-content: space-around;
+  }
+}
+
+.iconRs {
+  width: 150px;
+  height: 50px;
+}
+
+.iconRs:hover {
+  filter: invert(57%) sepia(100%) saturate(329%) hue-rotate(141deg) brightness(89%) contrast(90%);
+}
+
+.github {
+  display: flex;
+  align-items: center;
+  & p {
+    margin: 0 20px;
+  }
+}
+
+.developer {
+  display: flex;
+  font-size: 18px;
+  font-weight: 400;
+  letter-spacing: 1.5px;
+}
+
+.yearContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
