@@ -1,10 +1,14 @@
 import axios from 'axios';
+import authHeader from './helpers/authHeader';
 
-const createApiService = () =>
-  axios.create({
-    baseURL: 'https://rs-rest-kanban.herokuapp.com/',
-    timeout: 1000,
-  });
+const ApiService = axios.create({
+  baseURL: 'https://rs-rest-kanban.herokuapp.com/',
+  timeout: 1000,
+});
 
-const ApiService = createApiService();
+ApiService.interceptors.request.use((config) => {
+  config.headers = authHeader();
+  return config;
+});
+
 export default ApiService;
