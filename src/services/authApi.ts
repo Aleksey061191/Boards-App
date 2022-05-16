@@ -16,12 +16,7 @@ const authApi = {
         return rez;
       })
       .catch((err) => err),
-  signup: (user: IAuthSignUpParams) =>
-    ApiService.post(`signup`, user)
-      .then((rez) => {
-        return 'You can SignIn now';
-      })
-      .catch((err) => err.response.data.message),
+  signup: (user: IAuthSignUpParams) => ApiService.post(`signup`, user),
 };
 
 export default authApi;

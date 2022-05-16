@@ -1,10 +1,15 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { TextField, Grid, Paper, Avatar, Button, Box, Modal, Dialog } from '@mui/material';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import { Form, Formik, Field } from 'formik';
 import * as Yup from 'yup';
+import { AxiosError } from 'axios';
 import authApi from '../../services/authApi';
+import { changeAuth, setToken } from '../../store/reducers/userReducer';
 import cl from './SignUp.module.scss';
+import { AppDispatch } from '../../store/store';
 
 const style = {
   position: 'absolute',
@@ -37,6 +42,8 @@ function SignUp(): JSX.Element {
   const [errMessage, setErrMessage] = React.useState('');
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
 
   return (
     <Grid>
@@ -59,10 +66,17 @@ function SignUp(): JSX.Element {
           initialValues={{ ...INITIAL_SIGNIN_STATE }}
           validationSchema={FORM_VALIDATION}
           onSubmit={async (values, formikHelpers) => {
-            const rez = await authApi.signup(values);
-            setErrMessage(rez);
-            handleOpen();
-            formikHelpers.resetForm();
+            try {
+              await authApi.signup(values);
+              const rez = await authApi.signin({ login: values.login, password: values.password });
+              localStorage.setItem('token', rez.data.token);
+              dispatch(setToken(rez.data.token));
+              dispatch(changeAuth(true));
+              navigate('/main');
+            } catch (err) {
+              if (err instanceof AxiosError) setErrMessage(err.response?.data.message);
+              handleOpen();
+            }
           }}
         >
           {({ errors, isValid, touched, dirty }) => (
