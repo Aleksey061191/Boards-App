@@ -1,10 +1,13 @@
 import React from 'react';
+import AddBoard from '../../components/AddBoard/AddBoard';
+import Boards from '../../components/Boards/Boards';
 import cl from './MainPage.module.scss';
 
 function MainPage(): JSX.Element {
   return (
     <main className={cl.container}>
-      <h1>Main Page</h1>
+      <AddBoard />
+      <Boards />
     </main>
   );
 }

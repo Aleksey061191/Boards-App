@@ -58,6 +58,7 @@
     "react-scripts": "^2.0.0",
     "react-svg": "^15.0.1",
     "redux": "^4.2.0",
+    "redux-logger": "^3.0.6",
     "resolve": "^1.20.0",
     "resolve-url-loader": "^4.0.0",
     "sass": "^1.51.0",
@@ -166,6 +167,7 @@
   },
   "devDependencies": {
     "@svgr/webpack": "^6.2.1",
+    "@types/redux-logger": "^3.0.9",
     "@typescript-eslint/eslint-plugin": "^5.22.0",
     "@typescript-eslint/parser": "^5.22.0",
     "eslint": "^8.2.0",
