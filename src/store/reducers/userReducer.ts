@@ -4,7 +4,7 @@ interface IUserState {
   isAuthorized: boolean;
 }
 const initialState: IUserState = {
-  isAuthorized: false,
+  isAuthorized: true,
 };
 
 const userSlice = createSlice({
