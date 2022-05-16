@@ -9,6 +9,7 @@ import WelcomePage from './pages/welcomePage/WelcomePage';
 import MainPage from './pages/mainPage/MainPage';
 import BoardPage from './pages/boardPage/BoardPage';
 import AuthPage from './pages/authPage/AuthPage';
+import ErrorBoundary from './components/errorBoundary/ErrorBoundary';
 
 function App(): JSX.Element {
   return (
@@ -16,10 +17,38 @@ function App(): JSX.Element {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Root />}>
-            <Route path="/" element={<WelcomePage />} />
-            <Route path="auth" element={<AuthPage />} />
-            <Route path="main" element={<MainPage />} />
-            <Route path="board" element={<BoardPage />} />
+            <Route
+              path="/"
+              element={
+                <ErrorBoundary>
+                  <WelcomePage />
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="auth"
+              element={
+                <ErrorBoundary>
+                  <AuthPage />
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="main"
+              element={
+                <ErrorBoundary>
+                  <MainPage />
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="board"
+              element={
+                <ErrorBoundary>
+                  <BoardPage />
+                </ErrorBoundary>
+              }
+            />
             <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>
