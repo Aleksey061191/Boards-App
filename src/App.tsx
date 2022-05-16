@@ -11,6 +11,7 @@ import BoardPage from './pages/boardPage/BoardPage';
 import AuthPage from './pages/authPage/AuthPage';
 import RequireAuth from './components/hoc/RequireAuth';
 import LogedRoute from './components/hoc/LogedRoute';
+import ErrorBoundary from './components/errorBoundary/ErrorBoundary';
 
 function App(): JSX.Element {
   return (
@@ -18,24 +19,42 @@ function App(): JSX.Element {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Root />}>
-            <Route path="/" element={<WelcomePage />} />
+            <Route
+              path="/"
+              element={
+                <ErrorBoundary>
+                  <WelcomePage />
+                </ErrorBoundary>
+              }
+            />
             <Route
               path="auth"
               element={
-                <LogedRoute>
-                  <AuthPage />
-                </LogedRoute>
+                <ErrorBoundary>
+                  <LogedRoute>
+                    <AuthPage />
+                  </LogedRoute>
+                </ErrorBoundary>
               }
             />
             <Route
               path="main"
               element={
-                <RequireAuth>
-                  <MainPage />
-                </RequireAuth>
+                <ErrorBoundary>
+                  <RequireAuth>
+                    <MainPage />
+                  </RequireAuth>
+                </ErrorBoundary>
               }
             />
-            <Route path="board" element={<BoardPage />} />
+            <Route
+              path="board"
+              element={
+                <ErrorBoundary>
+                  <BoardPage />
+                </ErrorBoundary>
+              }
+            />
             <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>
