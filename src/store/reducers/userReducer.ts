@@ -6,7 +6,7 @@ interface IUserState {
   token: string;
 }
 const initialState: IUserState = {
-  isAuthorized: false,
+  isAuthorized: Boolean(getToken()),
   token: getToken(),
 };
 

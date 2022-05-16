@@ -8,7 +8,7 @@ function Header(): JSX.Element {
 
   return (
     <header className={cl.container}>
-      {!isAuth && (
+      {isAuth && (
         <>
           <NavLink className={cl.headerLink} to="/main">
             Go to Main Page

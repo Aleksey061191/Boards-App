@@ -9,6 +9,8 @@ import WelcomePage from './pages/welcomePage/WelcomePage';
 import MainPage from './pages/mainPage/MainPage';
 import BoardPage from './pages/boardPage/BoardPage';
 import AuthPage from './pages/authPage/AuthPage';
+import RequireAuth from './components/hoc/RequireAuth';
+import LogedRoute from './components/hoc/LogedRoute';
 
 function App(): JSX.Element {
   return (
@@ -17,8 +19,22 @@ function App(): JSX.Element {
         <Routes>
           <Route path="/" element={<Root />}>
             <Route path="/" element={<WelcomePage />} />
-            <Route path="auth" element={<AuthPage />} />
-            <Route path="main" element={<MainPage />} />
+            <Route
+              path="auth"
+              element={
+                <LogedRoute>
+                  <AuthPage />
+                </LogedRoute>
+              }
+            />
+            <Route
+              path="main"
+              element={
+                <RequireAuth>
+                  <MainPage />
+                </RequireAuth>
+              }
+            />
             <Route path="board" element={<BoardPage />} />
             <Route path="*" element={<NotFound />} />
           </Route>

@@ -1,9 +1,13 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { TextField, Grid, Paper, Avatar, Button } from '@mui/material';
 import { Form, Formik, Field } from 'formik';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import * as Yup from 'yup';
+import { useDispatch, useSelector } from 'react-redux';
 import authApi from '../../services/authApi';
+import { AppDispatch, RootState } from '../../store/store';
+import { changeAuth, setToken } from '../../store/reducers/userReducer';
 import cl from './SignIn.module.scss';
 
 const INITIAL_SIGNIN_STATE = {
@@ -19,6 +23,9 @@ const FORM_VALIDATION = Yup.object().shape({
 });
 
 function SignIn(): JSX.Element {
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
+  const isAuthorized = useSelector((state: RootState) => state.user.isAuthorized);
   return (
     <Grid>
       <Paper elevation={10} className={cl.paperStyles}>
@@ -29,9 +36,16 @@ function SignIn(): JSX.Element {
         <Formik
           initialValues={{ ...INITIAL_SIGNIN_STATE }}
           validationSchema={FORM_VALIDATION}
-          onSubmit={(values, formikHelpers) => {
-            console.log(values);
-            authApi.signin(values);
+          onSubmit={async (values, formikHelpers) => {
+            const rez = await authApi.signin(values);
+            if (rez.status >= 200 && rez.status < 300) {
+              localStorage.setItem('token', rez.data.token);
+              dispatch(setToken(rez.data.token));
+              dispatch(changeAuth(true));
+              navigate('/main');
+            } else {
+              console.log(rez);
+            }
             formikHelpers.resetForm();
           }}
         >
