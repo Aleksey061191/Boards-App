@@ -15,7 +15,7 @@ const authApi = {
       .then((rez) => {
         return rez;
       })
-      .catch((err) => err.response.data.message),
+      .catch((err) => err),
   signup: (user: IAuthSignUpParams) =>
     ApiService.post(`signup`, user)
       .then((rez) => {
