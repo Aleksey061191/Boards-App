@@ -3,10 +3,33 @@
 
 .container {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
-  height: 10vh;
+  min-height: 10vh;
   padding: 0 20px;
+}
+
+.mainPageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  & .headerLink {
+    margin-right: 100px;
+  }
+  @include media-table {
+    & .headerLink {
+      font-size: 18px;
+      margin-right: 10px;
+    }
+  }
+  @include media-mobile {
+    flex-direction: column;
+    margin: 10px 0;
+    & .headerLink {
+      margin-right: 0;
+      margin-bottom: 10px;
+    }
+  }
 }
 
 .headerLink {

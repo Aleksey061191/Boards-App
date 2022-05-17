@@ -10,18 +10,32 @@ function Header(): JSX.Element {
   const location = useLocation();
   return (
     <header className={cl.container}>
-      {location.pathname === '/' && isAuth && (
-        <NavLink className={cl.headerLink} to="/main">
-          Go to Main Page
-        </NavLink>
-      )}
-      {!isAuth && (
-        <Button href="/auth" variant="contained" className={`${cl.uiButn} ${cl.button}`}>
-          Login
-        </Button>
-      )}
+      <div className={cl.mainPageHeader}>
+        {location.pathname !== '/' && location.pathname !== '/auth' && isAuth && (
+          <>
+            <NavLink className={cl.headerLink} to="/">
+              Welcome Page
+            </NavLink>
+            <Button variant="contained" className={`${cl.uiButn} ${cl.button}`}>
+              New board
+            </Button>
+          </>
+        )}
+      </div>
+      <div>
+        {location.pathname === '/' && isAuth && (
+          <NavLink className={cl.headerLink} to="/main">
+            Go to Main Page
+          </NavLink>
+        )}
+        {!isAuth && (
+          <Button href="/auth" variant="contained" className={`${cl.uiButn} ${cl.button}`}>
+            Login
+          </Button>
+        )}
 
-      <LanguageBtn />
+        <LanguageBtn />
+      </div>
     </header>
   );
 }
