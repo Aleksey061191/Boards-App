@@ -29,8 +29,12 @@ function Header(): JSX.Element {
           </NavLink>
         )}
         {!isAuth && (
-          <Button href="/auth" variant="contained" className={`${cl.uiButn} ${cl.button}`}>
-            Login
+          <Button
+            href={`${location.pathname !== '/auth' ? '/auth' : '/'}`}
+            variant="contained"
+            className={`${cl.uiButn} ${cl.button}`}
+          >
+            {location.pathname !== '/auth' ? 'Login' : 'Back'}
           </Button>
         )}
 
