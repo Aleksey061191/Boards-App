@@ -1,0 +1,21 @@
+@import '../../scss/abstract/constants.scss';
+@import '../../scss/abstract/mixins.scss';
+
+.stickyWrapper {
+  position: relative;
+  height: 10vh;
+  background-color: $color-header;
+}
+
+.sticky .stickyInner {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1;
+  background-color: $color-sticky;
+}
+
+.sticky {
+  position: sticky;
+  z-index: 100;
+}

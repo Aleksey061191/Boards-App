@@ -23,8 +23,10 @@
   a {
     text-decoration: none;
     color: #fff;
-    &:hover {
-      color: $color-hover-footer-link;
+    transition: 0.3s;
+    &:hover,
+    &:active {
+      color: $color-hover-link;
     }
   }
   @include media-table {
@@ -38,8 +40,9 @@
   transition: 0.3s;
 }
 
-.iconRs:hover {
-  filter: $color-hover-footer-svg;
+.iconRs:hover,
+.iconRs:active {
+  filter: $color-hover-svg;
 }
 
 .github {
@@ -59,4 +62,8 @@
     margin-top: 10px;
     flex-direction: column;
   }
+}
+
+.year {
+  font-size: 18px;
 }
