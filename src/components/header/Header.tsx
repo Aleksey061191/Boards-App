@@ -29,13 +29,14 @@ function Header(): JSX.Element {
           </NavLink>
         )}
         {!isAuth && (
-          <Button
-            href={`${location.pathname !== '/auth' ? '/auth' : '/'}`}
-            variant="contained"
-            className={`${cl.uiButn} ${cl.button}`}
+          <NavLink
+            className={cl.headerLink}
+            to={`${location.pathname !== '/auth' ? '/auth' : '/'}`}
           >
-            {location.pathname !== '/auth' ? 'Login' : 'Back'}
-          </Button>
+            <Button variant="contained" className={`${cl.uiButn} ${cl.button}`}>
+              {location.pathname !== '/auth' ? 'Login' : 'Back'}
+            </Button>
+          </NavLink>
         )}
 
         <LanguageBtn />
