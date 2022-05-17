@@ -16,8 +16,8 @@ const RequireAuth = ({ children }: { children: JSX.Element }) => {
   }
 
   useEffect(() => {
-    fetchAPI();
-  }, []);
+    if (isAuth) fetchAPI();
+  }, [isAuth]);
 
   if (!isAuth) {
     return <Navigate to="/auth" state={{ from: location }} />;

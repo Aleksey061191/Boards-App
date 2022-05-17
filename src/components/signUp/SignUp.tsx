@@ -7,7 +7,7 @@ import { Form, Formik, Field } from 'formik';
 import * as Yup from 'yup';
 import { AxiosError } from 'axios';
 import authApi from '../../services/authApi';
-import { changeAuth, setToken } from '../../store/reducers/userReducer';
+import { changeAuth, setToken, setLogin } from '../../store/reducers/userReducer';
 import cl from './SignUp.module.scss';
 import { AppDispatch } from '../../store/store';
 
@@ -72,6 +72,8 @@ function SignUp(): JSX.Element {
               localStorage.setItem('token', rez.data.token);
               dispatch(setToken(rez.data.token));
               dispatch(changeAuth(true));
+              localStorage.setItem('login', values.login);
+              dispatch(setLogin(values.login));
               navigate('/main');
             } catch (err) {
               if (err instanceof AxiosError) setErrMessage(err.response?.data.message);

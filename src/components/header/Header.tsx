@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { useAppSelector } from '../../hooks/appHooks';
+import UserMenu from '../userMenu/UserMenu';
 import cl from './Header.module.scss';
 
 function Header(): JSX.Element {
@@ -23,6 +24,7 @@ function Header(): JSX.Element {
           Authorization
         </NavLink>
       )}
+      {isAuth && <UserMenu />}
     </header>
   );
 }
