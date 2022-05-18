@@ -14,8 +14,14 @@
   }
   @include media-table {
     & .headerLink {
-      font-size: 18px;
+      font-size: 14px;
       margin-right: 10px;
+    }
+    & .uiButn.button {
+      font-size: 14px;
+    }
+    & .mainPageLink {
+      margin-left: 50px;
     }
   }
   @include media-mobile {
@@ -25,6 +31,16 @@
       margin-right: 0;
       margin-bottom: 10px;
     }
+    & .mainPageLink {
+      margin-left: 0;
+    }
+  }
+}
+
+.profileContainer {
+  @include flex-between;
+  & .uiButn.button {
+    margin-right: 50px;
   }
 }
 
