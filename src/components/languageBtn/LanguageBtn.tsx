@@ -18,9 +18,9 @@ function LanguageBtn(): JSX.Element {
     <>
       <Button
         id="demo-positioned-button"
-        aria-controls={open ? 'demo-positioned-menu' : undefined}
+        aria-controls={(open && 'demo-positioned-menu') || undefined}
         aria-haspopup="true"
-        aria-expanded={open ? 'true' : undefined}
+        aria-expanded={(open && 'true') || undefined}
         onClick={handleClick}
       >
         <LanguageIcon className={`${cl.uiIcon} ${cl.icon}`} />
