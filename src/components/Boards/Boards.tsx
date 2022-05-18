@@ -19,12 +19,9 @@ const Boards = () => {
     <div className={cl.container}>
       {status === 'loading' && <h2>Loading...</h2>}
       {error && <h2>An error occured: {error}</h2>}
-      {/* {boards.length ? */}
-
       {boards.map((board: IBoard) => (
         <BoardItem key={board.id} {...board} />
       ))}
-      {/* : null} */}
     </div>
   );
 };

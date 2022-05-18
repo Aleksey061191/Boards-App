@@ -1,24 +1,45 @@
+import axios, { AxiosError } from 'axios';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import type { IBoard } from '../../components/BoardItem/BoardItem';
 
-const BOARDS_URL = 'https://rs-rest-kanban.herokuapp.com/boards';
+// const BOARDS_URL = 'https://rs-rest-kanban.herokuapp.com/boards';
+
+const BOARDS_URL = 'https://my-json-server.typicode.com/makhitr/test2';
+const path = {
+  user: '/user',
+  boards: '/boards',
+};
 
 export const fetchBoards = createAsyncThunk(
   'boards/fetchBoards',
-  async function (_, { rejectWithValue }) {
+  async (_, { rejectWithValue }) => {
     try {
-      const response = await fetch(BOARDS_URL);
-      if (!response.ok) {
-        throw new Error();
-      }
-      const data = await response.json();
-      return data;
+      const response = await axios.get(`${BOARDS_URL}${path.boards}`);
+      return response.data;
+    } catch (err) {
+      const error = err as AxiosError;
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const deleteBoard = createAsyncThunk(
+  'boards/deleteBoard',
+  async (id, { dispatch, rejectWithValue }) => {
+    try {
+      await axios.delete(`${BOARDS_URL}${path.boards}/${id}`);
+      // dispatch(removeBoard({ id }));
+      return {};
     } catch (error) {
       return rejectWithValue(error.message);
     }
   }
 );
 
+const setError = (state, action) => {
+  state.status = 'rejected';
+  state.error = action.payload;
+};
 interface IBoardsState {
   boards: IBoard[];
   status: string | null;
@@ -46,19 +67,17 @@ const boardSlice = createSlice({
       state.boards = state.boards.filter((board: IBoard) => board.id !== action.payload.id);
     },
   },
-  extraReducers: {
-    [fetchBoards.pending]: (state) => {
+  extraReducers: (builder) => {
+    builder.addCase(fetchBoards.pending, (state) => {
       state.status = 'loading';
       state.error = null;
-    },
-    [fetchBoards.fulfilled]: (state, action) => {
+    });
+    builder.addCase(fetchBoards.fulfilled, (state, action) => {
       state.status = 'resolved';
       state.boards = action.payload;
-    },
-    [fetchBoards.rejected]: (state, action) => {
-      state.status = 'rejected';
-      state.error = action.payload;
-    },
+    });
+    builder.addCase(fetchBoards.rejected, setError);
+    builder.addCase(deleteBoard.rejected, setError);
   },
 });
 

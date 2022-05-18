@@ -12,7 +12,7 @@ import {
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import './boardItem.css';
 import { useDispatch } from 'react-redux';
-import { removeBoard } from '../../store/reducers/boardReducer';
+import { deleteBoard } from '../../store/reducers/boardReducer';
 
 const style = {
   position: 'absolute',
@@ -66,7 +66,7 @@ const BoardItem = ({ title, description, id }: IBoard) => {
             variant="contained"
             color="error"
             sx={{ margin: '10px' }}
-            onClick={() => dispatch(removeBoard({ id }))}
+            onClick={() => dispatch(deleteBoard(id))}
           >
             Delete
           </Button>
