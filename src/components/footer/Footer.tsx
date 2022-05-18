@@ -20,10 +20,7 @@ function Footer(): JSX.Element {
             <p>Alena Ryzhankova</p>
           </a>
         </div>
-        <div className={cl.yearContainer}>
-          <p className={cl.copyright}>©</p>
-          <p className={cl.year}>2022</p>
-        </div>
+        <p className={cl.year}>2022</p>
       </div>
     </footer>
   );
