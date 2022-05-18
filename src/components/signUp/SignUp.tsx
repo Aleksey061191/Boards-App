@@ -6,11 +6,12 @@ import LockOpenIcon from '@mui/icons-material/LockOpen';
 import { Form, Formik, Field } from 'formik';
 import * as Yup from 'yup';
 import { AxiosError } from 'axios';
-import authApi from '../../services/authApi';
+import authApi, { IAuthSignUpParams } from '../../services/authApi';
 import { changeAuth, setToken, setLogin } from '../../store/reducers/userReducer';
 import cl from './SignUp.module.scss';
 import { AppDispatch } from '../../store/store';
-import usersApi from '../../services/usersApi';
+import usersApi, { IResponseApi } from '../../services/usersApi';
+import { handleLogOut } from '../userMenu/UserMenu';
 
 const style = {
   position: 'absolute',
@@ -58,6 +59,37 @@ function SignUp(props?: ISignUpProps): JSX.Element {
     dispatch(setLogin(login));
   };
 
+  const handleDeleteProfile = () => {
+    const login = localStorage.getItem('login');
+    usersApi
+      .getAllUsers()
+      .then((rez) => rez.data.find((item: IResponseApi) => item.login === login))
+      .then((rez) => {
+        if (rez) {
+          usersApi.deleteUser(rez?.id);
+        }
+      })
+      .then(() => handleLogOut())
+      .catch((err) => {
+        if (err instanceof AxiosError) setErrMessage(err.response?.data.message);
+        handleOpen();
+      });
+  };
+
+  const handleUpdateProfile = (user: IAuthSignUpParams) => {
+    const login = localStorage.getItem('login');
+    usersApi
+      .getAllUsers()
+      .then((rez) => rez.data.find((item: IResponseApi) => item.login === login))
+      .then((rez) => {
+        if (rez) usersApi.updateUser(rez?.id, user);
+      })
+      .catch((err) => {
+        if (err instanceof AxiosError) setErrMessage(err.response?.data.message);
+        handleOpen();
+      });
+  };
+
   return (
     <Grid>
       <Modal
@@ -92,9 +124,15 @@ function SignUp(props?: ISignUpProps): JSX.Element {
                 navigate('/main');
               }
               if (props?.page === 'profile') {
-                await usersApi.updateUser(localStorage.getItem('id')!, values);
+                const user: IAuthSignUpParams = {
+                  name: values.name,
+                  login: values.login,
+                  password: values.password,
+                };
+                handleUpdateProfile(user);
               }
             } catch (err) {
+              console.log(err);
               if (err instanceof AxiosError) setErrMessage(err.response?.data.message);
               handleOpen();
             }
@@ -148,6 +186,16 @@ function SignUp(props?: ISignUpProps): JSX.Element {
                 >
                   {props?.page === 'auth' ? 'Sign Up' : 'Update'}
                 </Button>
+                {props?.page === 'profile' && (
+                  <Button
+                    className={cl.btnClasses}
+                    variant="contained"
+                    fullWidth
+                    onClick={handleDeleteProfile}
+                  >
+                    Delete profile
+                  </Button>
+                )}
               </Grid>
             </Form>
           )}

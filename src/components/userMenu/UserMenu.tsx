@@ -7,6 +7,11 @@ import { blue } from '@mui/material/colors';
 import { RootState } from '../../store/store';
 import cl from './UserMenu.module.scss';
 
+export const handleLogOut = () => {
+  localStorage.clear();
+  window.location.href = '/';
+};
+
 const styles = {
   overflow: 'visible',
   filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
@@ -41,11 +46,6 @@ function UserMenu(): JSX.Element {
     setAnchorEl(null);
   };
   const login = useSelector((state: RootState) => state.user.login);
-
-  const handleLogOut = () => {
-    localStorage.clear();
-    window.location.href = '/';
-  };
 
   return (
     <div className={cl.container}>
