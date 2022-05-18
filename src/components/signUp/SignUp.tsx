@@ -10,6 +10,7 @@ import authApi from '../../services/authApi';
 import { changeAuth, setToken, setLogin } from '../../store/reducers/userReducer';
 import cl from './SignUp.module.scss';
 import { AppDispatch } from '../../store/store';
+import usersApi from '../../services/usersApi';
 
 const style = {
   position: 'absolute',
@@ -37,13 +38,25 @@ const FORM_VALIDATION = Yup.object().shape({
     .min(7, 'Password should be minimum 7 characters'),
 });
 
-function SignUp(): JSX.Element {
+interface ISignUpProps {
+  page: string;
+}
+
+function SignUp(props?: ISignUpProps): JSX.Element {
   const [open, setOpen] = React.useState(false);
   const [errMessage, setErrMessage] = React.useState('');
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+
+  const setAuthData = (token: string, login: string) => {
+    localStorage.setItem('token', token);
+    localStorage.setItem('login', login);
+    dispatch(setToken(token));
+    dispatch(changeAuth(true));
+    dispatch(setLogin(login));
+  };
 
   return (
     <Grid>
@@ -58,23 +71,29 @@ function SignUp(): JSX.Element {
         </Box>
       </Modal>
       <Paper elevation={10} className={cl.paperStyles}>
-        <Avatar className={cl.avatarStyles}>
-          <LockOpenIcon />
-        </Avatar>
-        Sign up
+        {props?.page === 'auth' && (
+          <Avatar className={cl.avatarStyles}>
+            <LockOpenIcon />
+          </Avatar>
+        )}
+        {props?.page === 'auth' ? 'Sign Up' : 'Edit profile'}
         <Formik
           initialValues={{ ...INITIAL_SIGNIN_STATE }}
           validationSchema={FORM_VALIDATION}
           onSubmit={async (values, formikHelpers) => {
             try {
-              await authApi.signup(values);
-              const rez = await authApi.signin({ login: values.login, password: values.password });
-              localStorage.setItem('token', rez.data.token);
-              dispatch(setToken(rez.data.token));
-              dispatch(changeAuth(true));
-              localStorage.setItem('login', values.login);
-              dispatch(setLogin(values.login));
-              navigate('/main');
+              if (props?.page === 'auth') {
+                await authApi.signup(values);
+                const rez = await authApi.signin({
+                  login: values.login,
+                  password: values.password,
+                });
+                setAuthData(rez.data.token, values.login);
+                navigate('/main');
+              }
+              if (props?.page === 'profile') {
+                await usersApi.updateUser(localStorage.getItem('id')!, values);
+              }
             } catch (err) {
               if (err instanceof AxiosError) setErrMessage(err.response?.data.message);
               handleOpen();
@@ -127,7 +146,7 @@ function SignUp(): JSX.Element {
                   type="submit"
                   disabled={!dirty || !isValid}
                 >
-                  Sign In
+                  {props?.page === 'auth' ? 'Sign Up' : 'Update'}
                 </Button>
               </Grid>
             </Form>
