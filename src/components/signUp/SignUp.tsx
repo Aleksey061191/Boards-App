@@ -130,6 +130,7 @@ function SignUp(props?: ISignUpProps): JSX.Element {
                   password: values.password,
                 };
                 handleUpdateProfile(user);
+                formikHelpers.resetForm();
               }
             } catch (err) {
               console.log(err);
