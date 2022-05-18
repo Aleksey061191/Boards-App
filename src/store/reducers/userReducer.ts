@@ -4,10 +4,12 @@ import getToken from '../../services/helpers/getToken';
 interface IUserState {
   isAuthorized: boolean;
   token: string;
+  login: string;
 }
 const initialState: IUserState = {
-  isAuthorized: false,
+  isAuthorized: Boolean(getToken()),
   token: getToken(),
+  login: localStorage.getItem('login') || '',
 };
 
 const userSlice = createSlice({
@@ -20,8 +22,11 @@ const userSlice = createSlice({
     setToken(state, action: PayloadAction<string>) {
       state.token = action.payload;
     },
+    setLogin(state, action: PayloadAction<string>) {
+      state.login = action.payload;
+    },
   },
 });
 
-export const { changeAuth, setToken } = userSlice.actions;
+export const { changeAuth, setToken, setLogin } = userSlice.actions;
 export default userSlice.reducer;

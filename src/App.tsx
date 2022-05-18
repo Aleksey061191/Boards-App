@@ -9,6 +9,8 @@ import WelcomePage from './pages/welcomePage/WelcomePage';
 import MainPage from './pages/mainPage/MainPage';
 import BoardPage from './pages/boardPage/BoardPage';
 import AuthPage from './pages/authPage/AuthPage';
+import RequireAuth from './components/hoc/RequireAuth';
+import LogedRoute from './components/hoc/LogedRoute';
 import ErrorBoundary from './components/errorBoundary/ErrorBoundary';
 
 function App(): JSX.Element {
@@ -29,7 +31,9 @@ function App(): JSX.Element {
               path="auth"
               element={
                 <ErrorBoundary>
-                  <AuthPage />
+                  <LogedRoute>
+                    <AuthPage />
+                  </LogedRoute>
                 </ErrorBoundary>
               }
             />
@@ -37,7 +41,9 @@ function App(): JSX.Element {
               path="main"
               element={
                 <ErrorBoundary>
-                  <MainPage />
+                  <RequireAuth>
+                    <MainPage />
+                  </RequireAuth>
                 </ErrorBoundary>
               }
             />

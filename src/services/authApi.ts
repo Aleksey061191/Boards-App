@@ -10,7 +10,12 @@ export interface IAuthSignUpParams extends IAuthSignInParams {
 }
 
 const authApi = {
-  signin: (user: IAuthSignInParams) => ApiService.post(`signin`, user),
+  signin: (user: IAuthSignInParams) =>
+    ApiService.post(`signin`, user)
+      .then((rez) => {
+        return rez;
+      })
+      .catch((err) => err),
   signup: (user: IAuthSignUpParams) => ApiService.post(`signup`, user),
 };
 

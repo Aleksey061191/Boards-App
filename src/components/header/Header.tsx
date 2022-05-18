@@ -2,6 +2,7 @@ import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import Button from '@mui/material/Button';
 import { useAppSelector } from '../../hooks/appHooks';
+import UserMenu from '../userMenu/UserMenu';
 import cl from './Header.module.scss';
 import LanguageBtn from '../languageBtn/LanguageBtn';
 
