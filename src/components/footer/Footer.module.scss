@@ -1,16 +1,19 @@
+@import '../../scss/abstract/constants.scss';
+@import '../../scss/abstract/mixins.scss';
+
 .footer {
   display: flex;
-  justify-content: flex-end;
   align-items: center;
-  background-color: rgb(71, 65, 65);
-  height: 10vh;
+  background-color: $color-footer;
+  min-height: 10vh;
   padding: 0 20px;
+  @include media-table {
+    padding-top: 10px;
+  }
 }
 
 .containerFooter {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  @include flex-between;
   font-size: 0.8rem;
   color: #ffffff;
   width: 100%;
@@ -18,22 +21,26 @@
   a {
     text-decoration: none;
     color: #fff;
-    &:hover {
-      color: #278d9f;
+    transition: 0.3s;
+    &:hover,
+    &:active {
+      color: $color-hover-link;
     }
   }
-  @media (max-width: 875px) {
-    justify-content: space-around;
+  @include media-table {
+    flex-direction: column;
   }
 }
 
 .iconRs {
   width: 150px;
   height: 50px;
+  transition: 0.3s;
 }
 
-.iconRs:hover {
-  filter: invert(57%) sepia(100%) saturate(329%) hue-rotate(141deg) brightness(89%) contrast(90%);
+.iconRs:hover,
+.iconRs:active {
+  filter: $color-hover-svg;
 }
 
 .github {
@@ -49,10 +56,12 @@
   font-size: 18px;
   font-weight: 400;
   letter-spacing: 1.5px;
+  @include media-table {
+    margin-top: 10px;
+    flex-direction: column;
+  }
 }
 
-.yearContainer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.year {
+  font-size: 18px;
 }
