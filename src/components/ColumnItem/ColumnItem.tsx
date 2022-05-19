@@ -11,9 +11,15 @@ import {
 } from '@mui/material';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { deleteBoard } from '../../store/reducers/boardReducer';
-import './boardItem.css';
+import { deleteColumn } from '../../store/reducers/columnReducer';
+
+export interface IColumn {
+  id: string;
+  title: string;
+  description: string;
+  tasks: [];
+  boardId: string;
+}
 
 const style = {
   position: 'absolute',
@@ -26,26 +32,16 @@ const style = {
   boxShadow: 24,
   p: 4,
 };
-export interface IBoard {
-  id: string;
-  title: string;
-  description: string;
-}
 
-const BoardItem = ({ title, description, id }: IBoard) => {
+export const ColumnItem = ({ title, id, boardId }) => {
   const [isModalOpen, setModalOpen] = React.useState(false);
   const handleOpen = () => setModalOpen(true);
   const handleClose = () => setModalOpen(false);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-
-  const handleClick = () => {
-    navigate(`/board/${id}`);
-  };
 
   return (
-    <div className="board-item">
-      <Card sx={{ minWidth: 300, minHeight: 200, maxWidth: 500 }}>
+    <>
+      <Card sx={{ minWidth: 300, minHeight: 300, maxWidth: 500 }}>
         <CardHeader
           title={title}
           action={
@@ -54,17 +50,11 @@ const BoardItem = ({ title, description, id }: IBoard) => {
             </IconButton>
           }
         ></CardHeader>
-        <CardContent onClick={handleClick}>
-          {description && (
-            <Typography variant="body2" color="text.secondary">
-              {description}
-            </Typography>
-          )}
-        </CardContent>
+        <div> I am from board {boardId}</div>
       </Card>
       <Modal open={isModalOpen} onClose={handleClose}>
         <Box sx={style}>
-          <Typography variant="h5"> Are you sure you want to delete this board?</Typography>
+          <Typography variant="h5"> Are you sure you want to delete this Column?</Typography>
           <Button variant="outlined" sx={{ margin: '10px' }} onClick={handleClose}>
             Cancel
           </Button>
@@ -72,14 +62,12 @@ const BoardItem = ({ title, description, id }: IBoard) => {
             variant="contained"
             color="error"
             sx={{ margin: '10px' }}
-            onClick={() => dispatch(deleteBoard(id))}
+            onClick={() => dispatch(deleteColumn(id))}
           >
             Delete
           </Button>
         </Box>
       </Modal>
-    </div>
+    </>
   );
 };
-
-export default BoardItem;

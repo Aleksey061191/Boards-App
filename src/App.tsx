@@ -19,7 +19,9 @@ function App(): JSX.Element {
             <Route path="/" element={<WelcomePage />} />
             <Route path="auth" element={<AuthPage />} />
             <Route path="main" element={<MainPage />} />
-            <Route path="board" element={<BoardPage />} />
+            <Route path="board" element={<BoardPage />}>
+              <Route path=":id" element={<BoardPage />} />
+            </Route>
             <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>

@@ -6,7 +6,8 @@ import * as Yup from 'yup';
 import Modal from '@mui/material/Modal';
 import { Box, TextField } from '@mui/material';
 import { useDispatch } from 'react-redux';
-import { createBoard } from '../../store/reducers/boardReducer';
+import { addBoard } from '../../store/reducers/boardReducer';
+import { addColumn, createColumn } from '../../store/reducers/columnReducer';
 
 const style = {
   position: 'absolute',
@@ -20,7 +21,12 @@ const style = {
   p: 4,
 };
 
-const AddBoard = () => {
+interface AddItemProps {
+  itemType: string;
+  boardId?: string;
+}
+
+const AddItem: React.FC<AddItemProps> = ({ itemType, boardId }) => {
   const dispatch = useDispatch();
   const [isModalOpen, setModalOpen] = React.useState(false);
   const handleOpen = () => setModalOpen(true);
@@ -34,8 +40,8 @@ const AddBoard = () => {
       title: Yup.string().required('Title is required'),
     }),
     onSubmit: (values) => {
-      const { title, description } = values;
-      dispatch(createBoard({ title, description }));
+      itemType === 'Board' && dispatch(addBoard(values));
+      itemType === 'Column' && dispatch(addColumn({...values, boardId}));
       handleClose();
     },
   });
@@ -43,7 +49,7 @@ const AddBoard = () => {
   return (
     <>
       <Button variant="outlined" startIcon={<AddCircleSharpIcon />} onClick={handleOpen}>
-        New Board
+        New {itemType}
       </Button>
 
       <Modal open={isModalOpen} onClose={handleClose}>
@@ -55,26 +61,31 @@ const AddBoard = () => {
                 required
                 fullWidth
                 id="title"
-                label="Board title"
+                // label="Board title"
+                label={`${itemType} title`}
                 defaultValue=""
                 onChange={formik.handleChange}
               />
             </div>
             {formik.touched.title && formik.errors.title ? <div>{formik.errors.title}</div> : null}
-            <div>
-              <TextField
-                margin="normal"
-                fullWidth
-                id="description"
-                label="Board description"
-                defaultValue=""
-                multiline
-                rows={4}
-                onChange={formik.handleChange}
-              />
-            </div>
+            {itemType !== 'Column' && (
+              <div>
+                <TextField
+                  margin="normal"
+                  fullWidth
+                  id="description"
+                  // label="Board description"
+                  label={`${itemType} description`}
+                  defaultValue=""
+                  multiline
+                  rows={4}
+                  onChange={formik.handleChange}
+                />
+              </div>
+            )}
+
             <Button type="submit" value="Submit" variant="contained">
-              Create Board
+              Create {itemType}
             </Button>
           </Box>
         </form>
@@ -83,4 +94,4 @@ const AddBoard = () => {
   );
 };
 
-export default AddBoard;
+export default AddItem;

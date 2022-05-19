@@ -4,10 +4,11 @@ import type { IBoard } from '../../components/BoardItem/BoardItem';
 
 // const BOARDS_URL = 'https://rs-rest-kanban.herokuapp.com/boards';
 
-const BOARDS_URL = 'https://my-json-server.typicode.com/makhitr/test2';
-const path = {
+export const BOARDS_URL = 'https://my-json-server.typicode.com/makhitr/test2';
+export const path = {
   user: '/user',
   boards: '/boards',
+  columns: '/columns'
 };
 
 export const fetchBoards = createAsyncThunk(
@@ -23,12 +24,32 @@ export const fetchBoards = createAsyncThunk(
   }
 );
 
+export const addBoard = createAsyncThunk(
+  'boards/addBoard',
+  async (text, { rejectWithValue, dispatch }) => {
+    try {
+      await axios
+        .post(`${BOARDS_URL}${path.boards}/`, {
+          id: new Date().toISOString(),
+          title: text.title,
+          description: text.description,
+        })
+        .then((response) => {
+          dispatch(createBoard(response.data));
+        });
+      return {};
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 export const deleteBoard = createAsyncThunk(
   'boards/deleteBoard',
   async (id, { dispatch, rejectWithValue }) => {
     try {
       await axios.delete(`${BOARDS_URL}${path.boards}/${id}`);
-      // dispatch(removeBoard({ id }));
+      dispatch(removeBoard({ id }));
       return {};
     } catch (error) {
       return rejectWithValue(error.message);
@@ -56,12 +77,7 @@ const boardSlice = createSlice({
   initialState,
   reducers: {
     createBoard(state, action) {
-      const board: IBoard = {
-        id: new Date().toISOString(),
-        title: action.payload.title,
-        description: action.payload.description,
-      };
-      state.boards.push(board);
+      state.boards.push(action.payload);
     },
     removeBoard(state, action) {
       state.boards = state.boards.filter((board: IBoard) => board.id !== action.payload.id);
@@ -82,4 +98,4 @@ const boardSlice = createSlice({
 });
 
 export default boardSlice.reducer;
-export const { createBoard, removeBoard } = boardSlice.actions;
+const { createBoard, removeBoard } = boardSlice.actions;

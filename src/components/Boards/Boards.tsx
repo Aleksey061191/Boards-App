@@ -2,9 +2,9 @@ import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 import BoardItem from '../BoardItem/BoardItem';
-import cl from './Boards.module.scss';
 import type { IBoard } from '../BoardItem/BoardItem';
 import { fetchBoards } from '../../store/reducers/boardReducer';
+import cl from './Boards.module.scss';
 
 const Boards = () => {
   const boards = useSelector((state: RootState) => state.boards.boards);

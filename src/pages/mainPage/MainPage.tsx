@@ -1,12 +1,12 @@
 import React from 'react';
-import AddBoard from '../../components/AddBoard/AddBoard';
+import AddItem from '../../components/AddItem/AddItem';
 import Boards from '../../components/Boards/Boards';
 import cl from './MainPage.module.scss';
 
 function MainPage(): JSX.Element {
   return (
     <main className={cl.container}>
-      <AddBoard />
+      <AddItem itemType="Board" />
       <Boards />
     </main>
   );
