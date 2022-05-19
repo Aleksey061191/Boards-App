@@ -13,6 +13,7 @@ interface IDialogProps {
   title: string;
   handleOk: () => void;
   handleCancel: () => void;
+  children: JSX.Element | null;
 }
 
 function BasicDialog(props: IDialogProps): JSX.Element {
@@ -26,6 +27,7 @@ function BasicDialog(props: IDialogProps): JSX.Element {
       <DialogTitle id="alert-dialog-title">{props.title}</DialogTitle>
       <DialogContent>
         <DialogContentText id="alert-dialog-description">{props.message}</DialogContentText>
+        {props.children}
       </DialogContent>
       <DialogActions>
         <Button onClick={props.handleOk}>OK</Button>

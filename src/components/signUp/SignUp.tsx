@@ -99,6 +99,7 @@ function SignUp(props?: ISignUpProps): JSX.Element {
         message="Do you want delete profile permanently?"
         handleCancel={handleCancel}
         handleOk={handleDeleteProfile}
+        children={null}
       />
       <Paper elevation={10} className={cl.paperStyles}>
         {props?.page === 'auth' && (
