@@ -2,5 +2,20 @@
 
 .container {
   @include flex-center;
+  flex-direction: column;
   min-height: 80vh;
+  .course {
+    margin: 0;
+  }
+  .project {
+    margin: 0;
+    padding: 20px;
+  }
+}
+
+@include media-table {
+  .container {
+    padding: 20px;
+    text-align: center;
+  }
 }
