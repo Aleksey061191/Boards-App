@@ -1,0 +1,29 @@
+@mixin media-table {
+  @media (max-width: 768px) {
+    @content;
+  }
+}
+
+@mixin media-mobile {
+  @media (max-width: 420px) {
+    @content;
+  }
+}
+
+@mixin media-mobilesmall {
+  @media (max-width: 320px) {
+    @content;
+  }
+}
+
+@mixin flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

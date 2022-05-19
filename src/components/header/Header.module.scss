@@ -1,21 +1,55 @@
+@import '../../scss/abstract/constants.scss';
+@import '../../scss/abstract/mixins.scss';
+
 .container {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  background-color: rgb(71, 65, 65);
-  height: 10vh;
+  @include flex-between;
+  min-height: 10vh;
   padding: 0 20px;
+}
+
+.mainPageHeader {
+  @include flex-between;
+  & .headerLink {
+    margin-right: 100px;
+  }
+  @include media-table {
+    & .headerLink {
+      font-size: 18px;
+      margin-right: 10px;
+    }
+  }
+  @include media-mobile {
+    flex-direction: column;
+    margin: 10px 0;
+    & .headerLink {
+      margin-right: 0;
+      margin-bottom: 10px;
+    }
+  }
 }
 
 .headerLink {
   text-decoration: none;
   font-weight: 600;
   font-size: 20px;
-  width: 200px;
   text-align: center;
   color: #fff;
   transition: 0.3s all;
-  &:hover {
-    color: #278d9f;
+  &:hover,
+  &:active {
+    color: $color-hover-link;
+  }
+}
+
+.uiButn.button {
+  background-color: #fff;
+  color: blue;
+  font-weight: 600;
+  font-size: 16px;
+  transition: 0.5s all;
+  &:hover,
+  &:active {
+    background-color: #fff;
+    color: $color-hover-link;
   }
 }
