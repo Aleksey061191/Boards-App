@@ -56,8 +56,11 @@
   font-size: 18px;
   font-weight: 400;
   letter-spacing: 1.5px;
+  @include media-laptop {
+    font-size: 14px;
+  }
   @include media-table {
-    margin-top: 10px;
+    margin-top: 20px;
     flex-direction: column;
   }
 }
