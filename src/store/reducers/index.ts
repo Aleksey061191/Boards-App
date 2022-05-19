@@ -6,7 +6,7 @@ import userReducer from './userReducer';
 const rootReducer = combineReducers({
   user: userReducer,
   boards: boardReducer,
-  columns: columnReducer
+  columns: columnReducer,
 });
 
 export default rootReducer;

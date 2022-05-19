@@ -6,7 +6,6 @@ import type { IColumn } from '../ColumnItem/ColumnItem';
 import { fetchColumns } from '../../store/reducers/columnReducer';
 import cl from './Columns.module.scss';
 
-
 const Columns = () => {
   const columns = useSelector((state: RootState) => state.columns.columns);
   const { status, error } = useSelector((state: RootState) => state.columns);
@@ -17,10 +16,10 @@ const Columns = () => {
   }, [dispatch]);
 
   return (
-    <div className={cl.container} >
+    <div className={cl.container}>
       {status === 'loading' && <h2>Loading...</h2>}
       {error && <h2>An error occured: {error}</h2>}
-      {columns.map((column: IColumn ) => (
+      {columns.map((column: IColumn) => (
         <ColumnItem key={column.id} {...column} />
       ))}
     </div>

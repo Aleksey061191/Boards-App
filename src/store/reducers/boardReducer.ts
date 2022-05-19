@@ -8,7 +8,7 @@ export const BOARDS_URL = 'https://my-json-server.typicode.com/makhitr/test2';
 export const path = {
   user: '/user',
   boards: '/boards',
-  columns: '/columns'
+  columns: '/columns',
 };
 
 export const fetchBoards = createAsyncThunk(

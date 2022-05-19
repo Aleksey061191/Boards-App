@@ -10,7 +10,7 @@ function BoardPage(): JSX.Element {
   return (
     <main className={cl.container}>
       <h1>Board Page {params.id}</h1>
-      <AddItem itemType="Column" boardId={params.id}/>
+      <AddItem itemType="Column" boardId={params.id} />
       <AddItem itemType="Task" />
       <Columns />
     </main>

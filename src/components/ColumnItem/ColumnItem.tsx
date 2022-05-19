@@ -1,14 +1,5 @@
 import * as React from 'react';
-import {
-  Box,
-  Card,
-  CardContent,
-  CardHeader,
-  IconButton,
-  Modal,
-  Button,
-  Typography,
-} from '@mui/material';
+import { Box, Card, CardHeader, IconButton, Modal, Button, Typography } from '@mui/material';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { useDispatch } from 'react-redux';
 import { deleteColumn } from '../../store/reducers/columnReducer';

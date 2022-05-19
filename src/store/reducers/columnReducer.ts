@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios, { AxiosError } from 'axios';
-import { IColumn } from '../../components/ColumnItem/ColumnItem';
+import type { IColumn } from '../../components/ColumnItem/ColumnItem';
 import { BOARDS_URL, path } from './boardReducer';
 
 interface IColumnsState {
@@ -30,13 +30,12 @@ export const fetchColumns = createAsyncThunk(
 export const addColumn = createAsyncThunk(
   'columns/addColumn',
   async (text, { rejectWithValue, dispatch }) => {
-    console.log('%ccolumnReducer.ts line:33 text', 'color: #007acc;', text);
     try {
       await axios
         .post(`${BOARDS_URL}${path.columns}/`, {
           id: new Date().toISOString(),
           title: text.title,
-          boardId: text.boardId
+          boardId: text.boardId,
         })
         .then((response) => {
           dispatch(createColumn(response.data));
@@ -69,7 +68,6 @@ const columnSlice = createSlice({
       state.columns.push(action.payload);
     },
     removeColumn(state, action) {
-      console.log('%ccolumnReducer.ts line:52 remove me', 'color: #007acc;', 'remove me');
       state.columns = state.columns.filter((column: IColumn) => column.id !== action.payload.id);
     },
   },

@@ -7,7 +7,7 @@ import Modal from '@mui/material/Modal';
 import { Box, TextField } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { addBoard } from '../../store/reducers/boardReducer';
-import { addColumn, createColumn } from '../../store/reducers/columnReducer';
+import { addColumn } from '../../store/reducers/columnReducer';
 
 const style = {
   position: 'absolute',
@@ -40,8 +40,11 @@ const AddItem: React.FC<AddItemProps> = ({ itemType, boardId }) => {
       title: Yup.string().required('Title is required'),
     }),
     onSubmit: (values) => {
-      itemType === 'Board' && dispatch(addBoard(values));
-      itemType === 'Column' && dispatch(addColumn({...values, boardId}));
+      if (itemType === 'Board') {
+        dispatch(addBoard(values));
+      } else if (itemType === 'Column') {
+        dispatch(addColumn({ ...values, boardId }));
+      }
       handleClose();
     },
   });
