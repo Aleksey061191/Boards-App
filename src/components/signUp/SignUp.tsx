@@ -12,18 +12,8 @@ import cl from './SignUp.module.scss';
 import { AppDispatch } from '../../store/store';
 import usersApi, { IResponseApi } from '../../services/usersApi';
 import { handleLogOut } from '../userMenu/UserMenu';
-
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 400,
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
-  boxShadow: 24,
-  p: 4,
-};
+import BasicModal from '../basicModal/BasicModal';
+import BasicDialog from '../basicDialog/BasicDIalog';
 
 const INITIAL_SIGNIN_STATE = {
   name: '',
@@ -50,6 +40,16 @@ function SignUp(props?: ISignUpProps): JSX.Element {
   const handleClose = () => setOpen(false);
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+
+  const [openD, setOpenD] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpenD(true);
+  };
+
+  const handleCancel = () => {
+    setOpenD(false);
+  };
 
   const setAuthData = (token: string, login: string) => {
     localStorage.setItem('token', token);
@@ -92,16 +92,14 @@ function SignUp(props?: ISignUpProps): JSX.Element {
 
   return (
     <Grid>
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={style}>
-          <p id="modal-description">{errMessage}</p>
-        </Box>
-      </Modal>
+      <BasicModal open={open} handleClose={handleClose} errMessage={errMessage} />
+      <BasicDialog
+        open={openD}
+        title="Delete profile?"
+        message="Do you want delete profile permanently?"
+        handleCancel={handleCancel}
+        handleOk={handleDeleteProfile}
+      />
       <Paper elevation={10} className={cl.paperStyles}>
         {props?.page === 'auth' && (
           <Avatar className={cl.avatarStyles}>
@@ -192,7 +190,7 @@ function SignUp(props?: ISignUpProps): JSX.Element {
                     className={cl.btnClasses}
                     variant="contained"
                     fullWidth
-                    onClick={handleDeleteProfile}
+                    onClick={handleClickOpen}
                   >
                     Delete profile
                   </Button>

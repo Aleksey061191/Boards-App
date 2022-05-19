@@ -1,13 +1,16 @@
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TextField, Grid, Paper, Avatar, Button } from '@mui/material';
 import { Form, Formik, Field } from 'formik';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import * as Yup from 'yup';
 import { useDispatch } from 'react-redux';
+import { AxiosError } from 'axios';
 import authApi from '../../services/authApi';
 import { AppDispatch } from '../../store/store';
 import { changeAuth, setToken, setLogin } from '../../store/reducers/userReducer';
 import cl from './SignIn.module.scss';
+import BasicModal from '../basicModal/BasicModal';
 
 const INITIAL_SIGNIN_STATE = {
   login: '',
@@ -24,6 +27,10 @@ const FORM_VALIDATION = Yup.object().shape({
 function SignIn(): JSX.Element {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+  const [open, setOpen] = React.useState(false);
+  const [errMessage, setErrMessage] = React.useState('');
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   const setAuthData = (token: string, login: string) => {
     localStorage.setItem('token', token);
@@ -35,6 +42,7 @@ function SignIn(): JSX.Element {
 
   return (
     <Grid>
+      <BasicModal open={open} handleClose={handleClose} errMessage={errMessage} />
       <Paper elevation={10} className={cl.paperStyles}>
         <Avatar className={cl.avatarStyles}>
           <LockOpenIcon />
@@ -49,7 +57,9 @@ function SignIn(): JSX.Element {
               setAuthData(rez.data.token, values.login);
               navigate('/main');
             } else {
-              console.log(rez);
+              setErrMessage(rez.response.data.message);
+              console.log(rez.response.data.message);
+              handleOpen();
             }
             formikHelpers.resetForm();
           }}
