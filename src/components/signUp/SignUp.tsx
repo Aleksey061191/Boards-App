@@ -14,6 +14,7 @@ import usersApi, { IResponseApi } from '../../services/usersApi';
 import { handleLogOut } from '../userMenu/UserMenu';
 import BasicModal from '../basicModal/BasicModal';
 import BasicDialog from '../basicDialog/BasicDIalog';
+import { useModal, useDialog } from '../../hooks/appHooks';
 
 const INITIAL_SIGNIN_STATE = {
   name: '',
@@ -34,22 +35,11 @@ interface ISignUpProps {
 }
 
 function SignUp(props?: ISignUpProps): JSX.Element {
-  const [open, setOpen] = React.useState(false);
+  const { open, toggle } = useModal();
+  const { openD, toggleD } = useDialog();
   const [errMessage, setErrMessage] = React.useState('');
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-
-  const [openD, setOpenD] = React.useState(false);
-
-  const handleClickOpen = () => {
-    setOpenD(true);
-  };
-
-  const handleCancel = () => {
-    setOpenD(false);
-  };
 
   const setAuthData = (token: string, login: string) => {
     localStorage.setItem('token', token);
@@ -72,7 +62,7 @@ function SignUp(props?: ISignUpProps): JSX.Element {
       .then(() => handleLogOut())
       .catch((err) => {
         if (err instanceof AxiosError) setErrMessage(err.response?.data.message);
-        handleOpen();
+        toggle();
       });
   };
 
@@ -86,18 +76,18 @@ function SignUp(props?: ISignUpProps): JSX.Element {
       })
       .catch((err) => {
         if (err instanceof AxiosError) setErrMessage(err.response?.data.message);
-        handleOpen();
+        toggle();
       });
   };
 
   return (
     <Grid>
-      <BasicModal open={open} handleClose={handleClose} errMessage={errMessage} />
+      <BasicModal open={open} handleClose={toggle} errMessage={errMessage} />
       <BasicDialog
         open={openD}
         title="Delete profile?"
         message="Do you want delete profile permanently?"
-        handleCancel={handleCancel}
+        handleCancel={toggleD}
         handleOk={handleDeleteProfile}
         children={null}
       />
@@ -134,7 +124,7 @@ function SignUp(props?: ISignUpProps): JSX.Element {
             } catch (err) {
               console.log(err);
               if (err instanceof AxiosError) setErrMessage(err.response?.data.message);
-              handleOpen();
+              toggle();
             }
           }}
         >
@@ -187,12 +177,7 @@ function SignUp(props?: ISignUpProps): JSX.Element {
                   {props?.page === 'auth' ? 'Sign Up' : 'Update'}
                 </Button>
                 {props?.page === 'profile' && (
-                  <Button
-                    className={cl.btnClasses}
-                    variant="contained"
-                    fullWidth
-                    onClick={handleClickOpen}
-                  >
+                  <Button className={cl.btnClasses} variant="contained" fullWidth onClick={toggleD}>
                     Delete profile
                   </Button>
                 )}
