@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios, { AxiosError } from 'axios';
 import type { IColumn } from '../../components/ColumnItem/ColumnItem';
-import { BOARDS_URL, path } from './boardReducer';
+import { BOARDS_URL, config, path } from './boardReducer';
 
 interface IColumnsState {
   columns: IColumn[];
@@ -16,9 +16,12 @@ const initialState: IColumnsState = {
 
 export const fetchColumns = createAsyncThunk(
   'columns/fetchColumns',
-  async (_, { rejectWithValue }) => {
+  async (boardId, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${BOARDS_URL}${path.columns}`);
+      const response = await axios.get(
+        `${BOARDS_URL}${path.boards}/${boardId}${path.columns}`,
+        config
+      );
       return response.data;
     } catch (err) {
       const error = err as AxiosError;
@@ -29,14 +32,17 @@ export const fetchColumns = createAsyncThunk(
 
 export const addColumn = createAsyncThunk(
   'columns/addColumn',
-  async (text, { rejectWithValue, dispatch }) => {
+  async (data, { rejectWithValue, dispatch }) => {
     try {
       await axios
-        .post(`${BOARDS_URL}${path.columns}/`, {
-          id: new Date().toISOString(),
-          title: text.title,
-          boardId: text.boardId,
-        })
+        .post(
+          `${BOARDS_URL}${path.boards}/${data.boardId}${path.columns}`,
+          {
+            title: data.title,
+            order: data.order,
+          },
+          config
+        )
         .then((response) => {
           dispatch(createColumn(response.data));
         });
@@ -49,9 +55,10 @@ export const addColumn = createAsyncThunk(
 
 export const deleteColumn = createAsyncThunk(
   'columns/deleteColumn',
-  async (id, { dispatch, rejectWithValue }) => {
+  async (data, { dispatch, rejectWithValue }) => {
+    const { id, board } = data;
     try {
-      await axios.delete(`${BOARDS_URL}${path.columns}/${id}`);
+      await axios.delete(`${BOARDS_URL}${path.boards}/${board}${path.columns}/${id}`, config);
       dispatch(removeColumn({ id }));
       return {};
     } catch (error) {
@@ -84,4 +91,4 @@ const columnSlice = createSlice({
 });
 
 export default columnSlice.reducer;
-export const { createColumn, removeColumn } = columnSlice.actions;
+const { createColumn, removeColumn } = columnSlice.actions;

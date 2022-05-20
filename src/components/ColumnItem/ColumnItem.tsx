@@ -10,6 +10,7 @@ export interface IColumn {
   description: string;
   tasks: [];
   boardId: string;
+  order: number;
 }
 
 const style = {
@@ -24,7 +25,12 @@ const style = {
   p: 4,
 };
 
-export const ColumnItem = ({ title, id, boardId }) => {
+interface ColumnItemProps {
+  title: string;
+  id: string;
+  board: string;
+}
+export const ColumnItem: React.FC<ColumnItemProps> = ({ title, id, board }) => {
   const [isModalOpen, setModalOpen] = React.useState(false);
   const handleOpen = () => setModalOpen(true);
   const handleClose = () => setModalOpen(false);
@@ -41,7 +47,7 @@ export const ColumnItem = ({ title, id, boardId }) => {
             </IconButton>
           }
         ></CardHeader>
-        <div> I am from board {boardId}</div>
+        <div> I am from board {board}</div>
       </Card>
       <Modal open={isModalOpen} onClose={handleClose}>
         <Box sx={style}>
@@ -53,7 +59,7 @@ export const ColumnItem = ({ title, id, boardId }) => {
             variant="contained"
             color="error"
             sx={{ margin: '10px' }}
-            onClick={() => dispatch(deleteColumn(id))}
+            onClick={() => dispatch(deleteColumn({ id, board }))}
           >
             Delete
           </Button>

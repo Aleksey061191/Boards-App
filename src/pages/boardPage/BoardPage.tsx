@@ -12,7 +12,7 @@ function BoardPage(): JSX.Element {
       <h1>Board Page {params.id}</h1>
       <AddItem itemType="Column" boardId={params.id} />
       <AddItem itemType="Task" />
-      <Columns />
+      <Columns boardId={params.id} />
     </main>
   );
 }

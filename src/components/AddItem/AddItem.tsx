@@ -5,9 +5,10 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import Modal from '@mui/material/Modal';
 import { Box, TextField } from '@mui/material';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addBoard } from '../../store/reducers/boardReducer';
 import { addColumn } from '../../store/reducers/columnReducer';
+import { RootState } from '../../store/store';
 
 const style = {
   position: 'absolute',
@@ -28,6 +29,7 @@ interface AddItemProps {
 
 const AddItem: React.FC<AddItemProps> = ({ itemType, boardId }) => {
   const dispatch = useDispatch();
+  const columns = useSelector((state: RootState) => state.columns.columns);
   const [isModalOpen, setModalOpen] = React.useState(false);
   const handleOpen = () => setModalOpen(true);
   const handleClose = () => setModalOpen(false);
@@ -43,7 +45,8 @@ const AddItem: React.FC<AddItemProps> = ({ itemType, boardId }) => {
       if (itemType === 'Board') {
         dispatch(addBoard(values));
       } else if (itemType === 'Column') {
-        dispatch(addColumn({ ...values, boardId }));
+        const order = columns.length + 1;
+        dispatch(addColumn({ ...values, boardId, order }));
       }
       handleClose();
     },
@@ -64,7 +67,6 @@ const AddItem: React.FC<AddItemProps> = ({ itemType, boardId }) => {
                 required
                 fullWidth
                 id="title"
-                // label="Board title"
                 label={`${itemType} title`}
                 defaultValue=""
                 onChange={formik.handleChange}
@@ -77,7 +79,6 @@ const AddItem: React.FC<AddItemProps> = ({ itemType, boardId }) => {
                   margin="normal"
                   fullWidth
                   id="description"
-                  // label="Board description"
                   label={`${itemType} description`}
                   defaultValue=""
                   multiline
