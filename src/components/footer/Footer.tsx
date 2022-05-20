@@ -10,13 +10,28 @@ function Footer(): JSX.Element {
           <img className={cl.iconRs} src={logoRs} alt="Rsschool Icon" width="73" height="26" />
         </a>
         <div className={cl.developer}>
-          <a className={cl.github} href="https://github.com/Aleksey061191">
+          <a
+            className={cl.github}
+            href="https://github.com/Aleksey061191"
+            target="_blank"
+            rel="noreferrer"
+          >
             <p>Aliaksei Makarenka</p>
           </a>
-          <a className={cl.github} href="https://github.com/makhitr">
+          <a
+            className={cl.github}
+            href="https://github.com/makhitr"
+            target="_blank"
+            rel="noreferrer"
+          >
             <p>Marina Khitrovo</p>
           </a>
-          <a className={cl.github} href="https://github.com/lena-r-a">
+          <a
+            className={cl.github}
+            href="https://github.com/lena-r-a"
+            target="_blank"
+            rel="noreferrer"
+          >
             <p>Alena Ryzhankova</p>
           </a>
         </div>
