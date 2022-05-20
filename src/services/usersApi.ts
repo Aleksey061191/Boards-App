@@ -1,6 +1,12 @@
 import ApiService from './apiService';
 import { IAuthSignUpParams } from './authApi';
 
+export interface IResponseApi {
+  id: string;
+  name: string;
+  login: string;
+}
+
 const usersApi = {
   getAllUsers: () => ApiService.get(`users`),
   getUser: (id: string) => ApiService.get(`users/${id}`),

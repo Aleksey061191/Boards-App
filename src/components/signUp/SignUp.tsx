@@ -6,22 +6,15 @@ import LockOpenIcon from '@mui/icons-material/LockOpen';
 import { Form, Formik, Field } from 'formik';
 import * as Yup from 'yup';
 import { AxiosError } from 'axios';
-import authApi from '../../services/authApi';
+import authApi, { IAuthSignUpParams } from '../../services/authApi';
 import { changeAuth, setToken, setLogin } from '../../store/reducers/userReducer';
 import cl from './SignUp.module.scss';
 import { AppDispatch } from '../../store/store';
-
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 400,
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
-  boxShadow: 24,
-  p: 4,
-};
+import usersApi, { IResponseApi } from '../../services/usersApi';
+import { handleLogOut } from '../userMenu/UserMenu';
+import BasicModal from '../basicModal/BasicModal';
+import BasicDialog from '../basicDialog/BasicDIalog';
+import { useModal, useDialog } from '../../hooks/appHooks';
 
 const INITIAL_SIGNIN_STATE = {
   name: '',
@@ -37,47 +30,101 @@ const FORM_VALIDATION = Yup.object().shape({
     .min(7, 'Password should be minimum 7 characters'),
 });
 
-function SignUp(): JSX.Element {
-  const [open, setOpen] = React.useState(false);
+interface ISignUpProps {
+  page: string;
+}
+
+function SignUp(props?: ISignUpProps): JSX.Element {
+  const { open, toggle } = useModal();
+  const { openD, toggleD } = useDialog();
   const [errMessage, setErrMessage] = React.useState('');
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
+  const setAuthData = (token: string, login: string) => {
+    localStorage.setItem('token', token);
+    localStorage.setItem('login', login);
+    dispatch(setToken(token));
+    dispatch(changeAuth(true));
+    dispatch(setLogin(login));
+  };
+
+  const handleDeleteProfile = () => {
+    const login = localStorage.getItem('login');
+    usersApi
+      .getAllUsers()
+      .then((rez) => rez.data.find((item: IResponseApi) => item.login === login))
+      .then((rez) => {
+        if (rez) {
+          usersApi.deleteUser(rez?.id);
+        }
+      })
+      .then(() => handleLogOut())
+      .catch((err) => {
+        if (err instanceof AxiosError) setErrMessage(err.response?.data.message);
+        toggle();
+      });
+  };
+
+  const handleUpdateProfile = (user: IAuthSignUpParams) => {
+    const login = localStorage.getItem('login');
+    usersApi
+      .getAllUsers()
+      .then((rez) => rez.data.find((item: IResponseApi) => item.login === login))
+      .then((rez) => {
+        if (rez) usersApi.updateUser(rez?.id, user);
+      })
+      .catch((err) => {
+        if (err instanceof AxiosError) setErrMessage(err.response?.data.message);
+        toggle();
+      });
+  };
+
   return (
     <Grid>
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={style}>
-          <p id="modal-description">{errMessage}</p>
-        </Box>
-      </Modal>
+      <BasicModal open={open} handleClose={toggle} errMessage={errMessage} />
+      <BasicDialog
+        open={openD}
+        title="Delete profile?"
+        message="Do you want delete profile permanently?"
+        handleCancel={toggleD}
+        handleOk={handleDeleteProfile}
+        children={null}
+      />
       <Paper elevation={10} className={cl.paperStyles}>
-        <Avatar className={cl.avatarStyles}>
-          <LockOpenIcon />
-        </Avatar>
-        Sign up
+        {props?.page === 'auth' && (
+          <Avatar className={cl.avatarStyles}>
+            <LockOpenIcon />
+          </Avatar>
+        )}
+        {props?.page === 'auth' ? 'Sign Up' : 'Edit profile'}
         <Formik
           initialValues={{ ...INITIAL_SIGNIN_STATE }}
           validationSchema={FORM_VALIDATION}
           onSubmit={async (values, formikHelpers) => {
             try {
-              await authApi.signup(values);
-              const rez = await authApi.signin({ login: values.login, password: values.password });
-              localStorage.setItem('token', rez.data.token);
-              dispatch(setToken(rez.data.token));
-              dispatch(changeAuth(true));
-              localStorage.setItem('login', values.login);
-              dispatch(setLogin(values.login));
-              navigate('/main');
+              if (props?.page === 'auth') {
+                await authApi.signup(values);
+                const rez = await authApi.signin({
+                  login: values.login,
+                  password: values.password,
+                });
+                setAuthData(rez.data.token, values.login);
+                navigate('/main');
+              }
+              if (props?.page === 'profile') {
+                const user: IAuthSignUpParams = {
+                  name: values.name,
+                  login: values.login,
+                  password: values.password,
+                };
+                handleUpdateProfile(user);
+                formikHelpers.resetForm();
+              }
             } catch (err) {
+              console.log(err);
               if (err instanceof AxiosError) setErrMessage(err.response?.data.message);
-              handleOpen();
+              toggle();
             }
           }}
         >
@@ -127,8 +174,13 @@ function SignUp(): JSX.Element {
                   type="submit"
                   disabled={!dirty || !isValid}
                 >
-                  Sign In
+                  {props?.page === 'auth' ? 'Sign Up' : 'Update'}
                 </Button>
+                {props?.page === 'profile' && (
+                  <Button className={cl.btnClasses} variant="contained" fullWidth onClick={toggleD}>
+                    Delete profile
+                  </Button>
+                )}
               </Grid>
             </Form>
           )}

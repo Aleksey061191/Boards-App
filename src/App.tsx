@@ -9,6 +9,7 @@ import WelcomePage from './pages/welcomePage/WelcomePage';
 import MainPage from './pages/mainPage/MainPage';
 import BoardPage from './pages/boardPage/BoardPage';
 import AuthPage from './pages/authPage/AuthPage';
+import ProfilePage from './pages/profilePage/ProfilePage';
 import RequireAuth from './components/hoc/RequireAuth';
 import LogedRoute from './components/hoc/LogedRoute';
 import ErrorBoundary from './components/errorBoundary/ErrorBoundary';
@@ -57,6 +58,16 @@ function App(): JSX.Element {
             >
               <Route path=":id" element={<BoardPage />} />
             </Route>
+            <Route
+              path="profile"
+              element={
+                <ErrorBoundary>
+                  <RequireAuth>
+                    <ProfilePage />
+                  </RequireAuth>
+                </ErrorBoundary>
+              }
+            />
             <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>

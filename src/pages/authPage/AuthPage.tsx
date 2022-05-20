@@ -57,7 +57,7 @@ function AuthPage(): JSX.Element {
           <SignIn />
         </TabPanel>
         <TabPanel value={value} index={1}>
-          <SignUp />
+          <SignUp page="auth" />
         </TabPanel>
       </Box>
     </main>
