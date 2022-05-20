@@ -4,11 +4,13 @@ import { TextField, Grid, Paper, Avatar, Button } from '@mui/material';
 import { Form, Formik, Field } from 'formik';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import * as Yup from 'yup';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import authApi from '../../services/authApi';
-import { AppDispatch, RootState } from '../../store/store';
+import { AppDispatch } from '../../store/store';
 import { changeAuth, setToken, setLogin } from '../../store/reducers/userReducer';
 import cl from './SignIn.module.scss';
+import BasicModal from '../basicModal/BasicModal';
+import { useModal } from '../../hooks/appHooks';
 
 const INITIAL_SIGNIN_STATE = {
   login: '',
@@ -25,8 +27,20 @@ const FORM_VALIDATION = Yup.object().shape({
 function SignIn(): JSX.Element {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+  const { open, toggle } = useModal();
+  const [errMessage, setErrMessage] = React.useState('');
+
+  const setAuthData = (token: string, login: string) => {
+    localStorage.setItem('token', token);
+    localStorage.setItem('login', login);
+    dispatch(setToken(token));
+    dispatch(changeAuth(true));
+    dispatch(setLogin(login));
+  };
+
   return (
     <Grid>
+      <BasicModal open={open} handleClose={toggle} errMessage={errMessage} />
       <Paper elevation={10} className={cl.paperStyles}>
         <Avatar className={cl.avatarStyles}>
           <LockOpenIcon />
@@ -38,14 +52,11 @@ function SignIn(): JSX.Element {
           onSubmit={async (values, formikHelpers) => {
             const rez = await authApi.signin(values);
             if (rez.status >= 200 && rez.status < 300) {
-              localStorage.setItem('token', rez.data.token);
-              localStorage.setItem('login', values.login);
-              dispatch(setToken(rez.data.token));
-              dispatch(changeAuth(true));
-              dispatch(setLogin(values.login));
+              setAuthData(rez.data.token, values.login);
               navigate('/main');
             } else {
-              console.log(rez);
+              setErrMessage(rez.response.data.message);
+              toggle();
             }
             formikHelpers.resetForm();
           }}
