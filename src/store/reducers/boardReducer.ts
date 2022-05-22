@@ -1,6 +1,6 @@
 import axios, { AxiosError } from 'axios';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import type { IBoard } from '../../components/BoardItem/BoardItem';
+import type { IBoard } from '../../components/boardItem/BoardItem';
 
 export const BOARDS_URL = 'https://rs-rest-kanban.herokuapp.com';
 export const token = localStorage.getItem('token');
@@ -12,14 +12,22 @@ export const path = {
   columns: '/columns',
 };
 
-export const fetchBoards = createAsyncThunk(
+
+export const fetchBoards = createAsyncThunk
+// <IBoard[], { }>
+(
   'boards/fetchBoards',
-  async (_, { rejectWithValue }) => {
+
+  async (_: void, { rejectWithValue }) => {
+
     try {
       const response = await axios.get(`${BOARDS_URL}${path.boards}`, config);
+      console.log(_);
+      console.log('%cboardReducer.ts line:21 responseData', 'color: #007acc;', response.data);
       return response.data;
     } catch (err) {
       const error = err as AxiosError;
+      console.log('%cboardReducer.ts line:27 object', 'color: #007acc;',  rejectWithValue(error.message));
       return rejectWithValue(error.message);
     }
   }
@@ -27,7 +35,7 @@ export const fetchBoards = createAsyncThunk(
 
 export const addBoard = createAsyncThunk(
   'boards/addBoard',
-  async (text, { rejectWithValue, dispatch }) => {
+  async (text: IBoard, { rejectWithValue, dispatch }) => {
     try {
       await axios
         .post(
@@ -42,7 +50,8 @@ export const addBoard = createAsyncThunk(
           dispatch(createBoard(response.data));
         });
       return {};
-    } catch (error) {
+    } catch (err) {
+      const error = err as AxiosError;
       return rejectWithValue(error.message);
     }
   }
@@ -55,13 +64,14 @@ export const deleteBoard = createAsyncThunk(
       await axios.delete(`${BOARDS_URL}${path.boards}/${id}`, config);
       dispatch(removeBoard({ id }));
       return {};
-    } catch (error) {
+    } catch (err) {
+      const error = err as AxiosError;
       return rejectWithValue(error.message);
     }
   }
 );
 
-const setError = (state, action) => {
+const setError = (state: IBoardsState, action) => {
   state.status = 'rejected';
   state.error = action.payload;
 };

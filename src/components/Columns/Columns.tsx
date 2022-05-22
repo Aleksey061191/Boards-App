@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
-import { ColumnItem } from '../ColumnItem/ColumnItem';
-import type { IColumn } from '../ColumnItem/ColumnItem';
+import { ColumnItem } from '../columnItem/ColumnItem';
+import type { IColumn } from '../columnItem/ColumnItem';
 import { fetchColumns } from '../../store/reducers/columnReducer';
 import cl from './Columns.module.scss';
 
@@ -24,7 +24,7 @@ const Columns: React.FC<ColumnsProps> = ({ boardId }) => {
       {status === 'loading' && <h2>Loading...</h2>}
       {error && <h2>An error occured: {error}</h2>}
       {columns.map((column: IColumn) => (
-        <ColumnItem key={column.id} board={boardId} {...column} />
+        <ColumnItem key={column.id} boardId={boardId} {...column} />
       ))}
     </div>
   );

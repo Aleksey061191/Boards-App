@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios, { AxiosError } from 'axios';
-import type { IColumn } from '../../components/ColumnItem/ColumnItem';
+import type { IColumn } from '../../components/columnItem/ColumnItem';
 import { BOARDS_URL, config, path } from './boardReducer';
 
 interface IColumnsState {
@@ -16,7 +16,7 @@ const initialState: IColumnsState = {
 
 export const fetchColumns = createAsyncThunk(
   'columns/fetchColumns',
-  async (boardId, { rejectWithValue }) => {
+  async (boardId: string, { rejectWithValue }) => {
     try {
       const response = await axios.get(
         `${BOARDS_URL}${path.boards}/${boardId}${path.columns}`,
@@ -30,9 +30,14 @@ export const fetchColumns = createAsyncThunk(
   }
 );
 
+const setError = (state: IColumnsState, action) => {
+  state.status = 'rejected';
+  state.error = action.payload;
+};
+
 export const addColumn = createAsyncThunk(
   'columns/addColumn',
-  async (data, { rejectWithValue, dispatch }) => {
+  async (data: IColumn, { rejectWithValue, dispatch }) => {
     try {
       await axios
         .post(
@@ -47,7 +52,8 @@ export const addColumn = createAsyncThunk(
           dispatch(createColumn(response.data));
         });
       return {};
-    } catch (error) {
+    } catch (err) {
+      const error = err as AxiosError;
       return rejectWithValue(error.message);
     }
   }
@@ -55,13 +61,14 @@ export const addColumn = createAsyncThunk(
 
 export const deleteColumn = createAsyncThunk(
   'columns/deleteColumn',
-  async (data, { dispatch, rejectWithValue }) => {
-    const { id, board } = data;
+  async (data: IColumn, { dispatch, rejectWithValue }) => {
+    const { id, boardId } = data;
     try {
-      await axios.delete(`${BOARDS_URL}${path.boards}/${board}${path.columns}/${id}`, config);
+      await axios.delete(`${BOARDS_URL}${path.boards}/${boardId}${path.columns}/${id}`, config);
       dispatch(removeColumn({ id }));
       return {};
-    } catch (error) {
+    } catch (err) {
+      const error = err as AxiosError;
       return rejectWithValue(error.message);
     }
   }
@@ -87,6 +94,8 @@ const columnSlice = createSlice({
       state.status = 'resolved';
       state.columns = action.payload;
     });
+    builder.addCase(fetchColumns.rejected, setError);
+    builder.addCase(deleteColumn.rejected, setError);
   },
 });
 

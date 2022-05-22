@@ -1,4 +1,5 @@
 import { Modal, Box } from '@mui/material';
+import { ReactElement, JSXElementConstructor } from 'react';
 
 interface IModalProps {
   open: boolean;

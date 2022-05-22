@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addBoard } from '../../store/reducers/boardReducer';
 import { addColumn } from '../../store/reducers/columnReducer';
 import { RootState } from '../../store/store';
+import BasicModal from '../basicModal/BasicModal';
 
 const style = {
   position: 'absolute',
@@ -25,9 +26,10 @@ const style = {
 interface AddItemProps {
   itemType: string;
   boardId?: string;
+  className?: string;
 }
 
-const AddItem: React.FC<AddItemProps> = ({ itemType, boardId }) => {
+const AddItemButton: React.FC<AddItemProps> = ({ itemType, boardId, className }) => {
   const dispatch = useDispatch();
   const columns = useSelector((state: RootState) => state.columns.columns);
   const [isModalOpen, setModalOpen] = React.useState(false);
@@ -54,7 +56,13 @@ const AddItem: React.FC<AddItemProps> = ({ itemType, boardId }) => {
 
   return (
     <>
-      <Button variant="outlined" startIcon={<AddCircleSharpIcon />} onClick={handleOpen}>
+      <Button
+        variant="outlined"
+        startIcon={<AddCircleSharpIcon />}
+        size="large"
+        onClick={handleOpen}
+        className={className}
+      >
         New {itemType}
       </Button>
 
@@ -98,4 +106,4 @@ const AddItem: React.FC<AddItemProps> = ({ itemType, boardId }) => {
   );
 };
 
-export default AddItem;
+export default AddItemButton;

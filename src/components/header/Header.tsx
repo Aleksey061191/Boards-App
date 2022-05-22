@@ -5,6 +5,7 @@ import { useAppSelector } from '../../hooks/appHooks';
 import UserMenu from '../userMenu/UserMenu';
 import cl from './Header.module.scss';
 import LanguageBtn from '../languageBtn/LanguageBtn';
+import AddItemButton from '../addItemButton/AddItemButton';
 
 function Header(): JSX.Element {
   const isAuth = useAppSelector((store) => store.user.isAuthorized);
@@ -23,9 +24,7 @@ function Header(): JSX.Element {
               </NavLink>
             )}
             {location.pathname === '/main' && (
-              <Button variant="contained" className={`${cl.uiButn} ${cl.button}`}>
-                New board
-              </Button>
+              <AddItemButton itemType="Board" className={`${cl.uiButn} ${cl.button}`} />
             )}
           </>
         )}

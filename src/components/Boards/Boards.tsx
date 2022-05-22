@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
-import BoardItem from '../BoardItem/BoardItem';
-import type { IBoard } from '../BoardItem/BoardItem';
+import BoardItem from '../boardItem/BoardItem';
+import type { IBoard } from '../boardItem/BoardItem';
 import { fetchBoards } from '../../store/reducers/boardReducer';
 import cl from './Boards.module.scss';
 
@@ -12,6 +12,7 @@ const Boards = () => {
   const dispatch = useDispatch();
 
   React.useEffect(() => {
+    console.log('useEff fetch');
     dispatch(fetchBoards());
   }, [dispatch]);
 
