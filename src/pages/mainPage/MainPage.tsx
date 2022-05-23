@@ -1,5 +1,5 @@
 import React from 'react';
-import Boards from '../../components/boards/Boards';
+import Boards from '../../components/Boards/Boards';
 import cl from './MainPage.module.scss';
 
 function MainPage(): JSX.Element {
