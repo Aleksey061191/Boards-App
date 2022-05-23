@@ -4,6 +4,7 @@ import { AppDispatch, RootState } from '../../store/store';
 import { ColumnItem } from '../columnItem/ColumnItem';
 import type { IColumn } from '../columnItem/ColumnItem';
 import { fetchColumns } from '../../store/reducers/columnReducer';
+import columnsApi from '../../services/columnsApi';
 import cl from './Columns.module.scss';
 
 interface ColumnsProps {

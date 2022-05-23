@@ -1,11 +1,12 @@
 import * as React from 'react';
-import { useParams } from 'react-router-dom';
 import { Box, Card, CardHeader, IconButton, Modal, Button, Typography } from '@mui/material';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { deleteColumn } from '../../store/reducers/columnReducer';
-import { AppDispatch } from '../../store/store';
+import { AppDispatch, RootState } from '../../store/store';
 import AddItemButton from '../addItemButton/AddItemButton';
+import TaskItem from '../taskItem/TaskItem';
+import { getAllTasks } from '../../store/reducers/taskReducer';
 
 export interface IColumn {
   id: string;
@@ -34,11 +35,14 @@ interface ColumnItemProps {
 }
 export const ColumnItem: React.FC<ColumnItemProps> = ({ title, id, boardId }) => {
   const [isModalOpen, setModalOpen] = React.useState(false);
+  const tasks = useSelector((state: RootState) => state.tasks.tasks);
   const handleOpen = () => setModalOpen(true);
   const handleClose = () => setModalOpen(false);
   const dispatch = useDispatch<AppDispatch>();
 
-  console.log(boardId, id);
+  React.useEffect(() => {
+    dispatch(getAllTasks(boardId));
+  }, [dispatch, boardId]);
 
   return (
     <>
@@ -51,7 +55,12 @@ export const ColumnItem: React.FC<ColumnItemProps> = ({ title, id, boardId }) =>
             </IconButton>
           }
         ></CardHeader>
-        <AddItemButton itemType="Task" boardId={boardId} columnId={id}/>
+        {tasks
+          .find((item) => item.boardId === boardId && item.columnId === id)
+          ?.tasks.map((item) => (
+            <TaskItem key={item.id} {...item} />
+          ))}
+        <AddItemButton itemType="Task" boardId={boardId} columnId={id} />
       </Card>
       <Modal open={isModalOpen} onClose={handleClose}>
         <Box sx={style}>

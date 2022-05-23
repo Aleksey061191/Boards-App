@@ -9,7 +9,7 @@ import { Box, TextField } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { addBoard } from '../../store/reducers/boardReducer';
 import { addColumn } from '../../store/reducers/columnReducer';
-import { createTask } from '../../store/reducers/taskReducer';
+import { createTask, getAllTasks } from '../../store/reducers/taskReducer';
 import { AppDispatch, RootState } from '../../store/store';
 import { ITasksParams } from '../../services/tasksApi';
 
@@ -51,7 +51,8 @@ const AddItemButton: React.FC<AddItemProps> = ({
   itemType,
   boardId = '1',
   className,
-  columnId = '1' }) => {
+  columnId = '1',
+}) => {
   const dispatch = useDispatch<AppDispatch>();
   const columns = useSelector((state: RootState) => state.columns.columns);
   const [isModalOpen, setModalOpen] = React.useState(false);
@@ -72,7 +73,7 @@ const AddItemButton: React.FC<AddItemProps> = ({
       const submitObj: ISubmitObj = {
         Board: () => dispatch(addBoard(values)),
         Column: () => dispatch(addColumn({ ...values, boardId })),
-        Task: () => {
+        Task: async () => {
           const token = localStorage.getItem('token');
           if (token) {
             const decoded = jwtDecode<IJwtDecode>(token);
@@ -80,8 +81,9 @@ const AddItemButton: React.FC<AddItemProps> = ({
               title: values.title,
               description: values.description,
               userId: decoded.userId,
-            }
-            dispatch(createTask({ boardId, columnId, task }))
+            };
+            await dispatch(createTask({ boardId, columnId, task }));
+            dispatch(getAllTasks(boardId));
           }
         },
       };
