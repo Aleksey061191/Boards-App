@@ -55,7 +55,9 @@ function App(): JSX.Element {
                   <BoardPage />
                 </ErrorBoundary>
               }
-            />
+            >
+              <Route path=":id" element={<BoardPage />} />
+            </Route>
             <Route
               path="profile"
               element={

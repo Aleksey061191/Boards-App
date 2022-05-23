@@ -5,6 +5,14 @@ interface IColumnsParams {
   title: string;
   order: number;
 }
+export interface ICreateColumnParams extends IColumnsParams {
+  boardId: string;
+}
+
+export interface IDeleteColumnParams {
+  id: string;
+  boardId: string;
+}
 
 const columnsApi = {
   getAllColumns: (boardId: string) => ApiService.get(`boards/${boardId}/columns`),
