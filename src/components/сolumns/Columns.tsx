@@ -17,14 +17,14 @@ const Columns: React.FC<ColumnsProps> = ({ boardId }) => {
 
   React.useEffect(() => {
     dispatch(fetchColumns(boardId));
-  }, [dispatch]);
+  }, [dispatch, boardId]);
 
   return (
     <div className={cl.container}>
       {status === 'loading' && <h2>Loading...</h2>}
       {error && <h2>An error occured: {error}</h2>}
       {columns.map((column: IColumn) => (
-        <ColumnItem key={column.id} {...column} {...boardId} />
+        <ColumnItem key={column.id} {...column} boardId={boardId} />
       ))}
     </div>
   );

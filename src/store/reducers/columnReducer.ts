@@ -30,9 +30,9 @@ export const fetchColumns = createAsyncThunk(
 export const addColumn = createAsyncThunk(
   'columns/addColumn',
   async (data: ICreateColumnParams, { rejectWithValue, dispatch }) => {
-    const { boardId, title, order } = data;
+    const { boardId, title } = data;
     try {
-      await columnsApi.createColumn(boardId, { title, order }).then((response) => {
+      await columnsApi.createColumn(boardId, { title }).then((response) => {
         dispatch(createColumn(response.data));
       });
       return {};

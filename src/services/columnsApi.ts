@@ -3,7 +3,6 @@ import ApiService from './apiService';
 
 interface IColumnsParams {
   title: string;
-  order: number;
 }
 export interface ICreateColumnParams extends IColumnsParams {
   boardId: string;

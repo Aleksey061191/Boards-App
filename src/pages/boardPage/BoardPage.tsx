@@ -1,7 +1,7 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import AddItemButton from '../../components/addItemButton/AddItemButton';
-import Columns from '../../components/columns/Columns';
+import Columns from '../../components/сolumns/Columns';
 
 import cl from './BoardPage.module.scss';
 
@@ -12,7 +12,6 @@ function BoardPage(): JSX.Element {
     <main className={cl.container}>
       <h1>Board Page {id}</h1>
       <AddItemButton itemType="Column" boardId={id} />
-      <AddItemButton itemType="Task" />
       <Columns boardId={id} />
     </main>
   );

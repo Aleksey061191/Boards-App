@@ -1,9 +1,11 @@
 import * as React from 'react';
+import { useParams } from 'react-router-dom';
 import { Box, Card, CardHeader, IconButton, Modal, Button, Typography } from '@mui/material';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { useDispatch } from 'react-redux';
 import { deleteColumn } from '../../store/reducers/columnReducer';
 import { AppDispatch } from '../../store/store';
+import AddItemButton from '../addItemButton/AddItemButton';
 
 export interface IColumn {
   id: string;
@@ -36,6 +38,8 @@ export const ColumnItem: React.FC<ColumnItemProps> = ({ title, id, boardId }) =>
   const handleClose = () => setModalOpen(false);
   const dispatch = useDispatch<AppDispatch>();
 
+  console.log(boardId, id);
+
   return (
     <>
       <Card sx={{ minWidth: 300, minHeight: 300, maxWidth: 500 }}>
@@ -47,7 +51,7 @@ export const ColumnItem: React.FC<ColumnItemProps> = ({ title, id, boardId }) =>
             </IconButton>
           }
         ></CardHeader>
-        <div> I am from board {boardId}</div>
+        <AddItemButton itemType="Task" boardId={boardId} columnId={id}/>
       </Card>
       <Modal open={isModalOpen} onClose={handleClose}>
         <Box sx={style}>
