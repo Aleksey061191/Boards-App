@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import axios, { AxiosError } from 'axios';
+import { AxiosError } from 'axios';
 import type { IColumn } from '../../components/columnItem/ColumnItem';
-import { BOARDS_URL, config, path } from './boardReducer';
+import columnsApi, { ICreateColumnParams, IDeleteColumnParams } from '../../services/columnsApi';
 
 interface IColumnsState {
   columns: IColumn[];
@@ -18,10 +18,7 @@ export const fetchColumns = createAsyncThunk(
   'columns/fetchColumns',
   async (boardId: string, { rejectWithValue }) => {
     try {
-      const response = await axios.get(
-        `${BOARDS_URL}${path.boards}/${boardId}${path.columns}`,
-        config
-      );
+      const response = await columnsApi.getAllColumns(boardId);
       return response.data;
     } catch (err) {
       const error = err as AxiosError;
@@ -30,27 +27,14 @@ export const fetchColumns = createAsyncThunk(
   }
 );
 
-const setError = (state: IColumnsState, action) => {
-  state.status = 'rejected';
-  state.error = action.payload;
-};
-
 export const addColumn = createAsyncThunk(
   'columns/addColumn',
-  async (data: IColumn, { rejectWithValue, dispatch }) => {
+  async (data: ICreateColumnParams, { rejectWithValue, dispatch }) => {
+    const { boardId, title, order } = data;
     try {
-      await axios
-        .post(
-          `${BOARDS_URL}${path.boards}/${data.boardId}${path.columns}`,
-          {
-            title: data.title,
-            order: data.order,
-          },
-          config
-        )
-        .then((response) => {
-          dispatch(createColumn(response.data));
-        });
+      await columnsApi.createColumn(boardId, { title, order }).then((response) => {
+        dispatch(createColumn(response.data));
+      });
       return {};
     } catch (err) {
       const error = err as AxiosError;
@@ -61,10 +45,10 @@ export const addColumn = createAsyncThunk(
 
 export const deleteColumn = createAsyncThunk(
   'columns/deleteColumn',
-  async (data: IColumn, { dispatch, rejectWithValue }) => {
+  async (data: IDeleteColumnParams, { dispatch, rejectWithValue }) => {
     const { id, boardId } = data;
     try {
-      await axios.delete(`${BOARDS_URL}${path.boards}/${boardId}${path.columns}/${id}`, config);
+      await columnsApi.deleteColumn(boardId, id);
       dispatch(removeColumn({ id }));
       return {};
     } catch (err) {
@@ -94,8 +78,14 @@ const columnSlice = createSlice({
       state.status = 'resolved';
       state.columns = action.payload;
     });
-    builder.addCase(fetchColumns.rejected, setError);
-    builder.addCase(deleteColumn.rejected, setError);
+    builder.addCase(fetchColumns.rejected, (state, { payload }) => {
+      state.status = 'rejected';
+      state.error = payload as string;
+    });
+    builder.addCase(deleteColumn.rejected, (state, { payload }) => {
+      state.status = 'rejected';
+      state.error = payload as string;
+    });
   },
 });
 

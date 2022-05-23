@@ -3,12 +3,12 @@ import { Box, Card, CardHeader, IconButton, Modal, Button, Typography } from '@m
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { useDispatch } from 'react-redux';
 import { deleteColumn } from '../../store/reducers/columnReducer';
+import { AppDispatch } from '../../store/store';
 
 export interface IColumn {
   id: string;
   title: string;
   description: string;
-  tasks: [];
   boardId: string;
   order: number;
 }
@@ -34,7 +34,7 @@ export const ColumnItem: React.FC<ColumnItemProps> = ({ title, id, boardId }) =>
   const [isModalOpen, setModalOpen] = React.useState(false);
   const handleOpen = () => setModalOpen(true);
   const handleClose = () => setModalOpen(false);
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   return (
     <>

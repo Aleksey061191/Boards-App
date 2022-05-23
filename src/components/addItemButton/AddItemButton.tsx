@@ -8,8 +8,7 @@ import { Box, TextField } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { addBoard } from '../../store/reducers/boardReducer';
 import { addColumn } from '../../store/reducers/columnReducer';
-import { RootState } from '../../store/store';
-import BasicModal from '../basicModal/BasicModal';
+import { AppDispatch, RootState } from '../../store/store';
 
 const style = {
   position: 'absolute',
@@ -28,13 +27,23 @@ interface AddItemProps {
   boardId?: string;
   className?: string;
 }
+interface ISubmitObj {
+  [index: string]: () => void;
+}
 
-const AddItemButton: React.FC<AddItemProps> = ({ itemType, boardId, className }) => {
-  const dispatch = useDispatch();
+enum ItemType {
+  Board = 'Board',
+  Column = 'Column',
+  Task = 'Task',
+}
+
+const AddItemButton: React.FC<AddItemProps> = ({ itemType, boardId = '1', className }) => {
+  const dispatch = useDispatch<AppDispatch>();
   const columns = useSelector((state: RootState) => state.columns.columns);
   const [isModalOpen, setModalOpen] = React.useState(false);
   const handleOpen = () => setModalOpen(true);
   const handleClose = () => setModalOpen(false);
+
   const formik = useFormik({
     initialValues: {
       title: '',
@@ -43,13 +52,14 @@ const AddItemButton: React.FC<AddItemProps> = ({ itemType, boardId, className })
     validationSchema: Yup.object({
       title: Yup.string().required('Title is required'),
     }),
+
     onSubmit: (values) => {
-      if (itemType === 'Board') {
-        dispatch(addBoard(values));
-      } else if (itemType === 'Column') {
-        const order = columns.length + 1;
-        dispatch(addColumn({ ...values, boardId, order }));
-      }
+      const order = columns.length + 1;
+      const submitObj: ISubmitObj = {
+        Board: () => dispatch(addBoard(values)),
+        Column: () => dispatch(addColumn({ ...values, boardId, order })),
+      };
+      submitObj[itemType]();
       handleClose();
     },
   });
@@ -65,7 +75,6 @@ const AddItemButton: React.FC<AddItemProps> = ({ itemType, boardId, className })
       >
         New {itemType}
       </Button>
-
       <Modal open={isModalOpen} onClose={handleClose}>
         <form onSubmit={formik.handleSubmit}>
           <Box sx={style}>
@@ -80,8 +89,8 @@ const AddItemButton: React.FC<AddItemProps> = ({ itemType, boardId, className })
                 onChange={formik.handleChange}
               />
             </div>
-            {formik.touched.title && formik.errors.title ? <div>{formik.errors.title}</div> : null}
-            {itemType !== 'Column' && (
+            {formik.touched.title && formik.errors.title && <div>{formik.errors.title}</div>}
+            {ItemType.Column && (
               <div>
                 <TextField
                   margin="normal"
@@ -95,7 +104,6 @@ const AddItemButton: React.FC<AddItemProps> = ({ itemType, boardId, className })
                 />
               </div>
             )}
-
             <Button type="submit" value="Submit" variant="contained">
               Create {itemType}
             </Button>

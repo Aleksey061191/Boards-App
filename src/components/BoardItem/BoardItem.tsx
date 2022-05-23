@@ -14,6 +14,7 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { deleteBoard } from '../../store/reducers/boardReducer';
 import './boardItem.css';
+import { AppDispatch } from '../../store/store';
 
 const style = {
   position: 'absolute',
@@ -26,6 +27,8 @@ const style = {
   boxShadow: 24,
   p: 4,
 };
+
+const cardStyle = { minWidth: 300, minHeight: 200, maxWidth: 500 };
 export interface IBoard {
   id: string;
   title: string;
@@ -36,7 +39,7 @@ const BoardItem = ({ title, description, id }: IBoard) => {
   const [isModalOpen, setModalOpen] = React.useState(false);
   const handleOpen = () => setModalOpen(true);
   const handleClose = () => setModalOpen(false);
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -45,7 +48,7 @@ const BoardItem = ({ title, description, id }: IBoard) => {
 
   return (
     <div className="board-item">
-      <Card sx={{ minWidth: 300, minHeight: 200, maxWidth: 500 }}>
+      <Card sx={cardStyle}>
         <CardHeader
           title={title}
           action={

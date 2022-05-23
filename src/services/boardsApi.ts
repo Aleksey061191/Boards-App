@@ -1,7 +1,7 @@
 import React from 'react';
 import ApiService from './apiService';
 
-interface IBoardParams {
+export interface IBoardParams {
   title: string;
   description: string;
 }

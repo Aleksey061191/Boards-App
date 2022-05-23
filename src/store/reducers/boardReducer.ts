@@ -1,33 +1,17 @@
 import axios, { AxiosError } from 'axios';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import type { IBoard } from '../../components/boardItem/BoardItem';
+import boardsApi from '../../services/boardsApi';
+import type { IBoardParams } from '../../services/boardsApi';
 
-export const BOARDS_URL = 'https://rs-rest-kanban.herokuapp.com';
-export const token = localStorage.getItem('token');
-export const config = { headers: { Authorization: `Bearer ${token}` } };
-
-export const path = {
-  user: '/user',
-  boards: '/boards',
-  columns: '/columns',
-};
-
-
-export const fetchBoards = createAsyncThunk
-// <IBoard[], { }>
-(
+export const fetchBoards = createAsyncThunk(
   'boards/fetchBoards',
-
-  async (_: void, { rejectWithValue }) => {
-
+  async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${BOARDS_URL}${path.boards}`, config);
-      console.log(_);
-      console.log('%cboardReducer.ts line:21 responseData', 'color: #007acc;', response.data);
+      const response = await boardsApi.getAllBoards();
       return response.data;
     } catch (err) {
       const error = err as AxiosError;
-      console.log('%cboardReducer.ts line:27 object', 'color: #007acc;',  rejectWithValue(error.message));
       return rejectWithValue(error.message);
     }
   }
@@ -35,17 +19,13 @@ export const fetchBoards = createAsyncThunk
 
 export const addBoard = createAsyncThunk(
   'boards/addBoard',
-  async (text: IBoard, { rejectWithValue, dispatch }) => {
+  async (text: IBoardParams, { rejectWithValue, dispatch }) => {
     try {
-      await axios
-        .post(
-          `${BOARDS_URL}${path.boards}`,
-          {
-            title: text.title,
-            description: text.description,
-          },
-          config
-        )
+      await boardsApi
+        .createBoard({
+          title: text.title,
+          description: text.description,
+        })
         .then((response) => {
           dispatch(createBoard(response.data));
         });
@@ -59,9 +39,9 @@ export const addBoard = createAsyncThunk(
 
 export const deleteBoard = createAsyncThunk(
   'boards/deleteBoard',
-  async (id, { dispatch, rejectWithValue }) => {
+  async (id: string, { dispatch, rejectWithValue }) => {
     try {
-      await axios.delete(`${BOARDS_URL}${path.boards}/${id}`, config);
+      await boardsApi.deleteBoard(id);
       dispatch(removeBoard({ id }));
       return {};
     } catch (err) {
@@ -70,11 +50,6 @@ export const deleteBoard = createAsyncThunk(
     }
   }
 );
-
-const setError = (state: IBoardsState, action) => {
-  state.status = 'rejected';
-  state.error = action.payload;
-};
 interface IBoardsState {
   boards: IBoard[];
   status: string | null;
@@ -106,8 +81,14 @@ const boardSlice = createSlice({
       state.status = 'resolved';
       state.boards = action.payload;
     });
-    builder.addCase(fetchBoards.rejected, setError);
-    builder.addCase(deleteBoard.rejected, setError);
+    builder.addCase(fetchBoards.rejected, (state, { payload }) => {
+      state.status = 'rejected';
+      state.error = payload as string;
+    });
+    builder.addCase(deleteBoard.rejected, (state, { payload }) => {
+      state.status = 'rejected';
+      state.error = payload as string;
+    });
   },
 });
 
