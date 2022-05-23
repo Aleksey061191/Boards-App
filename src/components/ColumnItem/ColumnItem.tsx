@@ -30,7 +30,7 @@ interface ColumnItemProps {
   id: string;
   boardId: string;
 }
-export const ColumnItem: React.FC<ColumnItemProps> = ({ title, id, boardId }) => {
+const ColumnItem: React.FC<ColumnItemProps> = ({ title, id, boardId }) => {
   const [isModalOpen, setModalOpen] = React.useState(false);
   const handleOpen = () => setModalOpen(true);
   const handleClose = () => setModalOpen(false);
@@ -68,3 +68,5 @@ export const ColumnItem: React.FC<ColumnItemProps> = ({ title, id, boardId }) =>
     </>
   );
 };
+
+export default ColumnItem;

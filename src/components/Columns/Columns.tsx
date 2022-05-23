@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../store/store';
-import { ColumnItem } from '../columnItem/ColumnItem';
 import type { IColumn } from '../columnItem/ColumnItem';
 import { fetchColumns } from '../../store/reducers/columnReducer';
+import ColumnItem from '../columnItem/ColumnItem';
 import cl from './Columns.module.scss';
 
 interface ColumnsProps {

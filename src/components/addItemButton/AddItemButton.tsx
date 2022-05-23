@@ -90,7 +90,7 @@ const AddItemButton: React.FC<AddItemProps> = ({ itemType, boardId = '1', classN
               />
             </div>
             {formik.touched.title && formik.errors.title && <div>{formik.errors.title}</div>}
-            {ItemType.Column && (
+            {itemType !== ItemType.Column && (
               <div>
                 <TextField
                   margin="normal"
