@@ -12,9 +12,9 @@ import {
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { deleteBoard } from '../../store/reducers/boardReducer';
 import './boardItem.css';
 import { AppDispatch } from '../../store/store';
+import { deleteBoard } from '../../store/reducers/helpers/boardHelpers';
 
 const style = {
   position: 'absolute',

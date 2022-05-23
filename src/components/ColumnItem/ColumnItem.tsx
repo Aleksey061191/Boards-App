@@ -2,8 +2,8 @@ import * as React from 'react';
 import { Box, Card, CardHeader, IconButton, Modal, Button, Typography } from '@mui/material';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { useDispatch } from 'react-redux';
-import { deleteColumn } from '../../store/reducers/columnReducer';
 import { AppDispatch } from '../../store/store';
+import { deleteColumn } from '../../store/reducers/helpers/columnHelpers';
 
 export interface IColumn {
   id: string;
