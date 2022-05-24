@@ -7,7 +7,7 @@ import * as Yup from 'yup';
 import Modal from '@mui/material/Modal';
 import { Box, TextField } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import { createTask, getAllTasks } from '../../store/reducers/taskReducer';
+import { createTask, getAllTasks } from '../../store/reducers/helpers/tasksHelper';
 import { AppDispatch, RootState } from '../../store/store';
 import { ITasksParams } from '../../services/tasksApi';
 import { addBoard } from '../../store/reducers/helpers/boardHelpers';

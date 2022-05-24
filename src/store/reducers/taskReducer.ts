@@ -1,7 +1,5 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { AxiosError } from 'axios';
-import tasksApi, { ITasksParams } from '../../services/tasksApi';
-import boardsApi from '../../services/boardsApi';
+import { createSlice } from '@reduxjs/toolkit';
+import { createTask, getAllTasks, deleteTask } from './helpers/tasksHelper';
 
 export interface IColumn {
   id: string;
@@ -9,18 +7,6 @@ export interface IColumn {
   description: string;
   boardId: string;
   order: number;
-}
-
-interface ICreateTaskApi {
-  boardId: string;
-  columnId: string;
-  task: ITasksParams;
-}
-
-interface IDeleteTaskApi {
-  boardId: string;
-  columnId: string;
-  taskId: string;
 }
 
 interface IFile {
@@ -60,55 +46,6 @@ const initialState: ITaskState = {
   // status: null,
   error: null,
 };
-
-export const createTask = createAsyncThunk(
-  'tasks/createTask',
-  async (data: ICreateTaskApi, { rejectWithValue }) => {
-    const { boardId, columnId, task } = data;
-    try {
-      await tasksApi.createTask(boardId, columnId, task);
-      return {};
-    } catch (err) {
-      const error = err as AxiosError;
-      return rejectWithValue(error.message);
-    }
-  }
-);
-
-export const getAllTasks = createAsyncThunk(
-  'tasks/getAllTasks',
-  async (boardId: string, { rejectWithValue }) => {
-    try {
-      const allboardTasks = await (await boardsApi.getBoard(boardId)).data;
-      const alltasks = allboardTasks.columns.map((item: IColumnResponse) => {
-        const newItem: IAllTasks = {
-          boardId,
-          columnId: item.id,
-          tasks: item.tasks,
-        };
-        return newItem;
-      });
-      return alltasks;
-    } catch (err) {
-      const error = err as AxiosError;
-      return rejectWithValue(error.message);
-    }
-  }
-);
-
-export const deleteTask = createAsyncThunk(
-  'tasks/deleteTask',
-  async (data: IDeleteTaskApi, { rejectWithValue }) => {
-    const { boardId, columnId, taskId } = data;
-    try {
-      const response = await tasksApi.deleteTask(boardId, columnId, taskId);
-      return response.data;
-    } catch (err) {
-      const error = err as AxiosError;
-      return rejectWithValue(error.message);
-    }
-  }
-);
 
 const tasksSlice = createSlice({
   name: 'tasks',

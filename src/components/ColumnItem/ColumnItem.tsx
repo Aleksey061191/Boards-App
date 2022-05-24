@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../store/store';
 import AddItemButton from '../addItemButton/AddItemButton';
 import TaskItem from '../taskItem/TaskItem';
-import { getAllTasks } from '../../store/reducers/taskReducer';
+import { getAllTasks } from '../../store/reducers/helpers/tasksHelper';
 import { deleteColumn } from '../../store/reducers/helpers/columnHelpers';
 
 export interface IColumn {
@@ -58,7 +58,7 @@ export const ColumnItem: React.FC<ColumnItemProps> = ({ title, id, boardId }) =>
         {tasks
           .find((item) => item.boardId === boardId && item.columnId === id)
           ?.tasks.map((item) => (
-            <TaskItem key={item.id} {...item} />
+            <TaskItem key={item.id} {...item} boardId={boardId} columnId={id} />
           ))}
         <AddItemButton itemType="Task" boardId={boardId} columnId={id} />
       </Card>
