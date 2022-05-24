@@ -1,0 +1,47 @@
+import { createAsyncThunk } from '@reduxjs/toolkit';
+import { AxiosError } from 'axios';
+import boardsApi, { IBoardParams } from '../../../services/boardsApi';
+
+export const fetchBoards = createAsyncThunk(
+  'boards/fetchBoards',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await boardsApi.getAllBoards();
+      return response.data;
+    } catch (err) {
+      const error = err as AxiosError;
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const addBoard = createAsyncThunk(
+  'boards/addBoard',
+  async (text: IBoardParams, { rejectWithValue }) => {
+    try {
+      const rez = await boardsApi
+        .createBoard({
+          title: text.title,
+          description: text.description,
+        })
+        .then((response) => response.data);
+      return rez;
+    } catch (err) {
+      const error = err as AxiosError;
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const deleteBoard = createAsyncThunk(
+  'boards/deleteBoard',
+  async (id: string, { rejectWithValue }) => {
+    try {
+      await boardsApi.deleteBoard(id);
+      return { id };
+    } catch (err) {
+      const error = err as AxiosError;
+      return rejectWithValue(error.message);
+    }
+  }
+);

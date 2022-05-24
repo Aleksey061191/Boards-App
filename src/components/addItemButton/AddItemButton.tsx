@@ -7,11 +7,11 @@ import * as Yup from 'yup';
 import Modal from '@mui/material/Modal';
 import { Box, TextField } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import { addBoard } from '../../store/reducers/boardReducer';
-import { addColumn } from '../../store/reducers/columnReducer';
 import { createTask, getAllTasks } from '../../store/reducers/taskReducer';
 import { AppDispatch, RootState } from '../../store/store';
 import { ITasksParams } from '../../services/tasksApi';
+import { addBoard } from '../../store/reducers/helpers/boardHelpers';
+import { addColumn } from '../../store/reducers/helpers/columnHelpers';
 
 const style = {
   position: 'absolute',
@@ -54,7 +54,6 @@ const AddItemButton: React.FC<AddItemProps> = ({
   columnId = '1',
 }) => {
   const dispatch = useDispatch<AppDispatch>();
-  const columns = useSelector((state: RootState) => state.columns.columns);
   const [isModalOpen, setModalOpen] = React.useState(false);
   const handleOpen = () => setModalOpen(true);
   const handleClose = () => setModalOpen(false);
@@ -69,7 +68,6 @@ const AddItemButton: React.FC<AddItemProps> = ({
     }),
 
     onSubmit: (values) => {
-      const order = columns.length + 1;
       const submitObj: ISubmitObj = {
         Board: () => dispatch(addBoard(values)),
         Column: () => dispatch(addColumn({ ...values, boardId })),

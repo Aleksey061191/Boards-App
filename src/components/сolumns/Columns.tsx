@@ -3,9 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../store/store';
 import { ColumnItem } from '../columnItem/ColumnItem';
 import type { IColumn } from '../columnItem/ColumnItem';
-import { fetchColumns } from '../../store/reducers/columnReducer';
-import columnsApi from '../../services/columnsApi';
 import cl from './Columns.module.scss';
+import { fetchColumns } from '../../store/reducers/helpers/columnHelpers';
 
 interface ColumnsProps {
   boardId: string;
