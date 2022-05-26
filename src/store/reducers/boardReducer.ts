@@ -1,7 +1,7 @@
 import axios, { AxiosError } from 'axios';
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, current } from '@reduxjs/toolkit';
 import type { IBoard } from '../../components/boardItem/BoardItem';
-import boardsApi from '../../services/boardsApi';
+import boardsApi, { IBoardUpdateParams } from '../../services/boardsApi';
 import type { IBoardParams } from '../../services/boardsApi';
 
 export const fetchBoards = createAsyncThunk(
@@ -29,6 +29,22 @@ export const addBoard = createAsyncThunk(
         .then((response) => {
           dispatch(createBoard(response.data));
         });
+      return {};
+    } catch (err) {
+      const error = err as AxiosError;
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const updateBoard = createAsyncThunk(
+  'boards/updateBoard',
+  async (data: IBoardUpdateParams, { dispatch, rejectWithValue }) => {
+    try {
+      const { id, title, description } = data;
+      await boardsApi.updateBoard(id, { title, description }).then((response) => {
+        dispatch(upgradeBoard(response.data));
+      });
       return {};
     } catch (err) {
       const error = err as AxiosError;
@@ -68,6 +84,14 @@ const boardSlice = createSlice({
     createBoard(state, action) {
       state.boards.push(action.payload);
     },
+    upgradeBoard(state, action) {
+      state.boards = state.boards.filter((board: IBoard) => board.id !== action.payload.id);
+      // console.log('%cboardReducer.ts line:91 current(state', 'color: #007acc;', current(state.boards[action.payload.id]));
+      // state.boards = state.boards.map((board: IBoard) =>
+      // console.log('%cboardReducer.ts line:92 current(board', 'color: #007acc;', current(board);
+      // )
+      // )
+    },
     removeBoard(state, action) {
       state.boards = state.boards.filter((board: IBoard) => board.id !== action.payload.id);
     },
@@ -85,6 +109,18 @@ const boardSlice = createSlice({
       state.status = 'rejected';
       state.error = payload as string;
     });
+    // builder.addCase(updateBoard.pending, (state) => {
+    //   state.status = 'loading';
+    //   state.error = null;
+    // });
+    // builder.addCase(updateBoard.fulfilled, (state, action) => {
+    //   state.status = 'resolved';
+    //   // state.boards.push(action.payload);
+    // });
+    // builder.addCase(updateBoard.rejected, (state, { payload }) => {
+    //   state.status = 'rejected';
+    //   state.error = payload as string;
+    // });
     builder.addCase(deleteBoard.rejected, (state, { payload }) => {
       state.status = 'rejected';
       state.error = payload as string;
@@ -93,4 +129,4 @@ const boardSlice = createSlice({
 });
 
 export default boardSlice.reducer;
-const { createBoard, removeBoard } = boardSlice.actions;
+const { createBoard, removeBoard, upgradeBoard } = boardSlice.actions;

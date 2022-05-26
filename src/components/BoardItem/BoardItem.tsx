@@ -18,6 +18,9 @@ import { useNavigate } from 'react-router-dom';
 import { deleteBoard } from '../../store/reducers/boardReducer';
 import './boardItem.css';
 import { AppDispatch } from '../../store/store';
+import Header from '../header/Header';
+import TitleInput from '../titleInput/TitleInput';
+import { useTitleInput } from '../../hooks/appHooks';
 
 const style = {
   position: 'absolute',
@@ -45,33 +48,18 @@ const BoardItem = ({ title, description, id }: IBoard) => {
     e.stopPropagation();
     setModalOpen(true);
   };
+
   const handleClose = () => setModalOpen(false);
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  const [isTitleChanged, setIsTitleChanged] = React.useState(false);
+  // const [isTitleChanged, setIsTitleChanged] = React.useState(false);
   const [value, setValue] = React.useState(title);
 
   const handleClick = () => {
     navigate(`/board/${id}`);
   };
 
-  const changeTitle = () => {
-    setIsTitleChanged(true);
-  };
-
-  const formik = useFormik({
-    initialValues: {
-      title,
-    },
-    validationSchema: Yup.object({
-      title: Yup.string().required('Title is required'),
-    }),
-
-    onSubmit: (values) => {
-      setValue(values.title);
-      setIsTitleChanged(false);
-    },
-  });
+  const { isTitleChanged, inputOpened, inputClosed } = useTitleInput();
 
   return (
     <div className="board-item">
@@ -84,38 +72,17 @@ const BoardItem = ({ title, description, id }: IBoard) => {
                 <HighlightOffIcon />
               </IconButton>
             }
-            onClick={changeTitle}
+            onClick={() => inputOpened()}
           />
         ) : (
           <CardHeader
             title={
-              <form onSubmit={formik.handleSubmit}>
-                <TextField
-                  required
-                  id="title"
-                  defaultValue={value}
-                  size="small"
-                  onChange={formik.handleChange}
-                />
-                {formik.touched.title && formik.errors.title && <div>{formik.errors.title}</div>}
-                <Button
-                  sx={{ marginLeft: '10px' }}
-                  variant="outlined"
-                  onClick={() => setIsTitleChanged(false)}
-                  size="small"
-                >
-                  Cancel
-                </Button>
-                <Button
-                  sx={{ marginLeft: '10px' }}
-                  variant="contained"
-                  value="Submit"
-                  type="submit"
-                  size="small"
-                >
-                  Submit
-                </Button>
-              </form>
+              <TitleInput
+                title={value}
+                inputClosed={inputClosed}
+                id={id}
+                description={description}
+              />
             }
           />
         )}
