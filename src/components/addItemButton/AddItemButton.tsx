@@ -131,7 +131,6 @@ const AddItemButton: React.FC<AddItemProps> = ({
                 />
               </div>
             )}
-            {itemType === ItemType.Task && <FileUpload />}
             <Button type="submit" value="Submit" variant="contained">
               Create {itemType}
             </Button>

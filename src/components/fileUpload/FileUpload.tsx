@@ -17,8 +17,7 @@ function FileUpload(): JSX.Element {
   return (
     <div className={cl.wrapper}>
       <label className={cl.fileUpload}>
-        <input type="file" multiple onChange={onChange} />
-        + Add files
+        <input type="file" multiple onChange={onChange} />+ Add files
       </label>
       {/* {state.files.map(x => 
       <div className="file-preview" onClick={removeFile.bind(this, x)}>{x.name}</div>
