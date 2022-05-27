@@ -1,6 +1,7 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { TextField, Grid, Paper, Avatar, Button, Box, Modal, Dialog } from '@mui/material';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import { Form, Formik, Field } from 'formik';
@@ -22,14 +23,6 @@ const INITIAL_SIGNIN_STATE = {
   password: '',
 };
 
-const FORM_VALIDATION = Yup.object().shape({
-  name: Yup.string().required('Enter your first name'),
-  login: Yup.string().required('Enter your first name'),
-  password: Yup.string()
-    .required('Enter the password')
-    .min(7, 'Password should be minimum 7 characters'),
-});
-
 interface ISignUpProps {
   page: string;
 }
@@ -40,6 +33,13 @@ function SignUp(props?: ISignUpProps): JSX.Element {
   const [errMessage, setErrMessage] = React.useState('');
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+  const { t } = useTranslation();
+
+  const FORM_VALIDATION = Yup.object().shape({
+    name: Yup.string().required(t('name_err')),
+    login: Yup.string().required(t('log_err')),
+    password: Yup.string().required(t('pass_err')).min(7, t('pass_err_length')),
+  });
 
   const setAuthData = (token: string, login: string) => {
     localStorage.setItem('token', token);
@@ -85,8 +85,8 @@ function SignUp(props?: ISignUpProps): JSX.Element {
       <BasicModal open={open} handleClose={toggle} errMessage={errMessage} />
       <BasicDialog
         open={openD}
-        title="Delete profile?"
-        message="Do you want delete profile permanently?"
+        title={t('delete_profile')}
+        message={t('delete_profile_message')}
         handleCancel={toggleD}
         handleOk={handleDeleteProfile}
         children={null}
@@ -97,7 +97,7 @@ function SignUp(props?: ISignUpProps): JSX.Element {
             <LockOpenIcon />
           </Avatar>
         )}
-        {props?.page === 'auth' ? 'Sign Up' : 'Edit profile'}
+        {props?.page === 'auth' ? t('sign_up') : t('edit_profile')}
         <Formik
           initialValues={{ ...INITIAL_SIGNIN_STATE }}
           validationSchema={FORM_VALIDATION}
@@ -134,10 +134,10 @@ function SignUp(props?: ISignUpProps): JSX.Element {
                 <Field
                   required
                   name="name"
-                  label="Name"
+                  label={t('name')}
                   as={TextField}
                   type="text"
-                  autoComplete="First Name"
+                  autoComplete="Name"
                   margin="dense"
                   error={Boolean(errors.name) && Boolean(touched.name)}
                   helperText={Boolean(touched.name) && errors.name}
@@ -146,10 +146,10 @@ function SignUp(props?: ISignUpProps): JSX.Element {
                 <Field
                   required
                   name="login"
-                  label="Login"
+                  label={t('login_')}
                   as={TextField}
                   type="text"
-                  autoComplete="Last Name"
+                  autoComplete="Login"
                   margin="dense"
                   error={Boolean(errors.login) && Boolean(touched.login)}
                   helperText={Boolean(touched.login) && errors.login}
@@ -158,7 +158,7 @@ function SignUp(props?: ISignUpProps): JSX.Element {
                 <Field
                   required
                   name="password"
-                  label="Password"
+                  label={t('password')}
                   as={TextField}
                   type="password"
                   autoComplete="current-password"
@@ -174,11 +174,11 @@ function SignUp(props?: ISignUpProps): JSX.Element {
                   type="submit"
                   disabled={!dirty || !isValid}
                 >
-                  {props?.page === 'auth' ? 'Sign Up' : 'Update'}
+                  {props?.page === 'auth' ? t('sign_up') : t('edit_profile')}
                 </Button>
                 {props?.page === 'profile' && (
                   <Button className={cl.btnClasses} variant="contained" fullWidth onClick={toggleD}>
-                    Delete profile
+                    {t('delete_profile')}
                   </Button>
                 )}
               </Grid>

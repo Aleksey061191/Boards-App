@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useTranslation } from 'react-i18next';
 import jwtDecode, { JwtPayload } from 'jwt-decode';
 import Button from '@mui/material/Button';
 import AddCircleSharpIcon from '@mui/icons-material/AddCircleSharp';
@@ -12,7 +13,6 @@ import { AppDispatch, RootState } from '../../store/store';
 import { ITasksParams } from '../../services/tasksApi';
 import { addBoard } from '../../store/reducers/helpers/boardHelpers';
 import { addColumn } from '../../store/reducers/helpers/columnHelpers';
-import FileUpload from '../fileUpload/FileUpload';
 
 const style = {
   position: 'absolute',
@@ -56,6 +56,7 @@ const AddItemButton: React.FC<AddItemProps> = ({
 }) => {
   const dispatch = useDispatch<AppDispatch>();
   const [isModalOpen, setModalOpen] = React.useState(false);
+  const { t } = useTranslation();
   const handleOpen = () => setModalOpen(true);
   const handleClose = () => setModalOpen(false);
 
@@ -100,7 +101,7 @@ const AddItemButton: React.FC<AddItemProps> = ({
         onClick={handleOpen}
         className={className}
       >
-        New {itemType}
+        {t('New')} {t(itemType)}
       </Button>
       <Modal open={isModalOpen} onClose={handleClose}>
         <form onSubmit={formik.handleSubmit}>
@@ -111,7 +112,7 @@ const AddItemButton: React.FC<AddItemProps> = ({
                 required
                 fullWidth
                 id="title"
-                label={`${itemType} title`}
+                label={t(`title_${itemType}`)}
                 defaultValue=""
                 onChange={formik.handleChange}
               />
@@ -123,7 +124,7 @@ const AddItemButton: React.FC<AddItemProps> = ({
                   margin="normal"
                   fullWidth
                   id="description"
-                  label={`${itemType} description`}
+                  label={t(`description_${itemType}`)}
                   defaultValue=""
                   multiline
                   rows={4}
@@ -132,7 +133,7 @@ const AddItemButton: React.FC<AddItemProps> = ({
               </div>
             )}
             <Button type="submit" value="Submit" variant="contained">
-              Create {itemType}
+              {t('Create')} {t(itemType)}
             </Button>
           </Box>
         </form>

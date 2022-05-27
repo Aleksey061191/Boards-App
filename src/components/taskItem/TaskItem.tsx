@@ -6,6 +6,7 @@ import {
   Typography,
   CardActionArea,
 } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { useDispatch } from 'react-redux';
 import { ITask } from '../../store/reducers/taskReducer';
@@ -40,9 +41,7 @@ function TaskItem(props: ITaskItemProps): JSX.Element {
   const { openD, toggleD } = useDialog();
   const { open, toggle } = useModal();
   const dispatch = useDispatch<AppDispatch>();
-  const handleClick = () => {
-    console.log(props);
-  };
+  const { t } = useTranslation();
 
   const handleDeleteTask = async () => {
     const currTask = {
@@ -72,8 +71,8 @@ function TaskItem(props: ITaskItemProps): JSX.Element {
       </Card>
       <BasicDialog
         open={openD}
-        title="Delete task?"
-        message="Do you want delete task permanently?"
+        title={t('delete_task_title')}
+        message={t('delete_task_mess')}
         handleCancel={toggleD}
         handleOk={handleDeleteTask}
         children={null}

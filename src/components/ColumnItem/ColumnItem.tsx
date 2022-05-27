@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Box, Card, CardHeader, IconButton, Modal, Button, Typography } from '@mui/material';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { useDispatch, useSelector } from 'react-redux';
@@ -39,6 +40,7 @@ export const ColumnItem: React.FC<ColumnItemProps> = ({ title, id, boardId }) =>
   const handleOpen = () => setModalOpen(true);
   const handleClose = () => setModalOpen(false);
   const dispatch = useDispatch<AppDispatch>();
+  const { t } = useTranslation();
 
   React.useEffect(() => {
     dispatch(getAllTasks(boardId));
@@ -64,9 +66,9 @@ export const ColumnItem: React.FC<ColumnItemProps> = ({ title, id, boardId }) =>
       </Card>
       <Modal open={isModalOpen} onClose={handleClose}>
         <Box sx={style}>
-          <Typography variant="h5"> Are you sure you want to delete this Column?</Typography>
+          <Typography variant="h5">{t('delete_col_message')}</Typography>
           <Button variant="outlined" sx={{ margin: '10px' }} onClick={handleClose}>
-            Cancel
+            {t('cancel')}
           </Button>
           <Button
             variant="contained"
@@ -74,7 +76,7 @@ export const ColumnItem: React.FC<ColumnItemProps> = ({ title, id, boardId }) =>
             sx={{ margin: '10px' }}
             onClick={() => dispatch(deleteColumn({ id, boardId }))}
           >
-            Delete
+            {t('delete')}
           </Button>
         </Box>
       </Modal>

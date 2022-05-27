@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Box,
   Card,
@@ -41,6 +42,7 @@ const BoardItem = ({ title, description, id }: IBoard) => {
   const handleClose = () => setModalOpen(false);
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const handleClick = () => {
     navigate(`/board/${id}`);
@@ -67,9 +69,9 @@ const BoardItem = ({ title, description, id }: IBoard) => {
       </Card>
       <Modal open={isModalOpen} onClose={handleClose}>
         <Box sx={style}>
-          <Typography variant="h5"> Are you sure you want to delete this board?</Typography>
+          <Typography variant="h5"> {t('delete_board_message')}</Typography>
           <Button variant="outlined" sx={{ margin: '10px' }} onClick={handleClose}>
-            Cancel
+            {t('cancel')}
           </Button>
           <Button
             variant="contained"
@@ -77,7 +79,7 @@ const BoardItem = ({ title, description, id }: IBoard) => {
             sx={{ margin: '10px' }}
             onClick={() => dispatch(deleteBoard(id))}
           >
-            Delete
+            {t('delete')}
           </Button>
         </Box>
       </Modal>

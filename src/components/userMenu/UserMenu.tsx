@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { Avatar, IconButton, MenuItem, Divider, ListItemIcon, Menu } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -38,6 +39,7 @@ const styles = {
 
 function UserMenu(): JSX.Element {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const { t } = useTranslation();
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -74,14 +76,14 @@ function UserMenu(): JSX.Element {
       >
         <Link to="/profile" className={cl.link}>
           <MenuItem>
-            <Avatar /> Profile
+            <Avatar /> {t('profile')}
           </MenuItem>
         </Link>
         <MenuItem onClick={handleLogOut}>
           <ListItemIcon>
             <LogoutIcon fontSize="small" />
           </ListItemIcon>
-          Logout
+          {t('logout')}
         </MenuItem>
       </Menu>
     </div>
