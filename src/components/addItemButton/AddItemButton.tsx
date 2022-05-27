@@ -1,4 +1,5 @@
 import * as React from 'react';
+import jwtDecode, { JwtPayload } from 'jwt-decode';
 import Button from '@mui/material/Button';
 import AddCircleSharpIcon from '@mui/icons-material/AddCircleSharp';
 import { useFormik } from 'formik';
@@ -6,9 +7,11 @@ import * as Yup from 'yup';
 import Modal from '@mui/material/Modal';
 import { Box, TextField } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import { addBoard } from '../../store/reducers/boardReducer';
-import { addColumn } from '../../store/reducers/columnReducer';
+import { createTask, getAllTasks } from '../../store/reducers/helpers/tasksHelper';
 import { AppDispatch, RootState } from '../../store/store';
+import { ITasksParams } from '../../services/tasksApi';
+import { addBoard } from '../../store/reducers/helpers/boardHelpers';
+import { addColumn } from '../../store/reducers/helpers/columnHelpers';
 
 const style = {
   position: 'absolute',
@@ -26,9 +29,16 @@ interface AddItemProps {
   itemType: string;
   boardId?: string;
   className?: string;
+  columnId?: string;
 }
 interface ISubmitObj {
   [index: string]: () => void;
+}
+
+interface IJwtDecode {
+  iat: number;
+  login: string;
+  userId: string;
 }
 
 enum ItemType {
@@ -37,9 +47,13 @@ enum ItemType {
   Task = 'Task',
 }
 
-const AddItemButton: React.FC<AddItemProps> = ({ itemType, boardId = '1', className }) => {
+const AddItemButton: React.FC<AddItemProps> = ({
+  itemType,
+  boardId = '1',
+  className,
+  columnId = '1',
+}) => {
   const dispatch = useDispatch<AppDispatch>();
-  const columns = useSelector((state: RootState) => state.columns.columns);
   const [isModalOpen, setModalOpen] = React.useState(false);
   const handleOpen = () => setModalOpen(true);
   const handleClose = () => setModalOpen(false);
@@ -54,10 +68,22 @@ const AddItemButton: React.FC<AddItemProps> = ({ itemType, boardId = '1', classN
     }),
 
     onSubmit: (values) => {
-      const order = columns.length + 1;
       const submitObj: ISubmitObj = {
         Board: () => dispatch(addBoard(values)),
-        Column: () => dispatch(addColumn({ ...values, boardId, order })),
+        Column: () => dispatch(addColumn({ ...values, boardId })),
+        Task: async () => {
+          const token = localStorage.getItem('token');
+          if (token) {
+            const decoded = jwtDecode<IJwtDecode>(token);
+            const task: ITasksParams = {
+              title: values.title,
+              description: values.description,
+              userId: decoded.userId,
+            };
+            await dispatch(createTask({ boardId, columnId, task }));
+            dispatch(getAllTasks(boardId));
+          }
+        },
       };
       submitObj[itemType]();
       handleClose();

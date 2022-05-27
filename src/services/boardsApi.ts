@@ -1,4 +1,3 @@
-import React from 'react';
 import ApiService from './apiService';
 
 export interface IBoardParams {

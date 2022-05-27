@@ -1,6 +1,4 @@
 import * as React from 'react';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
 import {
   Box,
   Card,
@@ -15,12 +13,11 @@ import {
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { deleteBoard } from '../../store/reducers/boardReducer';
 import './boardItem.css';
 import { AppDispatch } from '../../store/store';
-import Header from '../header/Header';
 import TitleInput from '../titleInput/TitleInput';
 import { useTitleInput } from '../../hooks/appHooks';
+import { deleteBoard } from '../../store/reducers/helpers/boardHelpers';
 
 const style = {
   position: 'absolute',

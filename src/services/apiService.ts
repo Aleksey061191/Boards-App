@@ -2,7 +2,6 @@ import axios from 'axios';
 import authHeader from './helpers/authHeader';
 
 const ApiService = axios.create({
-  // baseURL: 'https://rs-rest-kanban.herokuapp.com/',
   baseURL: 'https://kb-rest.herokuapp.com/',
   timeout: 1000,
 });

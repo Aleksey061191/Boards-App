@@ -4,38 +4,7 @@ import type { IBoard } from '../../components/boardItem/BoardItem';
 import boardsApi, { IBoardUpdateParams } from '../../services/boardsApi';
 import type { IBoardParams } from '../../services/boardsApi';
 
-export const fetchBoards = createAsyncThunk(
-  'boards/fetchBoards',
-  async (_, { rejectWithValue }) => {
-    try {
-      const response = await boardsApi.getAllBoards();
-      return response.data;
-    } catch (err) {
-      const error = err as AxiosError;
-      return rejectWithValue(error.message);
-    }
-  }
-);
-
-export const addBoard = createAsyncThunk(
-  'boards/addBoard',
-  async (text: IBoardParams, { rejectWithValue, dispatch }) => {
-    try {
-      await boardsApi
-        .createBoard({
-          title: text.title,
-          description: text.description,
-        })
-        .then((response) => {
-          dispatch(createBoard(response.data));
-        });
-      return {};
-    } catch (err) {
-      const error = err as AxiosError;
-      return rejectWithValue(error.message);
-    }
-  }
-);
+import { addBoard, fetchBoards, deleteBoard } from './helpers/boardHelpers';
 
 export const updateBoard = createAsyncThunk(
   'boards/updateBoard',
@@ -53,19 +22,6 @@ export const updateBoard = createAsyncThunk(
   }
 );
 
-export const deleteBoard = createAsyncThunk(
-  'boards/deleteBoard',
-  async (id: string, { dispatch, rejectWithValue }) => {
-    try {
-      await boardsApi.deleteBoard(id);
-      dispatch(removeBoard({ id }));
-      return {};
-    } catch (err) {
-      const error = err as AxiosError;
-      return rejectWithValue(error.message);
-    }
-  }
-);
 interface IBoardsState {
   boards: IBoard[];
   status: string | null;
@@ -80,23 +36,18 @@ const initialState: IBoardsState = {
 const boardSlice = createSlice({
   name: 'boards',
   initialState,
+
   reducers: {
-    createBoard(state, action) {
-      state.boards.push(action.payload);
-    },
     upgradeBoard(state, action) {
-      state.boards = state.boards.filter((board: IBoard) => board.id !== action.payload.id);
-      // console.log('%cboardReducer.ts line:91 current(state', 'color: #007acc;', current(state.boards[action.payload.id]));
-      // state.boards = state.boards.map((board: IBoard) =>
-      // console.log('%cboardReducer.ts line:92 current(board', 'color: #007acc;', current(board);
-      // )
-      // )
-    },
-    removeBoard(state, action) {
       state.boards = state.boards.filter((board: IBoard) => board.id !== action.payload.id);
     },
   },
+
   extraReducers: (builder) => {
+    builder.addCase(addBoard.fulfilled, (state, action) => {
+      state.status = 'resolved';
+      state.boards.push(action.payload);
+    });
     builder.addCase(fetchBoards.pending, (state) => {
       state.status = 'loading';
       state.error = null;
@@ -125,8 +76,11 @@ const boardSlice = createSlice({
       state.status = 'rejected';
       state.error = payload as string;
     });
+    builder.addCase(deleteBoard.fulfilled, (state, action) => {
+      state.boards = state.boards.filter((board: IBoard) => board.id !== action.payload.id);
+    });
   },
 });
 
 export default boardSlice.reducer;
-const { createBoard, removeBoard, upgradeBoard } = boardSlice.actions;
+const { upgradeBoard } = boardSlice.actions;

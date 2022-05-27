@@ -18,11 +18,13 @@ function Header(): JSX.Element {
             <NavLink className={cl.headerLink} to="/">
               Welcome Page
             </NavLink>
-            {location.pathname === '/board' && (
-              <NavLink className={`${cl.headerLink} ${cl.mainPageLink}`} to="/main">
-                Main Page
-              </NavLink>
-            )}
+            {location.pathname !== '/' &&
+              location.pathname !== '/main' &&
+              location.pathname !== '/auth' && (
+                <NavLink className={`${cl.headerLink} ${cl.mainPageLink}`} to="/main">
+                  Main Page
+                </NavLink>
+              )}
             {location.pathname === '/main' && (
               <AddItemButton itemType="Board" className={`${cl.uiButn} ${cl.button}`} />
             )}

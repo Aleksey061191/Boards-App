@@ -4,7 +4,8 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../store/store';
-import { fetchBoards, updateBoard } from '../../store/reducers/boardReducer';
+import { updateBoard } from '../../store/reducers/boardReducer';
+import { fetchBoards } from '../../store/reducers/helpers/boardHelpers';
 
 interface TitleInputProps {
   title: string;
@@ -33,8 +34,7 @@ const TitleInput: React.FunctionComponent<TitleInputProps> = ({
       const { title } = values;
       await dispatch(updateBoard({ id, title, description }));
       await dispatch(fetchBoards());
-
-      inputClosed();git 
+      inputClosed();
     },
   });
 
