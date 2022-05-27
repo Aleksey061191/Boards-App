@@ -8,6 +8,11 @@ interface IColumnUpdateParams extends IColumnsParams {
   order: number;
 }
 
+export interface IUpdateColumnParams extends IColumnUpdateParams {
+  boardId: string;
+  columnId: string;
+}
+
 export interface ICreateColumnParams extends IColumnsParams {
   boardId: string;
 }

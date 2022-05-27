@@ -1,4 +1,5 @@
 import * as React from 'react';
+import produce from 'immer';
 import { Box, Card, CardHeader, IconButton, Modal, Button, Typography } from '@mui/material';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { useDispatch, useSelector } from 'react-redux';
@@ -7,6 +8,9 @@ import AddItemButton from '../addItemButton/AddItemButton';
 import TaskItem from '../taskItem/TaskItem';
 import { getAllTasks } from '../../store/reducers/helpers/tasksHelper';
 import { deleteColumn } from '../../store/reducers/helpers/columnHelpers';
+import { setTasks } from '../../store/reducers/taskReducer';
+import DropWrapper from '../dragWrapper/DragWrapper';
+import Col from '../col/Col';
 
 export interface IColumn {
   id: string;
@@ -32,8 +36,18 @@ interface ColumnItemProps {
   title: string;
   id: string;
   boardId: string;
+  indexColumn: number;
 }
-export const ColumnItem: React.FC<ColumnItemProps> = ({ title, id, boardId }) => {
+
+const columnStyle = {
+  minWidth: 300,
+  minHeight: 100,
+  maxWidth: 500,
+  backgroundColor: '#c5c5c5',
+  padding: '5px',
+};
+
+export const ColumnItem: React.FC<ColumnItemProps> = ({ title, id, boardId, indexColumn }) => {
   const [isModalOpen, setModalOpen] = React.useState(false);
   const tasks = useSelector((state: RootState) => state.tasks.tasks);
   const handleOpen = () => setModalOpen(true);
@@ -44,9 +58,25 @@ export const ColumnItem: React.FC<ColumnItemProps> = ({ title, id, boardId }) =>
     dispatch(getAllTasks(boardId));
   }, [dispatch, boardId]);
 
+  const moveItem = (
+    dragIndex: number,
+    hoverIndex: number,
+    draggedColumnIndex: number,
+    targetColumnIndex: number
+  ) => {
+    const newTasks = produce(tasks, (draft) => {
+      const dragged = draft[draggedColumnIndex].tasks[dragIndex];
+
+      draft[draggedColumnIndex].tasks.splice(dragIndex, 1);
+      draft[targetColumnIndex].tasks.splice(hoverIndex, 0, dragged);
+    });
+
+    dispatch(setTasks(newTasks));
+  };
+
   return (
     <>
-      <Card sx={{ minWidth: 300, minHeight: 300, maxWidth: 500 }}>
+      <Card sx={columnStyle}>
         <CardHeader
           title={title}
           action={
@@ -55,11 +85,24 @@ export const ColumnItem: React.FC<ColumnItemProps> = ({ title, id, boardId }) =>
             </IconButton>
           }
         ></CardHeader>
-        {tasks
-          .find((item) => item.boardId === boardId && item.columnId === id)
-          ?.tasks.map((item) => (
-            <TaskItem key={item.id} {...item} boardId={boardId} columnId={id} />
-          ))}
+        <DropWrapper>
+          <Col>
+            {tasks
+              .find((item) => item.boardId === boardId && item.columnId === id)
+              ?.tasks.map((item, index) => (
+                <TaskItem
+                  key={item.id}
+                  {...item}
+                  boardId={boardId}
+                  columnId={id}
+                  indexColumn={indexColumn}
+                  index={index}
+                  moveItem={moveItem}
+                />
+              ))}
+          </Col>
+        </DropWrapper>
+
         <AddItemButton itemType="Task" boardId={boardId} columnId={id} />
       </Card>
       <Modal open={isModalOpen} onClose={handleClose}>

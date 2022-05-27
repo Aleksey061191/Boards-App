@@ -50,7 +50,11 @@ const initialState: ITaskState = {
 const tasksSlice = createSlice({
   name: 'tasks',
   initialState,
-  reducers: {},
+  reducers: {
+    setTasks(state, action) {
+      state.tasks = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(createTask.pending, (state) => {
       // state.status = 'loading';
@@ -74,5 +78,5 @@ const tasksSlice = createSlice({
   },
 });
 
+export const { setTasks } = tasksSlice.actions;
 export default tasksSlice.reducer;
-// const { createTask } = tasksSlice.actions;

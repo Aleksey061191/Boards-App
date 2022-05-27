@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosError } from 'axios';
-import tasksApi, { ITasksParams } from '../../../services/tasksApi';
+import tasksApi, { ITasksParams, IUpdateTaskParams } from '../../../services/tasksApi';
 import boardsApi from '../../../services/boardsApi';
 
 interface ICreateTaskApi {
@@ -84,6 +84,29 @@ export const deleteTask = createAsyncThunk(
     try {
       const response = await tasksApi.deleteTask(boardId, columnId, taskId);
       return response.data;
+    } catch (err) {
+      const error = err as AxiosError;
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const updateTask = createAsyncThunk(
+  'columns/updateColumn',
+  async (data: IUpdateTaskParams, { rejectWithValue }) => {
+    const { title, order, description, userId, boardId, columnId } = data;
+    try {
+      const rez = await tasksApi
+        .updateTask(boardId, columnId, userId, {
+          title,
+          order,
+          description,
+          userId,
+          boardId,
+          columnId,
+        })
+        .then((response) => response.data);
+      return rez;
     } catch (err) {
       const error = err as AxiosError;
       return rejectWithValue(error.message);

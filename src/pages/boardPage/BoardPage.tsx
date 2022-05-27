@@ -1,5 +1,7 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 import AddItemButton from '../../components/addItemButton/AddItemButton';
 import Columns from '../../components/сolumns/Columns';
 
@@ -10,9 +12,10 @@ function BoardPage(): JSX.Element {
   console.log();
   return (
     <main className={cl.container}>
-      <h1>Board Page {id}</h1>
-      <AddItemButton itemType="Column" boardId={id} />
-      <Columns boardId={id} />
+      <DndProvider backend={HTML5Backend}>
+        <AddItemButton itemType="Column" boardId={id} />
+        <Columns boardId={id} />
+      </DndProvider>
     </main>
   );
 }
