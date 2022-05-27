@@ -1,16 +1,40 @@
 import React, { useRef } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 import type { Identifier, XYCoord } from 'dnd-core';
-import { Card, CardContent, CardHeader, IconButton, Typography } from '@mui/material';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  IconButton,
+  Typography,
+  CardActionArea,
+} from '@mui/material';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { useDispatch } from 'react-redux';
 import { ITask } from '../../store/reducers/taskReducer';
 import BasicDialog from '../basicDialog/BasicDIalog';
-import { useDialog } from '../../hooks/appHooks';
+import BasicModal from '../basicModal/BasicModal';
+import Task from '../task/Task';
+import { useDialog, useModal } from '../../hooks/appHooks';
 import { AppDispatch } from '../../store/store';
 import { deleteTask, getAllTasks } from '../../store/reducers/helpers/tasksHelper';
+import cl from './TaskItem.module.scss';
 
-interface ITaskItemProps extends ITask {
+const cardStyle = {
+  minWidth: 300,
+  minHeight: 100,
+  maxWidth: 300,
+  border: '1px solid #b7d2e6',
+  backgroundColor: `#c7ccfe40`,
+};
+
+const iconButtonStyles = {
+  position: 'absolute',
+  top: '10px',
+  right: '10px',
+};
+
+export interface ITaskItemProps extends ITask {
   boardId: string;
   columnId: string;
   index: number;
@@ -37,6 +61,7 @@ interface IItems {
 
 function TaskItem(props: ITaskItemProps): JSX.Element {
   const { openD, toggleD } = useDialog();
+  const { open, toggle } = useModal();
   const dispatch = useDispatch<AppDispatch>();
   const ref = useRef<HTMLInputElement>(null);
 
@@ -69,7 +94,6 @@ function TaskItem(props: ITaskItemProps): JSX.Element {
       if (dragIndex > hoverIndex && hoverClientY < hoverMiddleY) {
         return;
       }
-      // console.log(props.columnId);
 
       props.moveItem(dragIndex, hoverIndex, draggedColumnIndex, targetColumnIndex);
 
@@ -88,18 +112,6 @@ function TaskItem(props: ITaskItemProps): JSX.Element {
 
   drag(drop(ref));
 
-  const cardStyle = {
-    minWidth: 300,
-    minHeight: 100,
-    maxWidth: 300,
-    margin: '5px',
-    opacity: isDragging ? 0 : 1,
-  };
-
-  const handleClick = () => {
-    console.log(props);
-  };
-
   const handleDeleteTask = async () => {
     const currTask = {
       boardId: props.boardId,
@@ -110,23 +122,21 @@ function TaskItem(props: ITaskItemProps): JSX.Element {
     await dispatch(getAllTasks(props.boardId));
   };
   return (
-    <>
-      <Card ref={ref} sx={cardStyle}>
-        <CardHeader
-          title={props.title}
-          action={
-            <IconButton aria-label="delete" onClick={toggleD}>
-              <HighlightOffIcon />
-            </IconButton>
-          }
-        ></CardHeader>
-        <CardContent onClick={handleClick}>
+    <div ref={ref} className={`${cl.container} ${isDragging && cl.drag}`}>
+      <IconButton aria-label="delete" onClick={toggleD} sx={iconButtonStyles}>
+        <HighlightOffIcon />
+      </IconButton>
+      <Card sx={cardStyle} onClick={toggle}>
+        {/* <CardActionArea> */}
+        <CardHeader title={props.title}></CardHeader>
+        <CardContent>
           {props.description && (
             <Typography variant="body2" color="text.secondary">
               {props.description}
             </Typography>
           )}
         </CardContent>
+        {/* </CardActionArea> */}
       </Card>
       <BasicDialog
         open={openD}
@@ -136,7 +146,8 @@ function TaskItem(props: ITaskItemProps): JSX.Element {
         handleOk={handleDeleteTask}
         children={null}
       />
-    </>
+      <BasicModal open={open} handleClose={toggle} children={<Task {...props} />} />
+    </div>
   );
 }
 

@@ -8,7 +8,7 @@ interface IColParams {
 const Col = ({ isOver, children }: IColParams) => {
   const style = {
     minHeight: '100px',
-    backgroundColor: isOver ? 'gray' : '',
+    backgroundColor: isOver ? '#e7e7e7' : '',
   };
 
   return <div style={style}>{children}</div>;

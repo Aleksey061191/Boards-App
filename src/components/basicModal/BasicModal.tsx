@@ -2,8 +2,9 @@ import { Modal, Box } from '@mui/material';
 
 interface IModalProps {
   open: boolean;
-  errMessage: string;
+  errMessage?: string;
   handleClose: () => void;
+  children?: JSX.Element | null;
 }
 
 const style = {
@@ -29,7 +30,8 @@ function BasicModal(props: IModalProps): JSX.Element {
       aria-describedby="modal-modal-description"
     >
       <Box sx={style}>
-        <p id="modal-description">{props.errMessage}</p>
+        {props.errMessage && <p id="modal-description">{props.errMessage}</p>}
+        {props.children}
       </Box>
     </Modal>
   );

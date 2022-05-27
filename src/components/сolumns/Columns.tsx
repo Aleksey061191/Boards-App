@@ -1,10 +1,9 @@
 import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../store/store';
-import { ColumnItem } from '../columnItem/ColumnItem';
-import type { IColumn } from '../columnItem/ColumnItem';
 import cl from './Columns.module.scss';
 import { fetchColumns } from '../../store/reducers/helpers/columnHelpers';
+import { ColumnItem, IColumn } from '../columnItem/ColumnItem';
 
 interface ColumnsProps {
   boardId: string;

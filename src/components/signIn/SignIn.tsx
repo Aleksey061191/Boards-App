@@ -67,7 +67,7 @@ function SignIn(): JSX.Element {
                 <Field
                   name="login"
                   required
-                  label="E-mail"
+                  label="Login"
                   as={TextField}
                   type="text"
                   autoComplete="Login"

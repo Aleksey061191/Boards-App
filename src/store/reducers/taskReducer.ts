@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { createTask, getAllTasks, deleteTask } from './helpers/tasksHelper';
+import { createTask, getAllTasks, deleteTask, updateTask } from './helpers/tasksHelper';
 
 export interface IColumn {
   id: string;

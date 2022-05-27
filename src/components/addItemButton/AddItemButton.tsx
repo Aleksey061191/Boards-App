@@ -12,6 +12,7 @@ import { AppDispatch, RootState } from '../../store/store';
 import { ITasksParams } from '../../services/tasksApi';
 import { addBoard } from '../../store/reducers/helpers/boardHelpers';
 import { addColumn } from '../../store/reducers/helpers/columnHelpers';
+import FileUpload from '../fileUpload/FileUpload';
 
 const style = {
   position: 'absolute',

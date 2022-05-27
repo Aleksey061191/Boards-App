@@ -43,7 +43,7 @@ const columnStyle = {
   minWidth: 300,
   minHeight: 100,
   maxWidth: 500,
-  backgroundColor: '#c5c5c5',
+  // backgroundColor: '#c5c5c5',
   padding: '5px',
 };
 
@@ -85,23 +85,23 @@ export const ColumnItem: React.FC<ColumnItemProps> = ({ title, id, boardId, inde
             </IconButton>
           }
         ></CardHeader>
-        <DropWrapper>
-          <Col>
-            {tasks
-              .find((item) => item.boardId === boardId && item.columnId === id)
-              ?.tasks.map((item, index) => (
-                <TaskItem
-                  key={item.id}
-                  {...item}
-                  boardId={boardId}
-                  columnId={id}
-                  indexColumn={indexColumn}
-                  index={index}
-                  moveItem={moveItem}
-                />
-              ))}
-          </Col>
-        </DropWrapper>
+        {/* <DropWrapper>
+          <Col> */}
+        {tasks
+          .find((item) => item.boardId === boardId && item.columnId === id)
+          ?.tasks.map((item, index) => (
+            <TaskItem
+              key={item.id}
+              {...item}
+              boardId={boardId}
+              columnId={id}
+              indexColumn={indexColumn}
+              index={index}
+              moveItem={moveItem}
+            />
+          ))}
+        {/* </Col>
+        </DropWrapper> */}
 
         <AddItemButton itemType="Task" boardId={boardId} columnId={id} />
       </Card>

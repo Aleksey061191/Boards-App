@@ -42,6 +42,20 @@ export interface IAllTasks {
   tasks: ITask[];
 }
 
+interface ITaskData {
+  title: string;
+  order: number;
+  description: string;
+  userId: string;
+  boardId: string;
+  columnId: string;
+}
+
+export interface IUpdateTaskApi extends IDeleteTaskApi {
+  taskId: string;
+  task: ITaskData;
+}
+
 export const createTask = createAsyncThunk(
   'tasks/createTask',
   async (data: ICreateTaskApi, { rejectWithValue }) => {
@@ -92,21 +106,12 @@ export const deleteTask = createAsyncThunk(
 );
 
 export const updateTask = createAsyncThunk(
-  'columns/updateColumn',
-  async (data: IUpdateTaskParams, { rejectWithValue }) => {
-    const { title, order, description, userId, boardId, columnId } = data;
+  'tasks/updateTask',
+  async (data: IUpdateTaskApi, { rejectWithValue }) => {
+    const { boardId, columnId, taskId, task } = data;
     try {
-      const rez = await tasksApi
-        .updateTask(boardId, columnId, userId, {
-          title,
-          order,
-          description,
-          userId,
-          boardId,
-          columnId,
-        })
-        .then((response) => response.data);
-      return rez;
+      const response = await tasksApi.updateTask(boardId, columnId, taskId, task);
+      return response.data;
     } catch (err) {
       const error = err as AxiosError;
       return rejectWithValue(error.message);
