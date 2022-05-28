@@ -4,20 +4,23 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../store/store';
-import { fetchBoards, updateBoard } from '../../store/reducers/helpers/boardHelpers';
+import { fetchColumns, updateColumn } from '../../store/reducers/helpers/columnHelpers';
 
 interface TitleInputProps {
   title: string;
   id: string;
   inputClosed: () => void;
-  description: string;
+  itemType: string;
+  boardId: string;
+  order: number;
 }
 
 const TitleInput: React.FunctionComponent<TitleInputProps> = ({
   title,
   inputClosed,
+  boardId,
   id,
-  description,
+  order,
 }) => {
   const dispatch = useDispatch<AppDispatch>();
 
@@ -30,9 +33,14 @@ const TitleInput: React.FunctionComponent<TitleInputProps> = ({
     }),
 
     onSubmit: async (values) => {
-      const { title } = values;
-      await dispatch(updateBoard({ id, title, description }));
-      await dispatch(fetchBoards());
+      const column = {
+        boardId,
+        id,
+        order,
+        title: values.title,
+      };
+      await dispatch(updateColumn(column));
+      await dispatch(fetchColumns(boardId));
       inputClosed();
     },
   });
@@ -49,6 +57,8 @@ const TitleInput: React.FunctionComponent<TitleInputProps> = ({
         defaultValue={title}
         size="small"
         onChange={formik.handleChange}
+        InputLabelProps={{ shrink: true }}
+        onBlur={cancel}
       />
       {formik.touched.title && formik.errors.title && <div>{formik.errors.title}</div>}
       <Button sx={{ marginLeft: '10px' }} variant="outlined" onClick={cancel} size="small">

@@ -8,15 +8,12 @@ import {
   Modal,
   Button,
   Typography,
-  TextField,
 } from '@mui/material';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import './boardItem.css';
 import { AppDispatch } from '../../store/store';
-import TitleInput from '../titleInput/TitleInput';
-import { useTitleInput } from '../../hooks/appHooks';
 import { deleteBoard } from '../../store/reducers/helpers/boardHelpers';
 
 const style = {
@@ -49,42 +46,23 @@ const BoardItem = ({ title, description, id }: IBoard) => {
   const handleClose = () => setModalOpen(false);
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  // const [isTitleChanged, setIsTitleChanged] = React.useState(false);
-  const [value, setValue] = React.useState(title);
 
   const handleClick = () => {
     navigate(`/board/${id}`);
   };
 
-  const { isTitleChanged, inputOpened, inputClosed } = useTitleInput();
-
   return (
     <div className="board-item">
-      <Card sx={cardStyle}>
-        {!isTitleChanged ? (
-          <CardHeader
-            title={value}
-            action={
-              <IconButton aria-label="delete" onClick={handleOpen}>
-                <HighlightOffIcon />
-              </IconButton>
-            }
-            onClick={() => inputOpened()}
-          />
-        ) : (
-          <CardHeader
-            title={
-              <TitleInput
-                title={value}
-                inputClosed={inputClosed}
-                id={id}
-                description={description}
-              />
-            }
-          />
-        )}
-
-        <CardContent onClick={handleClick}>
+      <Card sx={cardStyle} onClick={handleClick}>
+        <CardHeader
+          title={title}
+          action={
+            <IconButton aria-label="delete" onClick={handleOpen}>
+              <HighlightOffIcon />
+            </IconButton>
+          }
+        />
+        <CardContent>
           {description && (
             <Typography variant="body2" color="text.secondary">
               {description}

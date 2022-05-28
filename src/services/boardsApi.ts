@@ -2,7 +2,7 @@ import ApiService from './apiService';
 
 export interface IBoardParams {
   title: string;
-  description: string;
+  description?: string;
 }
 
 export interface IBoardUpdateParams extends IBoardParams {

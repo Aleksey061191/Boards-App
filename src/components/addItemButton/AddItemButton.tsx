@@ -32,7 +32,7 @@ interface AddItemProps {
   className?: string;
   columnId?: string;
 }
-interface ISubmitObj {
+export interface ISubmitObj {
   [index: string]: () => void;
 }
 
@@ -42,7 +42,7 @@ interface IJwtDecode {
   userId: string;
 }
 
-enum ItemType {
+export enum ItemType {
   Board = 'Board',
   Column = 'Column',
   Task = 'Task',
