@@ -4,8 +4,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../store/store';
-import { updateBoard } from '../../store/reducers/boardReducer';
-import { fetchBoards } from '../../store/reducers/helpers/boardHelpers';
+import { fetchBoards, updateBoard } from '../../store/reducers/helpers/boardHelpers';
 
 interface TitleInputProps {
   title: string;

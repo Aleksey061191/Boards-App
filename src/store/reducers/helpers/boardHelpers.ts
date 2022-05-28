@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosError } from 'axios';
-import boardsApi, { IBoardParams } from '../../../services/boardsApi';
+import boardsApi, { IBoardParams, IBoardUpdateParams } from '../../../services/boardsApi';
 
 export const fetchBoards = createAsyncThunk(
   'boards/fetchBoards',
@@ -25,6 +25,22 @@ export const addBoard = createAsyncThunk(
           description: text.description,
         })
         .then((response) => response.data);
+      return rez;
+    } catch (err) {
+      const error = err as AxiosError;
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const updateBoard = createAsyncThunk(
+  'boards/updateBoard',
+  async (data: IBoardUpdateParams, { rejectWithValue }) => {
+    try {
+      const { id, title, description } = data;
+      const rez = await boardsApi.updateBoard(id, { title, description }).then((response) => {
+        return response.data;
+      });
       return rez;
     } catch (err) {
       const error = err as AxiosError;
