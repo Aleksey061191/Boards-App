@@ -42,7 +42,9 @@ export interface ITaskItemProps extends ITask {
     dragIndex: number,
     hoverIndex: number,
     draggedColumnIndex: number,
-    targetColumnIndex: number
+    targetColumnIndex: number,
+    draggedColumnId: string,
+    targetColumnId: string
   ) => void;
   indexColumn: number;
 }
@@ -70,7 +72,7 @@ function TaskItem(props: ITaskItemProps): JSX.Element {
     hover(item: IItems, monitor) {
       const draggedColumnIndex = item.indexColumn;
       const targetColumnIndex = props.indexColumn;
-
+      
       if (!ref.current) {
         return;
       }
@@ -88,14 +90,26 @@ function TaskItem(props: ITaskItemProps): JSX.Element {
       const hoverClientY = (clientOffset as XYCoord).y - hoverBoundingRect.top;
 
       if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
+        debugger;
         return;
       }
 
       if (dragIndex > hoverIndex && hoverClientY < hoverMiddleY) {
+        debugger;
         return;
       }
 
-      props.moveItem(dragIndex, hoverIndex, draggedColumnIndex, targetColumnIndex);
+      const draggedColumnId = item.columnId;
+      const targetColumnId = props.columnId;
+
+      props.moveItem(
+        dragIndex,
+        hoverIndex,
+        draggedColumnIndex,
+        targetColumnIndex,
+        draggedColumnId,
+        targetColumnId
+      );
 
       item.index = hoverIndex;
       item.indexColumn = targetColumnIndex;

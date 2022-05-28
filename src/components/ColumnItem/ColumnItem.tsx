@@ -1,16 +1,18 @@
 import * as React from 'react';
 import produce from 'immer';
+import { useDrop } from 'react-dnd';
 import { Box, Card, CardHeader, IconButton, Modal, Button, Typography } from '@mui/material';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../store/store';
 import AddItemButton from '../addItemButton/AddItemButton';
 import TaskItem from '../taskItem/TaskItem';
-import { getAllTasks } from '../../store/reducers/helpers/tasksHelper';
+import { getAllTasks, updateTask } from '../../store/reducers/helpers/tasksHelper';
 import { deleteColumn } from '../../store/reducers/helpers/columnHelpers';
 import { setTasks } from '../../store/reducers/taskReducer';
 import DropWrapper from '../dragWrapper/DragWrapper';
 import Col from '../col/Col';
+import { IUpdateTaskParams } from '../../services/tasksApi';
 
 export interface IColumn {
   id: string;
@@ -43,7 +45,7 @@ const columnStyle = {
   minWidth: 300,
   minHeight: 100,
   maxWidth: 500,
-  // backgroundColor: '#c5c5c5',
+  backgroundColor: '#eeeaea',
   padding: '5px',
 };
 
@@ -62,7 +64,9 @@ export const ColumnItem: React.FC<ColumnItemProps> = ({ title, id, boardId, inde
     dragIndex: number,
     hoverIndex: number,
     draggedColumnIndex: number,
-    targetColumnIndex: number
+    targetColumnIndex: number,
+    draggedColumnId: string,
+    targetColumnId: string
   ) => {
     const newTasks = produce(tasks, (draft) => {
       const dragged = draft[draggedColumnIndex].tasks[dragIndex];
@@ -70,6 +74,19 @@ export const ColumnItem: React.FC<ColumnItemProps> = ({ title, id, boardId, inde
       draft[draggedColumnIndex].tasks.splice(dragIndex, 1);
       draft[targetColumnIndex].tasks.splice(hoverIndex, 0, dragged);
     });
+
+    const task = tasks[draggedColumnIndex].tasks[dragIndex];
+    const newTask: IUpdateTaskParams = {
+      title: task.title,
+      order: task.order,
+      description: task.description,
+      userId: task.userId,
+      boardId,
+      columnId: targetColumnId,
+    };
+    const taskId = task.id;
+    // console.log(newTask);
+    // dispatch(updateTask({ boardId, columnId: draggedColumnId, taskId, task: newTask }));
 
     dispatch(setTasks(newTasks));
   };
@@ -85,23 +102,23 @@ export const ColumnItem: React.FC<ColumnItemProps> = ({ title, id, boardId, inde
             </IconButton>
           }
         ></CardHeader>
-        {/* <DropWrapper>
-          <Col> */}
-        {tasks
-          .find((item) => item.boardId === boardId && item.columnId === id)
-          ?.tasks.map((item, index) => (
-            <TaskItem
-              key={item.id}
-              {...item}
-              boardId={boardId}
-              columnId={id}
-              indexColumn={indexColumn}
-              index={index}
-              moveItem={moveItem}
-            />
-          ))}
-        {/* </Col>
-        </DropWrapper> */}
+        <DropWrapper>
+          <Col>
+            {tasks
+              .find((item) => item.boardId === boardId && item.columnId === id)
+              ?.tasks.map((item, index) => (
+                <TaskItem
+                  key={item.id}
+                  {...item}
+                  boardId={boardId}
+                  columnId={id}
+                  indexColumn={indexColumn}
+                  index={index}
+                  moveItem={moveItem}
+                />
+              ))}
+          </Col>
+        </DropWrapper>
 
         <AddItemButton itemType="Task" boardId={boardId} columnId={id} />
       </Card>

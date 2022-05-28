@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import type { IColumn } from '../../components/ColumnItem/ColumnItem';
+import type { IColumn } from '../../components/columnItem/ColumnItem';
 import { addColumn, deleteColumn, fetchColumns } from './helpers/columnHelpers';
 
 interface IColumnsState {
