@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../store/store';
-import BoardItem from '../boardItem/BoardItem';
-import type { IBoard } from '../boardItem/BoardItem';
+import BoardItem from '../BoardItem/BoardItem';
+import type { IBoard } from '../BoardItem/BoardItem';
 import cl from './Boards.module.scss';
 import { fetchBoards } from '../../store/reducers/helpers/boardHelpers';
 

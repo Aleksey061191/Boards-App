@@ -1,6 +1,6 @@
 import axios, { AxiosError } from 'axios';
 import { createAsyncThunk, createSlice, current } from '@reduxjs/toolkit';
-import type { IBoard } from '../../components/boardItem/BoardItem';
+import type { IBoard } from '../../components/BoardItem/BoardItem';
 import boardsApi, { IBoardUpdateParams } from '../../services/boardsApi';
 import type { IBoardParams } from '../../services/boardsApi';
 
