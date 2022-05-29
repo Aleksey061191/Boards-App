@@ -1,15 +1,21 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { IBoard } from '../../components/BoardItem/BoardItem';
 
-import { addBoard, fetchBoards, deleteBoard, updateBoard } from './helpers/boardHelpers';
+import { addBoard, fetchBoards, deleteBoard, updateBoard, getBoard } from './helpers/boardHelpers';
 
 interface IBoardsState {
   boards: IBoard[];
+  selectedBoard: IBoard;
   status: string | null;
   error: string | null;
 }
 const initialState: IBoardsState = {
   boards: [],
+  selectedBoard: {
+    id: '',
+    title: '',
+    description: ''
+  },
   status: null,
   error: null,
 };
@@ -23,9 +29,9 @@ const boardSlice = createSlice({
       state.status = 'resolved';
       state.boards.push(action.payload);
     });
-    builder.addCase(updateBoard.fulfilled, (state, action) => {
+    builder.addCase(getBoard.fulfilled, (state, action) => {
       state.status = 'resolved';
-      state.boards = state.boards.filter((board: IBoard) => board.id !== action.payload.id);
+      state.selectedBoard = action.payload;
     });
     builder.addCase(fetchBoards.pending, (state) => {
       state.status = 'loading';
