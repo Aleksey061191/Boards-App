@@ -3,10 +3,13 @@ import { Button, Box, TextField } from '@mui/material';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useDispatch } from 'react-redux';
-import { updateTask, IUpdateTaskApi, ITask } from '../../store/reducers/helpers/tasksHelper';
+import {
+  updateTask,
+  IUpdateTaskApi,
+  ITask,
+  getAllTasks,
+} from '../../store/reducers/helpers/tasksHelper';
 import { AppDispatch } from '../../store/store';
-import { fetchColumns } from '../../store/reducers/helpers/columnHelpers';
-import { getAllTasks } from '../../store/reducers/helpers/tasksHelper';
 import cl from './Task.module.scss';
 
 const style = {

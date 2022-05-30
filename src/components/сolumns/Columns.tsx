@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../store/store';
-import { ColumnItem } from '../ColumnItem/ColumnItem';
+import ColumnItem from '../ColumnItem/ColumnItem';
 import type { IColumn } from '../ColumnItem/ColumnItem';
 import cl from './Columns.module.scss';
 import { fetchColumns } from '../../store/reducers/helpers/columnHelpers';

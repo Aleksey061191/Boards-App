@@ -28,7 +28,8 @@ const style = {
   p: 4,
 };
 
-const cardStyle = { minWidth: 300, minHeight: 200, maxWidth: 500 };
+const cardStyle = { minWidth: 200, minHeight: 100, maxWidth: '100%', backgroundColor: '#e6ecf0' };
+
 export interface IBoard {
   id: string;
   title: string;
@@ -37,7 +38,11 @@ export interface IBoard {
 
 const BoardItem = ({ title, description, id }: IBoard) => {
   const [isModalOpen, setModalOpen] = React.useState(false);
-  const handleOpen = () => setModalOpen(true);
+  const handleOpen = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setModalOpen(true);
+  };
+
   const handleClose = () => setModalOpen(false);
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
@@ -48,7 +53,7 @@ const BoardItem = ({ title, description, id }: IBoard) => {
 
   return (
     <div className="board-item">
-      <Card sx={cardStyle}>
+      <Card sx={cardStyle} onClick={handleClick}>
         <CardHeader
           title={title}
           action={
@@ -56,8 +61,8 @@ const BoardItem = ({ title, description, id }: IBoard) => {
               <HighlightOffIcon />
             </IconButton>
           }
-        ></CardHeader>
-        <CardContent onClick={handleClick}>
+        />
+        <CardContent>
           {description && (
             <Typography variant="body2" color="text.secondary">
               {description}
@@ -68,13 +73,13 @@ const BoardItem = ({ title, description, id }: IBoard) => {
       <Modal open={isModalOpen} onClose={handleClose}>
         <Box sx={style}>
           <Typography variant="h5"> Are you sure you want to delete this board?</Typography>
-          <Button variant="outlined" sx={{ margin: '10px' }} onClick={handleClose}>
+          <Button sx={{ margin: '10px' }} variant="outlined" onClick={handleClose}>
             Cancel
           </Button>
           <Button
+            sx={{ margin: '10px' }}
             variant="contained"
             color="error"
-            sx={{ margin: '10px' }}
             onClick={() => dispatch(deleteBoard(id))}
           >
             Delete

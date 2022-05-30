@@ -28,3 +28,21 @@ export const useDialog = () => {
     toggleD,
   };
 };
+
+export const useTitleInput = () => {
+  const [isTitleChanged, setIsTitleChanged] = useState(false);
+
+  function inputOpened() {
+    setIsTitleChanged(true);
+  }
+
+  function inputClosed() {
+    setIsTitleChanged(false);
+  }
+
+  return {
+    isTitleChanged,
+    inputOpened,
+    inputClosed,
+  };
+};
