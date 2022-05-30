@@ -52,10 +52,10 @@ export const addColumn = createAsyncThunk(
 export const updateColumn = createAsyncThunk(
   'columns/updateColumn',
   async (data: IUpdateColumnParams, { rejectWithValue }) => {
-    const { boardId, id, title, order } = data;
+    const { boardId, columnId, title, order } = data;
     try {
       const rez = await columnsApi
-        .updateColumn(boardId, id, { title, order })
+        .updateColumn(boardId, columnId, { title, order })
         .then((response) => response.data);
       return rez;
     } catch (err) {
