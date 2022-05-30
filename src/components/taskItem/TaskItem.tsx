@@ -81,6 +81,7 @@ function TaskItem(props: ITaskItemProps): JSX.Element {
             </Typography>
           )}
         </CardContent>
+        {/* </CardActionArea> */}
       </Card>
       <BasicModal open={open} handleClose={toggle}>
         <>

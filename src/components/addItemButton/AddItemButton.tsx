@@ -14,6 +14,7 @@ import { addBoard } from '../../store/reducers/helpers/boardHelpers';
 import BasicModal from '../basicModal/BasicModal';
 import { useModal } from '../../hooks/appHooks';
 import { addColumn } from '../../store/reducers/helpers/columnHelpers';
+import FileUpload from '../fileUpload/FileUpload';
 
 const style = {
   position: 'absolute',
