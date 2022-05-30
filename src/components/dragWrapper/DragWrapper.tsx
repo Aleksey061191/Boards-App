@@ -9,21 +9,22 @@ import { setTasks } from '../../store/reducers/taskReducer';
 interface IDropwrapperParams {
   children: JSX.Element;
   columnId: string;
+  tasks: IAllTasks[];
 }
 
-const DropWrapper = ({ children, columnId }: IDropwrapperParams) => {
-  const tasks = useAppSelector((state) => state.tasks.tasks);
+const DropWrapper = ({ children, columnId, tasks }: IDropwrapperParams) => {
+  // const tasks = useAppSelector((state) => state.tasks.tasks);
   const dispatch = useAppDispatch();
 
   const moveTaskToColumn = (task: any) => {
-    const newTask: IUpdateTaskParams = {
-      title: task.title,
-      order: task.order,
-      description: task.description,
-      userId: task.userId,
-      boardId: task.boardId,
-      columnId,
-    };
+    // const newTask: IUpdateTaskParams = {
+    //   title: task.title,
+    //   order: task.order,
+    //   description: task.description,
+    //   userId: task.userId,
+    //   boardId: task.boardId,
+    //   columnId,
+    // };
     const draggedColumnIndex = tasks.indexOf(
       tasks.find((item) => item.columnId === task.columnId) as IAllTasks
     );
@@ -34,6 +35,7 @@ const DropWrapper = ({ children, columnId }: IDropwrapperParams) => {
       const dragIndex = tasks[draggedColumnIndex].tasks.indexOf(
         tasks[draggedColumnIndex].tasks.find((item) => item.id === task.id) as ITask
       );
+      console.log(tasks[draggedColumnIndex].tasks);
       if (dragIndex > -1) {
         const newTasks = produce(tasks, (draft) => {
           const dragged = draft[draggedColumnIndex].tasks[dragIndex];

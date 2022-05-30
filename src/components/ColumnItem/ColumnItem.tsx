@@ -1,14 +1,19 @@
 import * as React from 'react';
 import produce from 'immer';
 import update from 'immutability-helper';
-import { useDrop } from 'react-dnd';
+import { useDrag, useDrop, XYCoord } from 'react-dnd';
 import { Box, Card, CardHeader, IconButton, Modal, Button, Typography } from '@mui/material';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../store/store';
 import AddItemButton from '../addItemButton/AddItemButton';
 import TaskItem from '../taskItem/TaskItem';
-import { getAllTasks, ITask, updateTask } from '../../store/reducers/helpers/tasksHelper';
+import {
+  getAllTasks,
+  IAllTasks,
+  ITask,
+  updateTask,
+} from '../../store/reducers/helpers/tasksHelper';
 import { deleteColumn } from '../../store/reducers/helpers/columnHelpers';
 import { setTasks } from '../../store/reducers/taskReducer';
 import DropWrapper from '../dragWrapper/DragWrapper';
@@ -40,6 +45,7 @@ interface ColumnItemProps {
   id: string;
   boardId: string;
   indexColumn: number;
+  moveColumn: (dragIndex: number, hoverIndex: number, columnId: string, title: string) => void;
 }
 
 interface IChangeParams {
@@ -47,6 +53,13 @@ interface IChangeParams {
   boardId: string;
   targetColumnId: string;
   draggedColumnId: string;
+}
+
+interface IDropItem {
+  title: string;
+  boardId: string;
+  id: string;
+  indexColumn: number;
 }
 
 const columnStyle = {
@@ -57,7 +70,13 @@ const columnStyle = {
   padding: '5px',
 };
 
-export const ColumnItem: React.FC<ColumnItemProps> = ({ title, id, boardId, indexColumn }) => {
+export const ColumnItem: React.FC<ColumnItemProps> = ({
+  title,
+  id,
+  boardId,
+  indexColumn,
+  moveColumn,
+}) => {
   const [isModalOpen, setModalOpen] = React.useState(false);
   const tasks = useSelector((state: RootState) => state.tasks.tasks);
   const handleOpen = () => setModalOpen(true);
@@ -67,6 +86,52 @@ export const ColumnItem: React.FC<ColumnItemProps> = ({ title, id, boardId, inde
   React.useEffect(() => {
     dispatch(getAllTasks(boardId));
   }, [dispatch, boardId]);
+
+  const ref = React.useRef<HTMLInputElement>(null);
+
+  const [, drop] = useDrop({
+    accept: 'column',
+    hover(item: IDropItem, monitor) {
+      if (!ref.current) {
+        return;
+      }
+      const dragIndex = item.indexColumn;
+      const hoverIndex = indexColumn;
+
+      if (dragIndex === hoverIndex) {
+        return;
+      }
+
+      const hoverBoundingRect = ref.current?.getBoundingClientRect();
+      const hoverMiddleX = (hoverBoundingRect.right - hoverBoundingRect.left) / 2;
+      const clientOffset = monitor.getClientOffset();
+      const hoverClientX = (clientOffset as XYCoord).x - hoverBoundingRect.left;
+
+      if (dragIndex < hoverIndex && hoverClientX < hoverMiddleX) {
+        return;
+      }
+
+      if (dragIndex > hoverIndex && hoverClientX < hoverMiddleX) {
+        return;
+      }
+
+      const columnId = item.id;
+      const columnTitle = item.title;
+      moveColumn(dragIndex, hoverIndex, columnId, columnTitle);
+
+      item.indexColumn = hoverIndex;
+    },
+  });
+
+  const [{ isDragging }, drag] = useDrag({
+    type: 'column',
+    item: { title, boardId, id, indexColumn },
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
+    }),
+  });
+
+  drag(drop(ref));
 
   const moveItem = (
     dragIndex: number,
@@ -122,11 +187,12 @@ export const ColumnItem: React.FC<ColumnItemProps> = ({ title, id, boardId, inde
     const tId = task.id;
     // console.log(tasks);
     dispatch(updateTask({ boardId, columnId: draggedColumnId, taskId: tId, task: newTask }));
+    // dispatch(getAllTasks(boardId));
   };
 
   return (
     <>
-      <Card sx={columnStyle}>
+      <Card ref={ref} sx={columnStyle}>
         <CardHeader
           title={title}
           action={
@@ -135,24 +201,24 @@ export const ColumnItem: React.FC<ColumnItemProps> = ({ title, id, boardId, inde
             </IconButton>
           }
         ></CardHeader>
-        <DropWrapper columnId={id}>
-          <Col indexColumn={indexColumn} moveItem={moveItem} columnId={id}>
-            {tasks
-              .find((item) => item.boardId === boardId && item.columnId === id)
-              ?.tasks.map((item, index) => (
-                <TaskItem
-                  key={item.id}
-                  {...item}
-                  boardId={boardId}
-                  columnId={id}
-                  indexColumn={indexColumn}
-                  index={index}
-                  moveItem={moveItem}
-                  changeColumn={changeColumn}
-                />
-              ))}
-          </Col>
-        </DropWrapper>
+        {/* <DropWrapper columnId={id} tasks={tasks}> */}
+        <Col indexColumn={indexColumn} moveItem={moveItem} columnId={id}>
+          {tasks
+            .find((item) => item.boardId === boardId && item.columnId === id)
+            ?.tasks.map((item, index) => (
+              <TaskItem
+                key={item.id}
+                {...item}
+                boardId={boardId}
+                columnId={id}
+                indexColumn={indexColumn}
+                index={index}
+                moveItem={moveItem}
+                changeColumn={changeColumn}
+              />
+            ))}
+        </Col>
+        {/* </DropWrapper> */}
 
         <AddItemButton itemType="Task" boardId={boardId} columnId={id} />
       </Card>

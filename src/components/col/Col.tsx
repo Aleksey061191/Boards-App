@@ -1,6 +1,10 @@
 import React, { ReactNode, useEffect, useRef } from 'react';
 import { useDrop } from 'react-dnd';
+import produce from 'immer';
 import type { Identifier, XYCoord } from 'dnd-core';
+import { useAppDispatch, useAppSelector } from '../../hooks/appHooks';
+import { IAllTasks, ITask } from '../../store/reducers/helpers/tasksHelper';
+import { setTasks } from '../../store/reducers/taskReducer';
 
 interface IColParams {
   isOver?: boolean;
@@ -31,65 +35,70 @@ interface IItems {
 }
 
 const Col = (props: IColParams) => {
-  const ref = useRef<HTMLInputElement>(null);
+  const tasks = useAppSelector((state) => state.tasks.tasks);
 
-  // const [, drop] = useDrop({
-  //   accept: 'task',
-  //   hover(item: IItems, monitor) {
-  //     console.log(123);
-  //     const draggedColumnIndex = item.indexColumn;
-  //     const targetColumnIndex = props.indexColumn;
+  const dispatch = useAppDispatch();
 
-  //     if (!ref.current) {
-  //       return;
-  //     }
+  const moveTaskToColumn = (task: any) => {
+    // const newTask: IUpdateTaskParams = {
+    //   title: task.title,
+    //   order: task.order,
+    //   description: task.description,
+    //   userId: task.userId,
+    //   boardId: task.boardId,
+    //   columnId,
+    // };
+    // const draggedColumnIndex = tasks.indexOf(
+    //   tasks.find((item) => item.columnId === task.columnId) as IAllTasks
+    // );
+    // const draggedColumnIndex = tasks.indexOf(
+    //   tasks.find((item) => item.tasks.find((el) => el.id === task.columnId)) as IAllTasks
+    // );
+    // console.log(tasks.find((item) => item.tasks.find((el) => el.id === task.columnId)));
+    const targetColumnIndex = tasks.indexOf(
+      tasks.find((item) => item.columnId === props.columnId) as IAllTasks
+    );
+    // if (!tasks[targetColumnIndex].tasks.length) {
+    //   const dragIndex = tasks[draggedColumnIndex].tasks.indexOf(
+    //     tasks[draggedColumnIndex].tasks.find((item) => item.id === task.id) as ITask
+    //   );
+    //   // console.log(tasks[draggedColumnIndex].tasks);
+    //   if (dragIndex > -1) {
+    //     const newTasks = produce(tasks, (draft) => {
+    //       const dragged = draft[draggedColumnIndex].tasks[dragIndex];
+    //       draft[draggedColumnIndex].tasks.splice(dragIndex, 1);
+    //       draft[targetColumnIndex].tasks.splice(0, 0, dragged);
+    //     });
+    //     // console.log(tasks[draggedColumnIndex].tasks);
+    //     dispatch(setTasks(newTasks));
+    //   }
+    // }
+  };
 
-  //     const dragIndex = item.index;
-  //     // const hoverIndex = props.index;
-
-  //     // if (dragIndex === hoverIndex && draggedColumnIndex === targetColumnIndex) {
-  //     //   return;
-  //     // }
-
-  //     const hoverBoundingRect = ref.current?.getBoundingClientRect();
-  //     const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
-  //     const clientOffset = monitor.getClientOffset();
-  //     const hoverClientY = (clientOffset as XYCoord).y - hoverBoundingRect.top;
-
-  //     // if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
-  //     //   return;
-  //     // }
-
-  //     // if (dragIndex > hoverIndex && hoverClientY < hoverMiddleY) {
-  //     //   return;
-  //     // }
-
-  //     const draggedColumnId = item.columnId;
-  //     const targetColumnId = props.columnId;
-  //     const taskId = item.id;
-  //     props.moveItem(
-  //       dragIndex,
-  //       0,
-  //       draggedColumnIndex,
-  //       targetColumnIndex,
-  //       draggedColumnId,
-  //       targetColumnId,
-  //       taskId
-  //     );
-
-  //     // item.index = hoverIndex;
-  //     item.indexColumn = targetColumnIndex;
-  //   },
-  // });
+  const [{ isOver }, drop] = useDrop({
+    accept: 'task',
+    drop: (item) => {
+      // console.log(item);
+      moveTaskToColumn(item);
+      return { id: props.columnId };
+    },
+    // canDrop: (item, monitor) => {
+    //   moveTaskToColumn(item);
+    //   return true;
+    // },
+    collect: (monitor) => ({
+      isOver: monitor.isOver(),
+    }),
+  });
   const style = {
-    minHeight: '100px',
-    height: '250px',
+    minHeight: 50,
+    maxHeight: 250,
     overflow: 'auto',
-    backgroundColor: props.isOver ? 'yellow' : '',
+    backgroundColor: isOver ? 'yellow' : '',
   };
 
   return (
-    <div ref={ref} style={style}>
+    <div ref={drop} style={style}>
       {props.children}
     </div>
   );
