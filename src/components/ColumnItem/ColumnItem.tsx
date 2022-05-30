@@ -1,5 +1,4 @@
 import * as React from 'react';
-import produce from 'immer';
 import { useDrag, useDrop, XYCoord } from 'react-dnd';
 import { Box, Card, CardHeader, IconButton, Modal, Button, Typography } from '@mui/material';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
@@ -7,15 +6,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../store/store';
 import AddItemButton from '../addItemButton/AddItemButton';
 import TaskItem from '../taskItem/TaskItem';
-import {
-  getAllTasks,
-  IAllTasks,
-  ITask,
-  updateTask,
-} from '../../store/reducers/helpers/tasksHelper';
+import { getAllTasks, ITask, updateTask } from '../../store/reducers/helpers/tasksHelper';
 import { deleteColumn } from '../../store/reducers/helpers/columnHelpers';
 import { setTasks } from '../../store/reducers/taskReducer';
-import DropWrapper from '../dragWrapper/DragWrapper';
 import Col from '../col/Col';
 import { IUpdateTaskParams } from '../../services/tasksApi';
 
@@ -45,13 +38,6 @@ interface ColumnItemProps {
   boardId: string;
   indexColumn: number;
   moveColumn: (dragIndex: number, hoverIndex: number, columnId: string, title: string) => void;
-}
-
-interface IChangeParams {
-  taskId: string;
-  boardId: string;
-  targetColumnId: string;
-  draggedColumnId: string;
 }
 
 interface IDropItem {
@@ -132,58 +118,49 @@ export const ColumnItem: React.FC<ColumnItemProps> = ({
   const moveItem = (
     dragIndex: number,
     hoverIndex: number,
-    draggedColumnIndex: number,
-    targetColumnIndex: number,
-    draggedColumnId: string,
     targetColumnId: string,
     taskId: string
   ) => {
-    const newTasks = produce(tasks, (draft) => {
-      const dragged = draft[draggedColumnIndex].tasks[dragIndex];
-      draft[draggedColumnIndex].tasks.splice(dragIndex, 1);
-      draft[targetColumnIndex].tasks.splice(hoverIndex, 0, dragged);
-    });
-
-    const task = newTasks
-      .map((item) => item.tasks.find((it) => it.id === taskId))
-      .filter((elem) => elem !== undefined)[0] as ITask;
-
-    const newTask: IUpdateTaskParams = {
-      title: task.title,
-      order: hoverIndex + 1,
-      description: task.description,
-      userId: task.userId,
-      boardId,
-      columnId: targetColumnId,
-    };
-    // console.log(newTask);
-    // dispatch(updateTask({ boardId, columnId: draggedColumnId, taskId, task: newTask }));
-
-    dispatch(setTasks(newTasks));
-  };
-
-  const changeColumn = (
-    taskId: string,
-    bId: string,
-    targetColumnId: string,
-    draggedColumnId: string
-  ) => {
-    // const task = tasks[draggedColumnIndex].tasks[dragIndex];
     const task = tasks
       .map((item) => item.tasks.find((it) => it.id === taskId))
       .filter((elem) => elem !== undefined)[0] as ITask;
+
+    const newArr = tasks.map((arr) => {
+      const newT = arr.tasks.slice();
+      if (newT.includes(task)) {
+        newT.splice(dragIndex, 1);
+      }
+
+      if (arr.columnId === targetColumnId) {
+        newT.splice(hoverIndex, 0, task);
+      }
+
+      return { boardId: arr.boardId, columnId: arr.columnId, tasks: newT };
+    });
+
+    dispatch(setTasks(newArr));
+  };
+
+  const changeColumn = (taskId: string, targetColumnId: string, draggedColumnId: string) => {
+    const task = tasks
+      .map((item) => item.tasks.find((it) => it.id === taskId))
+      .filter((elem) => elem !== undefined)[0] as ITask;
+    let taskIndex = 0;
+    tasks.forEach((item) => {
+      if (item.tasks.includes(task)) {
+        taskIndex = item.tasks.indexOf(task);
+      }
+    });
     const newTask: IUpdateTaskParams = {
-      title: task.title,
-      order: task.order,
-      description: task.description,
       userId: task.userId,
+      title: task.title,
+      description: task.description,
+      order: taskIndex + 1,
       boardId,
       columnId: targetColumnId,
     };
     const tId = task.id;
-    // console.log(tasks);
     dispatch(updateTask({ boardId, columnId: draggedColumnId, taskId: tId, task: newTask }));
-    // dispatch(getAllTasks(boardId));
   };
 
   return (
@@ -197,7 +174,6 @@ export const ColumnItem: React.FC<ColumnItemProps> = ({
             </IconButton>
           }
         ></CardHeader>
-        {/* <DropWrapper columnId={id} tasks={tasks}> */}
         <Col indexColumn={indexColumn} moveItem={moveItem} columnId={id}>
           {tasks
             .find((item) => item.boardId === boardId && item.columnId === id)
@@ -214,7 +190,6 @@ export const ColumnItem: React.FC<ColumnItemProps> = ({
               />
             ))}
         </Col>
-        {/* </DropWrapper> */}
 
         <AddItemButton itemType="Task" boardId={boardId} columnId={id} />
       </Card>

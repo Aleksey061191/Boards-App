@@ -31,21 +31,8 @@ export interface ITaskItemProps extends ITask {
   boardId: string;
   columnId: string;
   index: number;
-  moveItem: (
-    dragIndex: number,
-    hoverIndex: number,
-    draggedColumnIndex: number,
-    targetColumnIndex: number,
-    draggedColumnId: string,
-    targetColumnId: string,
-    taskId: string
-  ) => void;
-  changeColumn: (
-    taskId: string,
-    boardId: string,
-    targetColumnId: string,
-    draggedColumnId: string
-  ) => void;
+  moveItem: (dragIndex: number, hoverIndex: number, targetColumnId: string, taskId: string) => void;
+  changeColumn: (taskId: string, targetColumnId: string, draggedColumnId: string) => void;
   indexColumn: number;
 }
 
@@ -78,7 +65,6 @@ function TaskItem(props: ITaskItemProps): JSX.Element {
       const draggedColumnIndex = item.indexColumn;
       const targetColumnIndex = props.indexColumn;
 
-      // console.log(monitor.canDrop());
       if (!ref.current) {
         return;
       }
@@ -103,18 +89,9 @@ function TaskItem(props: ITaskItemProps): JSX.Element {
         return;
       }
 
-      const draggedColumnId = item.columnId;
       const targetColumnId = props.columnId;
       const taskId = item.id;
-      props.moveItem(
-        dragIndex,
-        hoverIndex,
-        draggedColumnIndex,
-        targetColumnIndex,
-        draggedColumnId,
-        targetColumnId,
-        taskId
-      );
+      props.moveItem(dragIndex, hoverIndex, targetColumnId, taskId);
 
       item.index = hoverIndex;
       item.indexColumn = targetColumnIndex;
@@ -128,11 +105,9 @@ function TaskItem(props: ITaskItemProps): JSX.Element {
       const dropResult: IDropRez | null = monitor.getDropResult();
       if (dropResult) {
         const { id } = dropResult;
-        // console.log(item, id);
         const itemId = item.id;
-        const bId = item.boardId;
         const colId = item.columnId;
-        props.changeColumn(itemId, bId, id, colId);
+        props.changeColumn(itemId, id, colId);
       }
     },
     collect: (monitor) => ({
