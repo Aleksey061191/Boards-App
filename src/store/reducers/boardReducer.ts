@@ -14,7 +14,7 @@ const initialState: IBoardsState = {
   selectedBoard: {
     id: '',
     title: '',
-    description: ''
+    description: '',
   },
   status: null,
   error: null,

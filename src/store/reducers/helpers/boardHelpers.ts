@@ -10,7 +10,6 @@ export const fetchBoards = createAsyncThunk(
   'boards/fetchBoards',
   async (_, { rejectWithValue }) => {
     try {
-      console.log('fetching');
       const response = await boardsApi.getAllBoards();
       return response.data;
     } catch (err) {

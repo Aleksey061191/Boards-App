@@ -28,7 +28,7 @@ const style = {
   p: 4,
 };
 
-const cardStyle = { minWidth: 300, minHeight: 200, maxWidth: 500 };
+const cardStyle = { minWidth: 200, minHeight: 100, maxWidth: '100%', backgroundColor: '#e6ecf0' };
 
 export interface IBoard {
   id: string;
