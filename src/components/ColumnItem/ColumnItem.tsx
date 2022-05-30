@@ -69,7 +69,7 @@ const columnStyle = {
   padding: '5px',
 };
 
-export const ColumnsItem: React.FC<ColumnItemProps> = ({
+export const ColumnItem: React.FC<ColumnItemProps> = ({
   title,
   id,
   boardId,
@@ -249,4 +249,4 @@ export const ColumnsItem: React.FC<ColumnItemProps> = ({
   );
 };
 
-export default ColumnsItem;
+export default ColumnItem;

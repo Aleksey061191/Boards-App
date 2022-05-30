@@ -4,7 +4,7 @@ import { AppDispatch, RootState } from '../../store/store';
 import cl from './Columns.module.scss';
 import { fetchColumns, updateColumn } from '../../store/reducers/helpers/columnHelpers';
 import { changeColumns } from '../../store/reducers/columnReducer';
-import { ColumnsItem, IColumn } from '../columnItem/ColumnItem';
+import { ColumnItem, IColumn } from '../columnItem/ColumnItem';
 
 interface ColumnsProps {
   boardId: string;
@@ -34,7 +34,7 @@ const Columns: React.FC<ColumnsProps> = ({ boardId }) => {
       {status === 'loading' && <h2>Loading...</h2>}
       {error && <h2>An error occured: {error}</h2>}
       {columns.map((column: IColumn, indexColumn) => (
-        <ColumnsItem
+        <ColumnItem
           key={column.id}
           {...column}
           boardId={boardId}
