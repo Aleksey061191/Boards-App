@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Box, TextField, Stack } from '@mui/material';
+import Assignment from '@mui/icons-material/Assignment';
+import Description from '@mui/icons-material/Description';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useDispatch } from 'react-redux';
@@ -18,7 +20,7 @@ const style = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 400,
+  minWidth: '50%',
   p: 4,
 };
 
@@ -71,10 +73,21 @@ const Task = (props: ITaskProps) => {
     <div className={cl.wrapper}>
       {!isEditMode && (
         <>
-          <h2 className={cl.title}>{props.title}</h2>
+          <h2 className={cl.title}>
+            <Assignment className={cl.ikon} />
+            {props.title}
+          </h2>
+          <p className={cl.descritpionTitle}>
+            <Description className={cl.ikon} />
+            {t('description')}:
+          </p>
           <p className={cl.description}>{props.description}</p>
-          <Stack direction="row" justifyContent="center" spacing={2}>
-            <Button variant="contained" onClick={() => setEditMode(true)}>
+          <Stack direction="row" justifyContent="center" spacing={2} flexWrap="wrap">
+            <Button
+              variant="contained"
+              onClick={() => setEditMode(true)}
+              sx={{ marginBottom: '5px' }}
+            >
               {t('edit')}
             </Button>
             <Button variant="outlined" onClick={props.handleClose}>

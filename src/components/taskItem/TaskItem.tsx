@@ -14,9 +14,9 @@ import { deleteTask, getAllTasks } from '../../store/reducers/helpers/tasksHelpe
 import cl from './TaskItem.module.scss';
 
 const cardStyle = {
-  minWidth: 200,
-  maxHeight: 100,
-  maxWidth: 300,
+  minWidth: 250,
+  minHeight: 100,
+  width: '98%',
   border: '1px solid #b7d2e6',
   backgroundColor: `#c7ccfe40`,
 };

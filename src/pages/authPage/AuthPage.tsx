@@ -47,7 +47,6 @@ function AuthPage(): JSX.Element {
   };
   return (
     <main className={cl.container} data-testid="about-page">
-      {/* <h1>Sign In/Up</h1> */}
       <Box className={cl.boxStyles}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <Tabs value={value} onChange={handleChange} centered={true}>

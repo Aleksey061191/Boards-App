@@ -23,6 +23,7 @@ import { IUpdateTaskParams } from '../../services/tasksApi';
 import BasicModal from '../basicModal/BasicModal';
 import { useTitleInput } from '../../hooks/appHooks';
 import TitleInput from '../titleInput/TitleInput';
+import cl from './ColumnItem.module.scss';
 
 export interface IColumn {
   id: string;
@@ -37,7 +38,7 @@ const style = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 400,
+  width: '100%',
   bgcolor: 'background.paper',
   border: '2px solid #000',
   boxShadow: 24,
@@ -226,7 +227,7 @@ export const ColumnsItem: React.FC<ColumnItemProps> = ({
               />
             ))}
         </Col>
-        <AddItemButton itemType="Task" boardId={boardId} columnId={id} />
+        <AddItemButton itemType="Task" boardId={boardId} columnId={id} className={cl.addTask} />
       </Card>
       <BasicModal open={isModalOpen} handleClose={handleClose}>
         <Box sx={style}>
