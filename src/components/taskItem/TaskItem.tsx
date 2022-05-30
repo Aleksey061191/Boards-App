@@ -1,14 +1,7 @@
 import React, { useRef } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
-import type { Identifier, XYCoord } from 'dnd-core';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  IconButton,
-  Typography,
-  CardActionArea,
-} from '@mui/material';
+import type { XYCoord } from 'dnd-core';
+import { Card, CardContent, CardHeader, IconButton, Typography } from '@mui/material';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { useDispatch } from 'react-redux';
 import { ITask } from '../../store/reducers/taskReducer';

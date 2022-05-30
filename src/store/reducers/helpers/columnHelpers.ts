@@ -6,11 +6,26 @@ import columnsApi, {
   IUpdateColumnParams,
 } from '../../../services/columnsApi';
 
+interface ISortParams {
+  id: string;
+  order: number;
+  title: string;
+}
+
 export const fetchColumns = createAsyncThunk(
   'columns/fetchColumns',
   async (boardId: string, { rejectWithValue }) => {
     try {
       const response = await columnsApi.getAllColumns(boardId);
+      (response.data as ISortParams[]).sort((a, b) => {
+        if (a.order > b.order) {
+          return 1;
+        }
+        if (a.order < b.order) {
+          return -1;
+        }
+        return 0;
+      });
       return response.data;
     } catch (err) {
       const error = err as AxiosError;

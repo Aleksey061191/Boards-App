@@ -1,6 +1,5 @@
 import * as React from 'react';
 import produce from 'immer';
-import update from 'immutability-helper';
 import { useDrag, useDrop, XYCoord } from 'react-dnd';
 import { Box, Card, CardHeader, IconButton, Modal, Button, Typography } from '@mui/material';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
@@ -123,12 +122,9 @@ export const ColumnItem: React.FC<ColumnItemProps> = ({
     },
   });
 
-  const [{ isDragging }, drag] = useDrag({
+  const [, drag] = useDrag({
     type: 'column',
     item: { title, boardId, id, indexColumn },
-    collect: (monitor) => ({
-      isDragging: monitor.isDragging(),
-    }),
   });
 
   drag(drop(ref));
