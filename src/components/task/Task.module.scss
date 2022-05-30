@@ -1,0 +1,31 @@
+.wrapper {
+  height: 450px;
+  padding: 0px;
+  min-width: 240px;
+}
+
+.title {
+  margin: 0;
+  padding: 0;
+  text-align: left;
+  color: rgb(42, 42, 152);
+}
+
+.description {
+  text-align: left;
+  border: 1px solid rgb(214, 227, 233);
+  min-height: 200px;
+  background-color: rgba(214, 227, 233, 0.69);
+  padding: 10px;
+}
+
+.ikon {
+  margin-right: 5px;
+  margin-top: 5px;
+}
+
+.descritpionTitle {
+  text-transform: capitalize;
+  text-align: left;
+  margin-left: 5px;
+}

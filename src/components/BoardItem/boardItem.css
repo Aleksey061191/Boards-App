@@ -1,0 +1,8 @@
+.MuiCardHeader-title {
+  color: rgb(3, 116, 185);
+  cursor: pointer;
+}
+
+.MuiCardContent-root {
+  cursor: pointer;
+}

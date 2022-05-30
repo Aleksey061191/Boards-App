@@ -1,0 +1,16 @@
+.container {
+  height: 80vh;
+  max-width: 600px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  font-size: 32px;
+  font-weight: 800;
+}
+
+.boxStyles {
+  text-align: center;
+  width: 100%;
+}

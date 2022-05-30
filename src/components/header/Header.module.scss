@@ -1,0 +1,76 @@
+@import '../../scss/abstract/constants.scss';
+@import '../../scss/abstract/mixins.scss';
+
+.container {
+  @include flex-between;
+  min-height: 10vh;
+  padding: 0 20px;
+}
+
+.mainPageHeader {
+  @include flex-between;
+  & .headerLink {
+    margin-right: 100px;
+  }
+  @include media-table {
+    & .headerLink {
+      font-size: 14px;
+      margin-right: 10px;
+    }
+    & .uiButn.button {
+      font-size: 14px;
+    }
+    & .mainPageLink {
+      margin-left: 50px;
+    }
+  }
+  @include media-mobile {
+    flex-direction: column;
+    margin: 10px 0;
+    & .headerLink {
+      margin-right: 0;
+      margin-bottom: 10px;
+    }
+    & .mainPageLink {
+      margin-left: 0;
+    }
+  }
+}
+
+.profileContainer {
+  @include flex-between;
+  & .uiButn.button {
+    margin-right: 50px;
+  }
+  @include media-table {
+    & .headerLink {
+      font-size: 16px;
+    }
+  }
+}
+
+.headerLink {
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 20px;
+  text-align: center;
+  color: #fff;
+  transition: 0.3s all;
+  &:hover,
+  &:active {
+    color: $color-hover-link;
+  }
+}
+
+.uiButn.button {
+  background-color: #fff;
+  color: blue;
+  font-weight: 600;
+  font-size: 16px;
+  transition: 0.5s all;
+  &:hover,
+  &:active {
+    background-color: #fff;
+    color: $color-hover-link;
+  }
+}

@@ -1,0 +1,13 @@
+@import '../../scss/abstract/constants.scss';
+@import '../../scss/abstract/mixins.scss';
+
+.uiIcon.icon {
+  transform: scale(1.5);
+  color: #fff;
+  cursor: pointer;
+  transition: 0.5s all;
+  &:hover,
+  &:active {
+    color: $color-hover-link;
+  }
+}

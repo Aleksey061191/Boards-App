@@ -1,0 +1,26 @@
+.paperStyles {
+  height: 60vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 15px;
+}
+
+.avatarStyles {
+  background-color: blue !important;
+  margin-bottom: 10px;
+}
+
+.tfClasses {
+  width: 90%;
+}
+
+.btnClasses {
+  margin: 25px 0 !important;
+}
+
+.nameFields {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
