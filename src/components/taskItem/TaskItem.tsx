@@ -21,8 +21,8 @@ import { deleteTask, getAllTasks } from '../../store/reducers/helpers/tasksHelpe
 import cl from './TaskItem.module.scss';
 
 const cardStyle = {
-  minWidth: 300,
-  minHeight: 100,
+  minWidth: 250,
+  maxHeight: 150,
   maxWidth: 300,
   border: '1px solid #b7d2e6',
   backgroundColor: `#c7ccfe40`,
@@ -44,7 +44,14 @@ export interface ITaskItemProps extends ITask {
     draggedColumnIndex: number,
     targetColumnIndex: number,
     draggedColumnId: string,
-    targetColumnId: string
+    targetColumnId: string,
+    taskId: string
+  ) => void;
+  changeColumn: (
+    taskId: string,
+    boardId: string,
+    targetColumnId: string,
+    draggedColumnId: string
   ) => void;
   indexColumn: number;
 }
@@ -61,6 +68,11 @@ interface IItems {
   indexColumn: number;
 }
 
+interface IDropRez {
+  dropEffect: string;
+  id: string;
+}
+
 function TaskItem(props: ITaskItemProps): JSX.Element {
   const { openD, toggleD } = useDialog();
   const { open, toggle } = useModal();
@@ -72,7 +84,8 @@ function TaskItem(props: ITaskItemProps): JSX.Element {
     hover(item: IItems, monitor) {
       const draggedColumnIndex = item.indexColumn;
       const targetColumnIndex = props.indexColumn;
-      
+
+      // console.log(monitor.canDrop());
       if (!ref.current) {
         return;
       }
@@ -90,25 +103,24 @@ function TaskItem(props: ITaskItemProps): JSX.Element {
       const hoverClientY = (clientOffset as XYCoord).y - hoverBoundingRect.top;
 
       if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
-        debugger;
         return;
       }
 
       if (dragIndex > hoverIndex && hoverClientY < hoverMiddleY) {
-        debugger;
         return;
       }
 
       const draggedColumnId = item.columnId;
       const targetColumnId = props.columnId;
-
+      const taskId = item.id;
       props.moveItem(
         dragIndex,
         hoverIndex,
         draggedColumnIndex,
         targetColumnIndex,
         draggedColumnId,
-        targetColumnId
+        targetColumnId,
+        taskId
       );
 
       item.index = hoverIndex;
@@ -119,6 +131,17 @@ function TaskItem(props: ITaskItemProps): JSX.Element {
   const [{ isDragging }, drag] = useDrag({
     type: 'task',
     item: { ...props },
+    end: (item, monitor) => {
+      const dropResult: IDropRez | null = monitor.getDropResult();
+      if (dropResult) {
+        const { id } = dropResult;
+        // console.log(item, id);
+        const itemId = item.id;
+        const bId = item.boardId;
+        const colId = item.columnId;
+        props.changeColumn(itemId, bId, id, colId);
+      }
+    },
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
     }),
