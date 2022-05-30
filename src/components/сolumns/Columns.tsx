@@ -1,5 +1,4 @@
 import * as React from 'react';
-import produce from 'immer';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../store/store';
 import cl from './Columns.module.scss';
@@ -21,11 +20,10 @@ const Columns: React.FC<ColumnsProps> = ({ boardId }) => {
   }, [dispatch, boardId]);
 
   const moveColumn = (dragIndex: number, hoverIndex: number, columnId: string, title: string) => {
-    const newColumns = produce(columns, (draft) => {
-      const dragged = draft[dragIndex];
-      draft.splice(dragIndex, 1);
-      draft.splice(hoverIndex, 0, dragged);
-    });
+    const column = columns[dragIndex];
+    const newColumns = columns.slice();
+    newColumns.splice(dragIndex, 1);
+    newColumns.splice(hoverIndex, 0, column);
 
     dispatch(updateColumn({ boardId, columnId, title, order: hoverIndex + 1 }));
     dispatch(changeColumns(newColumns));
