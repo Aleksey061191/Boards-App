@@ -28,7 +28,7 @@ function BoardPage(): JSX.Element {
     <main className={cl.container}>
       <h5 className={cl.title}>
         {t('Board_')}
-        {board.title}
+        {` ${board.title}`}
       </h5>
       <DndProvider backend={HTML5Backend}>
         <AddItemButton itemType="Column" boardId={id} />
