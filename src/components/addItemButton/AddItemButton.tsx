@@ -33,7 +33,7 @@ interface AddItemProps {
   className?: string;
   columnId?: string;
 }
-interface ISubmitObj {
+export interface ISubmitObj {
   [index: string]: () => void;
 }
 
@@ -43,7 +43,7 @@ interface IJwtDecode {
   userId: string;
 }
 
-enum ItemType {
+export enum ItemType {
   Board = 'Board',
   Column = 'Column',
   Task = 'Task',
@@ -59,15 +59,24 @@ const AddItemButton: React.FC<AddItemProps> = ({
   const { open, toggle } = useModal();
   const { t } = useTranslation();
 
+  let schema;
+  if (itemType === ItemType.Column) {
+    schema = Yup.object({
+      title: Yup.string().required('Title is required'),
+    });
+  } else if (itemType === ItemType.Board || itemType === ItemType.Task) {
+    schema = Yup.object({
+      title: Yup.string().required('Title is required'),
+      description: Yup.string().required('Description is required'),
+    });
+  }
+
   const formik = useFormik({
     initialValues: {
       title: '',
       description: '',
     },
-    validationSchema: Yup.object({
-      title: Yup.string().required('Title is required'),
-    }),
-
+    validationSchema: schema,
     onSubmit: (values) => {
       const submitObj: ISubmitObj = {
         Board: () => dispatch(addBoard(values)),
@@ -117,9 +126,10 @@ const AddItemButton: React.FC<AddItemProps> = ({
               />
             </div>
             {formik.touched.title && formik.errors.title && <div>{formik.errors.title}</div>}
-            {ItemType.Column && (
+            {itemType !== ItemType.Column && (
               <div>
                 <TextField
+                  required
                   margin="normal"
                   fullWidth
                   id="description"
@@ -129,6 +139,9 @@ const AddItemButton: React.FC<AddItemProps> = ({
                   rows={4}
                   onChange={formik.handleChange}
                 />
+                {formik.touched.description && formik.errors.description && (
+                  <div>{formik.errors.description}</div>
+                )}
               </div>
             )}
             <Button type="submit" value="Submit" variant="contained">

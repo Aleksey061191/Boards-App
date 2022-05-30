@@ -1,6 +1,10 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosError } from 'axios';
-import columnsApi, { ICreateColumnParams, IDeleteColumnParams } from '../../../services/columnsApi';
+import columnsApi, {
+  ICreateColumnParams,
+  IDeleteColumnParams,
+  IUpdateColumnParams,
+} from '../../../services/columnsApi';
 
 export const fetchColumns = createAsyncThunk(
   'columns/fetchColumns',
@@ -22,6 +26,21 @@ export const addColumn = createAsyncThunk(
     try {
       const rez = await columnsApi
         .createColumn(boardId, { title })
+        .then((response) => response.data);
+      return rez;
+    } catch (err) {
+      const error = err as AxiosError;
+      return rejectWithValue(error.message);
+    }
+  }
+);
+export const updateColumn = createAsyncThunk(
+  'columns/updateColumn',
+  async (data: IUpdateColumnParams, { rejectWithValue }) => {
+    const { boardId, id, title, order } = data;
+    try {
+      const rez = await columnsApi
+        .updateColumn(boardId, id, { title, order })
         .then((response) => response.data);
       return rez;
     } catch (err) {

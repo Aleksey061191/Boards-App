@@ -4,15 +4,6 @@ import cl from './FileUpload.module.scss';
 function FileUpload(): JSX.Element {
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { files } = e.target;
-    console.log(files);
-    // const fr = new FileReader();
-    // fr.onload = (event) => {
-    //   const file = event.target!.result;
-    //   console.log(file);
-    // }
-    // const filesArr = files.;
-    // console.log(filesArr);
-    // this.setState({ files: [...this.state.files, ...filesArr] });
   };
   return (
     <div className={cl.wrapper}>
