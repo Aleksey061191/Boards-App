@@ -1,6 +1,14 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Card, CardHeader, IconButton, Button, Typography } from '@mui/material';
+import {
+  Box,
+  Card,
+  CardHeader,
+  IconButton,
+  Button,
+  Typography,
+  ClickAwayListener,
+} from '@mui/material';
 import DeleteForever from '@mui/icons-material/DeleteForever';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../store/store';
@@ -67,18 +75,20 @@ const ColumnItem: React.FC<ColumnItemProps> = ({ title, id, boardId, order }) =>
             onClick={() => inputOpened()}
           />
         ) : (
-          <CardHeader
-            title={
-              <TitleInput
-                title={title}
-                inputClosed={inputClosed}
-                boardId={boardId}
-                id={id}
-                itemType={ItemType.Column}
-                order={order}
-              />
-            }
-          />
+          <ClickAwayListener onClickAway={inputClosed}>
+            <CardHeader
+              title={
+                <TitleInput
+                  title={title}
+                  inputClosed={inputClosed}
+                  boardId={boardId}
+                  id={id}
+                  itemType={ItemType.Column}
+                  order={order}
+                />
+              }
+            />
+          </ClickAwayListener>
         )}
 
         {tasks

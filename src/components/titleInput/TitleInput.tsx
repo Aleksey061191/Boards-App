@@ -58,7 +58,6 @@ const TitleInput: React.FunctionComponent<TitleInputProps> = ({
         size="small"
         onChange={formik.handleChange}
         InputLabelProps={{ shrink: true }}
-        onBlur={cancel}
       />
       {formik.touched.title && formik.errors.title && <div>{formik.errors.title}</div>}
       <Button sx={{ marginLeft: '10px' }} variant="outlined" onClick={cancel} size="small">
