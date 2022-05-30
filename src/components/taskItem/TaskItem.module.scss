@@ -1,0 +1,15 @@
+.container {
+  position: relative;
+  margin-bottom: 5px;
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.drag {
+  opacity: 0.5;
+}
+
+.header.headerT {
+  padding: 5px 0 0 10px;
+}

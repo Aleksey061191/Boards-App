@@ -4,7 +4,13 @@ export interface IBoardParams {
   title: string;
   description: string;
 }
+export interface IBoardGetParams {
+  id: string;
+}
 
+export interface IBoardUpdateParams extends IBoardParams {
+  id: string;
+}
 const boardsApi = {
   getAllBoards: () => ApiService.get(`boards`),
   getBoard: (id: string) => ApiService.get(`boards/${id}`),

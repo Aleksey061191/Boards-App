@@ -1,8 +1,10 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import cl from './Footer.module.scss';
 import logoRs from '../../assets/svg/rss.svg';
 
 function Footer(): JSX.Element {
+  const { t } = useTranslation();
   return (
     <footer className={cl.footer}>
       <div className={cl.containerFooter}>
@@ -16,7 +18,7 @@ function Footer(): JSX.Element {
             target="_blank"
             rel="noreferrer"
           >
-            <p>Aliaksei Makarenka</p>
+            <p>{t('Aliaksei Makarenka')}</p>
           </a>
           <a
             className={cl.github}
@@ -24,7 +26,7 @@ function Footer(): JSX.Element {
             target="_blank"
             rel="noreferrer"
           >
-            <p>Marina Khitrovo</p>
+            <p>{t('Marina Khitrovo')}</p>
           </a>
           <a
             className={cl.github}
@@ -32,7 +34,7 @@ function Footer(): JSX.Element {
             target="_blank"
             rel="noreferrer"
           >
-            <p>Alena Ryzhankova</p>
+            <p>{t('Alena Ryzhankova')}</p>
           </a>
         </div>
         <p className={cl.year}>2022</p>

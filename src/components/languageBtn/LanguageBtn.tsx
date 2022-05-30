@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -6,6 +7,7 @@ import LanguageIcon from '@mui/icons-material/Language';
 import cl from './LanguageBtn.module.scss';
 
 function LanguageBtn(): JSX.Element {
+  const { t, i18n } = useTranslation();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -13,6 +15,10 @@ function LanguageBtn(): JSX.Element {
   };
   const handleClose = () => {
     setAnchorEl(null);
+  };
+  const changeLanguage = (lang: string) => {
+    i18n.changeLanguage(lang);
+    handleClose();
   };
   return (
     <>
@@ -60,8 +66,8 @@ function LanguageBtn(): JSX.Element {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        <MenuItem onClick={handleClose}>English</MenuItem>
-        <MenuItem onClick={handleClose}>Russian</MenuItem>
+        <MenuItem onClick={() => changeLanguage('en')}>{t('en')}</MenuItem>
+        <MenuItem onClick={() => changeLanguage('ru')}>{t('ru')}</MenuItem>
       </Menu>
     </>
   );

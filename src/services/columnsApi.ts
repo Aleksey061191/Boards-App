@@ -4,8 +4,13 @@ interface IColumnsParams {
   title: string;
 }
 
-interface IColumnUpdateParams extends IColumnsParams {
+interface IColumnOrderParams extends IColumnsParams {
   order: number;
+}
+
+export interface IUpdateColumnParams extends IColumnOrderParams {
+  boardId: string;
+  columnId: string;
 }
 
 export interface ICreateColumnParams extends IColumnsParams {
@@ -23,7 +28,7 @@ const columnsApi = {
     ApiService.get(`boards/${boardId}/columns/${columnId}`),
   createColumn: (boardId: string, column: IColumnsParams) =>
     ApiService.post(`boards/${boardId}/columns`, column),
-  updateColumn: (boardId: string, columnId: string, column: IColumnUpdateParams) =>
+  updateColumn: (boardId: string, columnId: string, column: IColumnOrderParams) =>
     ApiService.put(`boards/${boardId}/columns/${columnId}`, column),
   deleteColumn: (boardId: string, columnId: string) =>
     ApiService.delete(`boards/${boardId}/columns/${columnId}`),

@@ -1,14 +1,20 @@
 import * as React from 'react';
+import { useTranslation } from 'react-i18next';
+import jwtDecode from 'jwt-decode';
 import Button from '@mui/material/Button';
 import AddCircleSharpIcon from '@mui/icons-material/AddCircleSharp';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import Modal from '@mui/material/Modal';
 import { Box, TextField } from '@mui/material';
 import { useDispatch } from 'react-redux';
+import { createTask, getAllTasks } from '../../store/reducers/helpers/tasksHelper';
 import { AppDispatch } from '../../store/store';
+import { ITasksParams } from '../../services/tasksApi';
 import { addBoard } from '../../store/reducers/helpers/boardHelpers';
+import BasicModal from '../basicModal/BasicModal';
+import { useModal } from '../../hooks/appHooks';
 import { addColumn } from '../../store/reducers/helpers/columnHelpers';
+import FileUpload from '../fileUpload/FileUpload';
 
 const style = {
   position: 'absolute',
@@ -26,39 +32,72 @@ interface AddItemProps {
   itemType: string;
   boardId?: string;
   className?: string;
+  columnId?: string;
 }
-interface ISubmitObj {
+export interface ISubmitObj {
   [index: string]: () => void;
 }
 
-enum ItemType {
+interface IJwtDecode {
+  iat: number;
+  login: string;
+  userId: string;
+}
+
+export enum ItemType {
   Board = 'Board',
   Column = 'Column',
   Task = 'Task',
 }
 
-const AddItemButton: React.FC<AddItemProps> = ({ itemType, boardId = '1', className }) => {
+const AddItemButton: React.FC<AddItemProps> = ({
+  itemType,
+  boardId = '1',
+  className,
+  columnId = '1',
+}) => {
   const dispatch = useDispatch<AppDispatch>();
-  const [isModalOpen, setModalOpen] = React.useState(false);
-  const handleOpen = () => setModalOpen(true);
-  const handleClose = () => setModalOpen(false);
+  const { open, toggle } = useModal();
+  const { t } = useTranslation();
+
+  let schema;
+  if (itemType === ItemType.Column) {
+    schema = Yup.object({
+      title: Yup.string().required('Title is required'),
+    });
+  } else if (itemType === ItemType.Board || itemType === ItemType.Task) {
+    schema = Yup.object({
+      title: Yup.string().required('Title is required'),
+      description: Yup.string().required('Description is required'),
+    });
+  }
 
   const formik = useFormik({
     initialValues: {
       title: '',
       description: '',
     },
-    validationSchema: Yup.object({
-      title: Yup.string().required('Title is required'),
-    }),
-
+    validationSchema: schema,
     onSubmit: (values) => {
       const submitObj: ISubmitObj = {
         Board: () => dispatch(addBoard(values)),
         Column: () => dispatch(addColumn({ ...values, boardId })),
+        Task: async () => {
+          const token = localStorage.getItem('token');
+          if (token) {
+            const decoded = jwtDecode<IJwtDecode>(token);
+            const task: ITasksParams = {
+              title: values.title,
+              description: values.description,
+              userId: decoded.userId,
+            };
+            await dispatch(createTask({ boardId, columnId, task }));
+            dispatch(getAllTasks(boardId));
+          }
+        },
       };
       submitObj[itemType]();
-      handleClose();
+      toggle();
     },
   });
 
@@ -68,12 +107,12 @@ const AddItemButton: React.FC<AddItemProps> = ({ itemType, boardId = '1', classN
         variant="outlined"
         startIcon={<AddCircleSharpIcon />}
         size="large"
-        onClick={handleOpen}
+        onClick={toggle}
         className={className}
       >
-        New {itemType}
+        {t('New')} {t(itemType)}
       </Button>
-      <Modal open={isModalOpen} onClose={handleClose}>
+      <BasicModal open={open} handleClose={toggle}>
         <form onSubmit={formik.handleSubmit}>
           <Box sx={style}>
             <div>
@@ -82,32 +121,39 @@ const AddItemButton: React.FC<AddItemProps> = ({ itemType, boardId = '1', classN
                 required
                 fullWidth
                 id="title"
-                label={`${itemType} title`}
+                label={t(`title_${itemType}`)}
                 defaultValue=""
                 onChange={formik.handleChange}
               />
             </div>
             {formik.touched.title && formik.errors.title && <div>{formik.errors.title}</div>}
-            {ItemType.Column && (
+            {itemType !== ItemType.Column && (
               <div>
                 <TextField
+                  required
                   margin="normal"
                   fullWidth
                   id="description"
-                  label={`${itemType} description`}
+                  label={t(`description_${itemType}`)}
                   defaultValue=""
                   multiline
                   rows={4}
                   onChange={formik.handleChange}
                 />
+                {formik.touched.description && formik.errors.description && (
+                  <div>{formik.errors.description}</div>
+                )}
               </div>
             )}
             <Button type="submit" value="Submit" variant="contained">
-              Create {itemType}
+              {t('Create')} {t(itemType)}
+            </Button>
+            <Button variant="outlined" sx={{ margin: '10px' }} onClick={toggle}>
+              {t('cancel')}
             </Button>
           </Box>
         </form>
-      </Modal>
+      </BasicModal>
     </>
   );
 };
