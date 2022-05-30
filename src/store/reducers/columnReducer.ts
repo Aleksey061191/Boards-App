@@ -16,7 +16,11 @@ const initialState: IColumnsState = {
 const columnSlice = createSlice({
   name: 'columns',
   initialState,
-  reducers: {},
+  reducers: {
+    changeColumns(state, action) {
+      state.columns = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(addColumn.fulfilled, (state, action) => {
       state.status = 'resolved';
@@ -44,4 +48,5 @@ const columnSlice = createSlice({
   },
 });
 
+export const { changeColumns } = columnSlice.actions;
 export default columnSlice.reducer;
