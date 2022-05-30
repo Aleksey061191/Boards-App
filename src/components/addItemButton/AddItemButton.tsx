@@ -14,14 +14,13 @@ import { addBoard } from '../../store/reducers/helpers/boardHelpers';
 import BasicModal from '../basicModal/BasicModal';
 import { useModal } from '../../hooks/appHooks';
 import { addColumn } from '../../store/reducers/helpers/columnHelpers';
-import FileUpload from '../fileUpload/FileUpload';
 
 const style = {
   position: 'absolute',
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 400,
+  width: '100%',
   bgcolor: 'background.paper',
   border: '2px solid #000',
   boxShadow: 24,
@@ -124,6 +123,7 @@ const AddItemButton: React.FC<AddItemProps> = ({
                 label={t(`title_${itemType}`)}
                 defaultValue=""
                 onChange={formik.handleChange}
+                sx={{ minWidth: '100px' }}
               />
             </div>
             {formik.touched.title && formik.errors.title && <div>{formik.errors.title}</div>}

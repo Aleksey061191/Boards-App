@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { DndProvider } from 'react-dnd';
@@ -14,6 +15,7 @@ function BoardPage(): JSX.Element {
   const { id } = useParams() as { id: string };
 
   const board = useSelector((state: RootState) => state.boards.selectedBoard);
+  const { t } = useTranslation();
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -24,7 +26,10 @@ function BoardPage(): JSX.Element {
 
   return (
     <main className={cl.container}>
-      <h5 className={cl.title}>Board {board.title}</h5>
+      <h5 className={cl.title}>
+        {t('Board_')}
+        {board.title}
+      </h5>
       <DndProvider backend={HTML5Backend}>
         <AddItemButton itemType="Column" boardId={id} />
         <Columns boardId={id} />
