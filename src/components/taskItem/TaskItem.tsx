@@ -14,7 +14,7 @@ import cl from './TaskItem.module.scss';
 const cardStyle = {
   minWidth: 300,
   minHeight: 100,
-  maxWidth: 300,
+  width: '98%',
   border: '1px solid #b7d2e6',
   backgroundColor: `#c7ccfe40`,
 };

@@ -24,7 +24,7 @@ function BoardPage(): JSX.Element {
   return (
     <main className={cl.container}>
       <h5>
-        {t('Board')} {board.title}
+        {t('Board_')} {board.title}
       </h5>
       <AddItemButton itemType="Column" boardId={id} />
       <Columns boardId={id} />
