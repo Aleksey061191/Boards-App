@@ -1,20 +1,13 @@
 import * as React from 'react';
-import {
-  Box,
-  Card,
-  CardContent,
-  CardHeader,
-  IconButton,
-  Modal,
-  Button,
-  Typography,
-} from '@mui/material';
-import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import { useTranslation } from 'react-i18next';
+import { Box, Card, CardContent, CardHeader, IconButton, Button, Typography } from '@mui/material';
+import DeleteForever from '@mui/icons-material/DeleteForever';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import './boardItem.css';
 import { AppDispatch } from '../../store/store';
 import { deleteBoard } from '../../store/reducers/helpers/boardHelpers';
+import BasicModal from '../basicModal/BasicModal';
 
 const style = {
   position: 'absolute',
@@ -28,7 +21,8 @@ const style = {
   p: 4,
 };
 
-const cardStyle = { minWidth: 300, minHeight: 200, maxWidth: 500 };
+const cardStyle = { minWidth: 200, minHeight: 100, maxWidth: '100%', backgroundColor: '#e6ecf0' };
+
 export interface IBoard {
   id: string;
   title: string;
@@ -37,10 +31,15 @@ export interface IBoard {
 
 const BoardItem = ({ title, description, id }: IBoard) => {
   const [isModalOpen, setModalOpen] = React.useState(false);
-  const handleOpen = () => setModalOpen(true);
+  const handleOpen = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setModalOpen(true);
+  };
+
   const handleClose = () => setModalOpen(false);
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const handleClick = () => {
     navigate(`/board/${id}`);
@@ -48,16 +47,16 @@ const BoardItem = ({ title, description, id }: IBoard) => {
 
   return (
     <div className="board-item">
-      <Card sx={cardStyle}>
+      <Card sx={cardStyle} onClick={handleClick}>
         <CardHeader
           title={title}
           action={
             <IconButton aria-label="delete" onClick={handleOpen}>
-              <HighlightOffIcon />
+              <DeleteForever />
             </IconButton>
           }
-        ></CardHeader>
-        <CardContent onClick={handleClick}>
+        />
+        <CardContent>
           {description && (
             <Typography variant="body2" color="text.secondary">
               {description}
@@ -65,22 +64,22 @@ const BoardItem = ({ title, description, id }: IBoard) => {
           )}
         </CardContent>
       </Card>
-      <Modal open={isModalOpen} onClose={handleClose}>
+      <BasicModal open={isModalOpen} handleClose={handleClose}>
         <Box sx={style}>
-          <Typography variant="h5"> Are you sure you want to delete this board?</Typography>
+          <Typography variant="h5"> {t('delete_board_message')}</Typography>
           <Button variant="outlined" sx={{ margin: '10px' }} onClick={handleClose}>
-            Cancel
+            {t('cancel')}
           </Button>
           <Button
+            sx={{ margin: '10px' }}
             variant="contained"
             color="error"
-            sx={{ margin: '10px' }}
             onClick={() => dispatch(deleteBoard(id))}
           >
-            Delete
+            {t('delete')}
           </Button>
         </Box>
-      </Modal>
+      </BasicModal>
     </div>
   );
 };

@@ -1,12 +1,17 @@
 import * as React from 'react';
-import { Box, Card, CardHeader, IconButton, Modal, Button, Typography } from '@mui/material';
-import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import { useTranslation } from 'react-i18next';
+import { Box, Card, CardHeader, IconButton, Button, Typography } from '@mui/material';
+import DeleteForever from '@mui/icons-material/DeleteForever';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../store/store';
 import AddItemButton from '../addItemButton/AddItemButton';
 import TaskItem from '../taskItem/TaskItem';
 import { getAllTasks } from '../../store/reducers/helpers/tasksHelper';
 import { deleteColumn } from '../../store/reducers/helpers/columnHelpers';
+import BasicModal from '../basicModal/BasicModal';
+import { useTitleInput } from '../../hooks/appHooks';
+import TitleInput from '../titleInput/TitleInput';
+import { ItemType } from '../addItemButton/AddItemButton';
 
 export interface IColumn {
   id: string;
@@ -32,13 +37,17 @@ interface ColumnItemProps {
   title: string;
   id: string;
   boardId: string;
+  order: number;
 }
-export const ColumnItem: React.FC<ColumnItemProps> = ({ title, id, boardId }) => {
+const ColumnItem: React.FC<ColumnItemProps> = ({ title, id, boardId, order }) => {
   const [isModalOpen, setModalOpen] = React.useState(false);
   const tasks = useSelector((state: RootState) => state.tasks.tasks);
   const handleOpen = () => setModalOpen(true);
   const handleClose = () => setModalOpen(false);
   const dispatch = useDispatch<AppDispatch>();
+  const { t } = useTranslation();
+
+  const { isTitleChanged, inputOpened, inputClosed } = useTitleInput();
 
   React.useEffect(() => {
     dispatch(getAllTasks(boardId));
@@ -47,14 +56,31 @@ export const ColumnItem: React.FC<ColumnItemProps> = ({ title, id, boardId }) =>
   return (
     <>
       <Card sx={{ minWidth: 300, minHeight: 300, maxWidth: 500 }}>
-        <CardHeader
-          title={title}
-          action={
-            <IconButton aria-label="delete" onClick={handleOpen}>
-              <HighlightOffIcon />
-            </IconButton>
-          }
-        ></CardHeader>
+        {!isTitleChanged ? (
+          <CardHeader
+            title={title}
+            action={
+              <IconButton aria-label="delete" onClick={handleOpen}>
+                <DeleteForever />
+              </IconButton>
+            }
+            onClick={() => inputOpened()}
+          />
+        ) : (
+          <CardHeader
+            title={
+              <TitleInput
+                title={title}
+                inputClosed={inputClosed}
+                boardId={boardId}
+                id={id}
+                itemType={ItemType.Column}
+                order={order}
+              />
+            }
+          />
+        )}
+
         {tasks
           .find((item) => item.boardId === boardId && item.columnId === id)
           ?.tasks.map((item) => (
@@ -62,11 +88,11 @@ export const ColumnItem: React.FC<ColumnItemProps> = ({ title, id, boardId }) =>
           ))}
         <AddItemButton itemType="Task" boardId={boardId} columnId={id} />
       </Card>
-      <Modal open={isModalOpen} onClose={handleClose}>
+      <BasicModal open={isModalOpen} handleClose={handleClose}>
         <Box sx={style}>
-          <Typography variant="h5"> Are you sure you want to delete this Column?</Typography>
+          <Typography variant="h5">{t('delete_col_message')}</Typography>
           <Button variant="outlined" sx={{ margin: '10px' }} onClick={handleClose}>
-            Cancel
+            {t('cancel')}
           </Button>
           <Button
             variant="contained"
@@ -74,10 +100,12 @@ export const ColumnItem: React.FC<ColumnItemProps> = ({ title, id, boardId }) =>
             sx={{ margin: '10px' }}
             onClick={() => dispatch(deleteColumn({ id, boardId }))}
           >
-            Delete
+            {t('delete')}
           </Button>
         </Box>
-      </Modal>
+      </BasicModal>
     </>
   );
 };
+
+export default ColumnItem;

@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { TextField, Grid, Paper, Avatar, Button } from '@mui/material';
 import { Form, Formik, Field } from 'formik';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
@@ -17,14 +18,8 @@ const INITIAL_SIGNIN_STATE = {
   password: '',
 };
 
-const FORM_VALIDATION = Yup.object().shape({
-  login: Yup.string().required('Enter your login').min(3, 'Login should be minimum 3 characters'),
-  password: Yup.string()
-    .required('Enter the password')
-    .min(7, 'Password should be minimum 7 characters'),
-});
-
 function SignIn(): JSX.Element {
+  const { t } = useTranslation();
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const { open, toggle } = useModal();
@@ -38,6 +33,11 @@ function SignIn(): JSX.Element {
     dispatch(setLogin(login));
   };
 
+  const FORM_VALIDATION = Yup.object().shape({
+    login: Yup.string().required(t('log_err')).min(3, t('login_err_length')),
+    password: Yup.string().required(t('pass_err')).min(7, t('pass_err_length')),
+  });
+
   return (
     <Grid>
       <BasicModal open={open} handleClose={toggle} errMessage={errMessage} />
@@ -45,7 +45,7 @@ function SignIn(): JSX.Element {
         <Avatar className={cl.avatarStyles}>
           <LockOpenIcon />
         </Avatar>
-        Sign In
+        {t('sign_in')}
         <Formik
           initialValues={{ ...INITIAL_SIGNIN_STATE }}
           validationSchema={FORM_VALIDATION}
@@ -67,7 +67,7 @@ function SignIn(): JSX.Element {
                 <Field
                   name="login"
                   required
-                  label="Login"
+                  label={t('login_')}
                   as={TextField}
                   type="text"
                   autoComplete="Login"
@@ -79,7 +79,7 @@ function SignIn(): JSX.Element {
                 <Field
                   required
                   name="password"
-                  label="Password"
+                  label={t('password')}
                   as={TextField}
                   type="password"
                   autoComplete="current-password"
@@ -95,7 +95,7 @@ function SignIn(): JSX.Element {
                   type="submit"
                   disabled={!dirty || !isValid}
                 >
-                  Sign In
+                  {t('sign_in')}
                 </Button>
               </Grid>
             </Form>

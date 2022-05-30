@@ -1,12 +1,16 @@
 import { useState } from 'react';
-import { Button, Box, TextField } from '@mui/material';
+import { useTranslation } from 'react-i18next';
+import { Button, Box, TextField, Stack } from '@mui/material';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useDispatch } from 'react-redux';
-import { updateTask, IUpdateTaskApi, ITask } from '../../store/reducers/helpers/tasksHelper';
+import {
+  updateTask,
+  IUpdateTaskApi,
+  ITask,
+  getAllTasks,
+} from '../../store/reducers/helpers/tasksHelper';
 import { AppDispatch } from '../../store/store';
-import { fetchColumns } from '../../store/reducers/helpers/columnHelpers';
-import { getAllTasks } from '../../store/reducers/helpers/tasksHelper';
 import cl from './Task.module.scss';
 
 const style = {
@@ -21,11 +25,13 @@ const style = {
 interface ITaskProps extends ITask {
   boardId: string;
   columnId: string;
+  handleClose: () => void;
 }
 
 const Task = (props: ITaskProps) => {
   const [isEditMode, setEditMode] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
+  const { t } = useTranslation();
 
   const handleCancel = () => {
     setEditMode(false);
@@ -67,9 +73,14 @@ const Task = (props: ITaskProps) => {
         <>
           <h2 className={cl.title}>{props.title}</h2>
           <p className={cl.description}>{props.description}</p>
-          <Button variant="outlined" onClick={() => setEditMode(true)}>
-            Edit
-          </Button>
+          <Stack direction="row" justifyContent="center" spacing={2}>
+            <Button variant="contained" onClick={() => setEditMode(true)}>
+              {t('edit')}
+            </Button>
+            <Button variant="outlined" onClick={props.handleClose}>
+              {t('cancel')}
+            </Button>
+          </Stack>
         </>
       )}
       {isEditMode && (
@@ -100,10 +111,10 @@ const Task = (props: ITaskProps) => {
                 />
               </div>
               <Button type="submit" value="Submit" variant="contained">
-                Save
+                {t('save')}
               </Button>
               <Button onClick={handleCancel} autoFocus>
-                Cancel
+                {t('cancel')}
               </Button>
             </Box>
           </form>
