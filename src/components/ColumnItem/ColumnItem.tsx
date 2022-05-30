@@ -1,13 +1,14 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Card, CardHeader, IconButton, Modal, Button, Typography } from '@mui/material';
-import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import { Box, Card, CardHeader, IconButton, Button, Typography } from '@mui/material';
+import DeleteForever from '@mui/icons-material/DeleteForever';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../store/store';
 import AddItemButton from '../addItemButton/AddItemButton';
 import TaskItem from '../taskItem/TaskItem';
 import { getAllTasks } from '../../store/reducers/helpers/tasksHelper';
 import { deleteColumn } from '../../store/reducers/helpers/columnHelpers';
+import BasicModal from '../basicModal/BasicModal';
 
 export interface IColumn {
   id: string;
@@ -53,7 +54,7 @@ export const ColumnItem: React.FC<ColumnItemProps> = ({ title, id, boardId }) =>
           title={title}
           action={
             <IconButton aria-label="delete" onClick={handleOpen}>
-              <HighlightOffIcon />
+              <DeleteForever />
             </IconButton>
           }
         ></CardHeader>
@@ -64,7 +65,7 @@ export const ColumnItem: React.FC<ColumnItemProps> = ({ title, id, boardId }) =>
           ))}
         <AddItemButton itemType="Task" boardId={boardId} columnId={id} />
       </Card>
-      <Modal open={isModalOpen} onClose={handleClose}>
+      <BasicModal open={isModalOpen} handleClose={handleClose}>
         <Box sx={style}>
           <Typography variant="h5">{t('delete_col_message')}</Typography>
           <Button variant="outlined" sx={{ margin: '10px' }} onClick={handleClose}>
@@ -79,7 +80,7 @@ export const ColumnItem: React.FC<ColumnItemProps> = ({ title, id, boardId }) =>
             {t('delete')}
           </Button>
         </Box>
-      </Modal>
+      </BasicModal>
     </>
   );
 };

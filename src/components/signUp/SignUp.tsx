@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { TextField, Grid, Paper, Avatar, Button, Box, Modal, Dialog } from '@mui/material';
+import { TextField, Grid, Paper, Avatar, Button, Box, Typography } from '@mui/material';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import { Form, Formik, Field } from 'formik';
 import * as Yup from 'yup';
@@ -14,8 +14,7 @@ import { AppDispatch } from '../../store/store';
 import usersApi, { IResponseApi } from '../../services/usersApi';
 import { handleLogOut } from '../userMenu/UserMenu';
 import BasicModal from '../basicModal/BasicModal';
-import BasicDialog from '../basicDialog/BasicDIalog';
-import { useModal, useDialog } from '../../hooks/appHooks';
+import { useModal } from '../../hooks/appHooks';
 
 const INITIAL_SIGNIN_STATE = {
   name: '',
@@ -27,13 +26,30 @@ interface ISignUpProps {
   page: string;
 }
 
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+};
+
 function SignUp(props?: ISignUpProps): JSX.Element {
   const { open, toggle } = useModal();
-  const { openD, toggleD } = useDialog();
+  const [modalContent, setModalContent] = useState('');
   const [errMessage, setErrMessage] = React.useState('');
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const { t } = useTranslation();
+
+  const handleDeleteModal = () => {
+    setModalContent('delete');
+    toggle();
+  };
 
   const FORM_VALIDATION = Yup.object().shape({
     name: Yup.string().required(t('name_err')),
@@ -76,21 +92,33 @@ function SignUp(props?: ISignUpProps): JSX.Element {
       })
       .catch((err) => {
         if (err instanceof AxiosError) setErrMessage(err.response?.data.message);
+        setModalContent('error');
         toggle();
       });
   };
 
   return (
     <Grid>
-      <BasicModal open={open} handleClose={toggle} errMessage={errMessage} />
-      <BasicDialog
-        open={openD}
-        title={t('delete_profile')}
-        message={t('delete_profile_message')}
-        handleCancel={toggleD}
-        handleOk={handleDeleteProfile}
-        children={null}
-      />
+      <BasicModal open={open} handleClose={toggle} errMessage={errMessage}>
+        <>
+          {modalContent === 'delete' && (
+            <Box sx={style}>
+              <Typography variant="h5">{t('delete_profile_message')}</Typography>
+              <Button variant="outlined" sx={{ margin: '10px' }} onClick={toggle}>
+                {t('cancel')}
+              </Button>
+              <Button
+                variant="contained"
+                color="error"
+                sx={{ margin: '10px' }}
+                onClick={handleDeleteProfile}
+              >
+                {t('delete')}
+              </Button>
+            </Box>
+          )}
+        </>
+      </BasicModal>
       <Paper elevation={10} className={cl.paperStyles}>
         {props?.page === 'auth' && (
           <Avatar className={cl.avatarStyles}>
@@ -122,7 +150,6 @@ function SignUp(props?: ISignUpProps): JSX.Element {
                 formikHelpers.resetForm();
               }
             } catch (err) {
-              console.log(err);
               if (err instanceof AxiosError) setErrMessage(err.response?.data.message);
               toggle();
             }
@@ -177,7 +204,12 @@ function SignUp(props?: ISignUpProps): JSX.Element {
                   {props?.page === 'auth' ? t('sign_up') : t('edit_profile')}
                 </Button>
                 {props?.page === 'profile' && (
-                  <Button className={cl.btnClasses} variant="contained" fullWidth onClick={toggleD}>
+                  <Button
+                    className={cl.btnClasses}
+                    variant="contained"
+                    fullWidth
+                    onClick={handleDeleteModal}
+                  >
                     {t('delete_profile')}
                   </Button>
                 )}

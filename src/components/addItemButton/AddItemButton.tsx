@@ -1,17 +1,18 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-import jwtDecode, { JwtPayload } from 'jwt-decode';
+import jwtDecode from 'jwt-decode';
 import Button from '@mui/material/Button';
 import AddCircleSharpIcon from '@mui/icons-material/AddCircleSharp';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import Modal from '@mui/material/Modal';
 import { Box, TextField } from '@mui/material';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { createTask, getAllTasks } from '../../store/reducers/helpers/tasksHelper';
-import { AppDispatch, RootState } from '../../store/store';
+import { AppDispatch } from '../../store/store';
 import { ITasksParams } from '../../services/tasksApi';
 import { addBoard } from '../../store/reducers/helpers/boardHelpers';
+import BasicModal from '../basicModal/BasicModal';
+import { useModal } from '../../hooks/appHooks';
 import { addColumn } from '../../store/reducers/helpers/columnHelpers';
 
 const style = {
@@ -55,10 +56,8 @@ const AddItemButton: React.FC<AddItemProps> = ({
   columnId = '1',
 }) => {
   const dispatch = useDispatch<AppDispatch>();
-  const [isModalOpen, setModalOpen] = React.useState(false);
+  const { open, toggle } = useModal();
   const { t } = useTranslation();
-  const handleOpen = () => setModalOpen(true);
-  const handleClose = () => setModalOpen(false);
 
   const formik = useFormik({
     initialValues: {
@@ -88,7 +87,7 @@ const AddItemButton: React.FC<AddItemProps> = ({
         },
       };
       submitObj[itemType]();
-      handleClose();
+      toggle();
     },
   });
 
@@ -98,12 +97,12 @@ const AddItemButton: React.FC<AddItemProps> = ({
         variant="outlined"
         startIcon={<AddCircleSharpIcon />}
         size="large"
-        onClick={handleOpen}
+        onClick={toggle}
         className={className}
       >
         {t('New')} {t(itemType)}
       </Button>
-      <Modal open={isModalOpen} onClose={handleClose}>
+      <BasicModal open={open} handleClose={toggle}>
         <form onSubmit={formik.handleSubmit}>
           <Box sx={style}>
             <div>
@@ -135,9 +134,12 @@ const AddItemButton: React.FC<AddItemProps> = ({
             <Button type="submit" value="Submit" variant="contained">
               {t('Create')} {t(itemType)}
             </Button>
+            <Button variant="outlined" sx={{ margin: '10px' }} onClick={toggle}>
+              {t('cancel')}
+            </Button>
           </Box>
         </form>
-      </Modal>
+      </BasicModal>
     </>
   );
 };

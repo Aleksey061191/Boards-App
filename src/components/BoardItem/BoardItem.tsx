@@ -1,21 +1,13 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Box,
-  Card,
-  CardContent,
-  CardHeader,
-  IconButton,
-  Modal,
-  Button,
-  Typography,
-} from '@mui/material';
-import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import { Box, Card, CardContent, CardHeader, IconButton, Button, Typography } from '@mui/material';
+import DeleteForever from '@mui/icons-material/DeleteForever';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import './boardItem.css';
 import { AppDispatch } from '../../store/store';
 import { deleteBoard } from '../../store/reducers/helpers/boardHelpers';
+import BasicModal from '../basicModal/BasicModal';
 
 const style = {
   position: 'absolute',
@@ -55,7 +47,7 @@ const BoardItem = ({ title, description, id }: IBoard) => {
           title={title}
           action={
             <IconButton aria-label="delete" onClick={handleOpen}>
-              <HighlightOffIcon />
+              <DeleteForever />
             </IconButton>
           }
         ></CardHeader>
@@ -67,7 +59,7 @@ const BoardItem = ({ title, description, id }: IBoard) => {
           )}
         </CardContent>
       </Card>
-      <Modal open={isModalOpen} onClose={handleClose}>
+      <BasicModal open={isModalOpen} handleClose={handleClose}>
         <Box sx={style}>
           <Typography variant="h5"> {t('delete_board_message')}</Typography>
           <Button variant="outlined" sx={{ margin: '10px' }} onClick={handleClose}>
@@ -82,7 +74,7 @@ const BoardItem = ({ title, description, id }: IBoard) => {
             {t('delete')}
           </Button>
         </Box>
-      </Modal>
+      </BasicModal>
     </div>
   );
 };
