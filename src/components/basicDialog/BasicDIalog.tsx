@@ -6,6 +6,7 @@ import {
   DialogContentText,
   Button,
 } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 interface IDialogProps {
   open: boolean;
@@ -17,6 +18,7 @@ interface IDialogProps {
 }
 
 function BasicDialog(props: IDialogProps): JSX.Element {
+  const { t } = useTranslation();
   return (
     <Dialog
       open={props.open}
@@ -30,9 +32,9 @@ function BasicDialog(props: IDialogProps): JSX.Element {
         {props.children}
       </DialogContent>
       <DialogActions>
-        <Button onClick={props.handleOk}>OK</Button>
+        <Button onClick={props.handleOk}>{t('delete')}</Button>
         <Button onClick={props.handleCancel} autoFocus>
-          Cancel
+          {t('cancel')}
         </Button>
       </DialogActions>
     </Dialog>

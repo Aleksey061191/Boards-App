@@ -27,7 +27,7 @@ const Columns: React.FC<ColumnsProps> = ({ boardId }) => {
       draft.splice(hoverIndex, 0, dragged);
     });
 
-    dispatch(updateColumn({ boardId, columnId, order: hoverIndex + 1, title }));
+    dispatch(updateColumn({ boardId, columnId, title, order: hoverIndex + 1 }));
     dispatch(changeColumns(newColumns));
   };
 

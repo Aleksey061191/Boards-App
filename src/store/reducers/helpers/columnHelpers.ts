@@ -49,6 +49,21 @@ export const addColumn = createAsyncThunk(
     }
   }
 );
+export const updateColumn = createAsyncThunk(
+  'columns/updateColumn',
+  async (data: IUpdateColumnParams, { rejectWithValue }) => {
+    const { boardId, id, title, order } = data;
+    try {
+      const rez = await columnsApi
+        .updateColumn(boardId, id, { title, order })
+        .then((response) => response.data);
+      return rez;
+    } catch (err) {
+      const error = err as AxiosError;
+      return rejectWithValue(error.message);
+    }
+  }
+);
 
 export const deleteColumn = createAsyncThunk(
   'columns/deleteColumn',
@@ -57,22 +72,6 @@ export const deleteColumn = createAsyncThunk(
     try {
       await columnsApi.deleteColumn(boardId, id);
       return { id };
-    } catch (err) {
-      const error = err as AxiosError;
-      return rejectWithValue(error.message);
-    }
-  }
-);
-
-export const updateColumn = createAsyncThunk(
-  'columns/updateColumn',
-  async (data: IUpdateColumnParams, { rejectWithValue }) => {
-    const { boardId, columnId, order, title } = data;
-    try {
-      const rez = await columnsApi
-        .updateColumn(boardId, columnId, { title, order })
-        .then((response) => response.data);
-      return rez;
     } catch (err) {
       const error = err as AxiosError;
       return rejectWithValue(error.message);

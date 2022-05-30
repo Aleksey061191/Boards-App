@@ -1,14 +1,14 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 import type { XYCoord } from 'dnd-core';
-import { Card, CardContent, CardHeader, IconButton, Typography } from '@mui/material';
-import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import { Card, CardContent, CardHeader, IconButton, Typography, Box, Button } from '@mui/material';
+import { useTranslation } from 'react-i18next';
+import DeleteForever from '@mui/icons-material/DeleteForever';
 import { useDispatch } from 'react-redux';
 import { ITask } from '../../store/reducers/taskReducer';
-import BasicDialog from '../basicDialog/BasicDIalog';
 import BasicModal from '../basicModal/BasicModal';
 import Task from '../task/Task';
-import { useDialog, useModal } from '../../hooks/appHooks';
+import { useModal } from '../../hooks/appHooks';
 import { AppDispatch } from '../../store/store';
 import { deleteTask, getAllTasks } from '../../store/reducers/helpers/tasksHelper';
 import cl from './TaskItem.module.scss';
@@ -19,6 +19,18 @@ const cardStyle = {
   maxWidth: 300,
   border: '1px solid #b7d2e6',
   backgroundColor: `#c7ccfe40`,
+};
+
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
 };
 
 const iconButtonStyles = {
@@ -54,7 +66,7 @@ interface IDropRez {
 }
 
 function TaskItem(props: ITaskItemProps): JSX.Element {
-  const { openD, toggleD } = useDialog();
+  const [modalContent, setModalContent] = useState('');
   const { open, toggle } = useModal();
   const dispatch = useDispatch<AppDispatch>();
   const ref = useRef<HTMLInputElement>(null);
@@ -116,6 +128,17 @@ function TaskItem(props: ITaskItemProps): JSX.Element {
   });
 
   drag(drop(ref));
+  const { t } = useTranslation();
+
+  const handleModalDelete = () => {
+    setModalContent('delete');
+    toggle();
+  };
+
+  const handleTaskClick = () => {
+    setModalContent('edit');
+    toggle();
+  };
 
   const handleDeleteTask = async () => {
     const currTask = {
@@ -128,11 +151,10 @@ function TaskItem(props: ITaskItemProps): JSX.Element {
   };
   return (
     <div ref={ref} className={`${cl.container} ${isDragging && cl.drag}`}>
-      <IconButton aria-label="delete" onClick={toggleD} sx={iconButtonStyles}>
-        <HighlightOffIcon />
+      <IconButton aria-label="delete" onClick={handleModalDelete} sx={iconButtonStyles}>
+        <DeleteForever />
       </IconButton>
-      <Card sx={cardStyle} onClick={toggle}>
-        {/* <CardActionArea> */}
+      <Card sx={cardStyle} onClick={handleTaskClick}>
         <CardHeader title={props.title}></CardHeader>
         <CardContent>
           {props.description && (
@@ -141,17 +163,28 @@ function TaskItem(props: ITaskItemProps): JSX.Element {
             </Typography>
           )}
         </CardContent>
-        {/* </CardActionArea> */}
       </Card>
-      <BasicDialog
-        open={openD}
-        title="Delete task?"
-        message="Do you want delete task permanently?"
-        handleCancel={toggleD}
-        handleOk={handleDeleteTask}
-        children={null}
-      />
-      <BasicModal open={open} handleClose={toggle} children={<Task {...props} />} />
+      <BasicModal open={open} handleClose={toggle}>
+        <>
+          {modalContent === 'edit' && <Task {...props} handleClose={toggle} />}
+          {modalContent === 'delete' && (
+            <Box sx={style}>
+              <Typography variant="h5">{t('delete_task_mess')}</Typography>
+              <Button variant="outlined" sx={{ margin: '10px' }} onClick={toggle}>
+                {t('cancel')}
+              </Button>
+              <Button
+                variant="contained"
+                color="error"
+                sx={{ margin: '10px' }}
+                onClick={handleDeleteTask}
+              >
+                {t('delete')}
+              </Button>
+            </Box>
+          )}
+        </>
+      </BasicModal>
     </div>
   );
 }

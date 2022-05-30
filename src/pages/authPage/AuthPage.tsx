@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Tabs, Tab, Box, Typography } from '@mui/material';
 import cl from './AuthPage.module.scss';
 import SignIn from '../../components/signIn/SignIn';
@@ -39,6 +40,7 @@ function a11yProps(index: number) {
 
 function AuthPage(): JSX.Element {
   const [value, setValue] = useState(0);
+  const { t } = useTranslation();
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -49,8 +51,8 @@ function AuthPage(): JSX.Element {
       <Box className={cl.boxStyles}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <Tabs value={value} onChange={handleChange} centered={true}>
-            <Tab label="Sign In" {...a11yProps(0)} />
-            <Tab label="Sign Up" {...a11yProps(1)} />
+            <Tab label={t('sign_in')} {...a11yProps(0)} />
+            <Tab label={t('sign_up')} {...a11yProps(1)} />
           </Tabs>
         </Box>
         <TabPanel value={value} index={0}>
