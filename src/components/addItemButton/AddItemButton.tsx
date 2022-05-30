@@ -1,18 +1,19 @@
 import * as React from 'react';
-import jwtDecode, { JwtPayload } from 'jwt-decode';
+import { useTranslation } from 'react-i18next';
+import jwtDecode from 'jwt-decode';
 import Button from '@mui/material/Button';
 import AddCircleSharpIcon from '@mui/icons-material/AddCircleSharp';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import Modal from '@mui/material/Modal';
 import { Box, TextField } from '@mui/material';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { createTask, getAllTasks } from '../../store/reducers/helpers/tasksHelper';
-import { AppDispatch, RootState } from '../../store/store';
+import { AppDispatch } from '../../store/store';
 import { ITasksParams } from '../../services/tasksApi';
 import { addBoard } from '../../store/reducers/helpers/boardHelpers';
+import BasicModal from '../basicModal/BasicModal';
+import { useModal } from '../../hooks/appHooks';
 import { addColumn } from '../../store/reducers/helpers/columnHelpers';
-import FileUpload from '../fileUpload/FileUpload';
 
 const style = {
   position: 'absolute',
@@ -55,9 +56,8 @@ const AddItemButton: React.FC<AddItemProps> = ({
   columnId = '1',
 }) => {
   const dispatch = useDispatch<AppDispatch>();
-  const [isModalOpen, setModalOpen] = React.useState(false);
-  const handleOpen = () => setModalOpen(true);
-  const handleClose = () => setModalOpen(false);
+  const { open, toggle } = useModal();
+  const { t } = useTranslation();
 
   let schema;
   if (itemType === ItemType.Column) {
@@ -96,7 +96,7 @@ const AddItemButton: React.FC<AddItemProps> = ({
         },
       };
       submitObj[itemType]();
-      handleClose();
+      toggle();
     },
   });
 
@@ -106,12 +106,12 @@ const AddItemButton: React.FC<AddItemProps> = ({
         variant="outlined"
         startIcon={<AddCircleSharpIcon />}
         size="large"
-        onClick={handleOpen}
+        onClick={toggle}
         className={className}
       >
-        New {itemType}
+        {t('New')} {t(itemType)}
       </Button>
-      <Modal open={isModalOpen} onClose={handleClose}>
+      <BasicModal open={open} handleClose={toggle}>
         <form onSubmit={formik.handleSubmit}>
           <Box sx={style}>
             <div>
@@ -120,7 +120,7 @@ const AddItemButton: React.FC<AddItemProps> = ({
                 required
                 fullWidth
                 id="title"
-                label={`${itemType} title`}
+                label={t(`title_${itemType}`)}
                 defaultValue=""
                 onChange={formik.handleChange}
               />
@@ -133,7 +133,7 @@ const AddItemButton: React.FC<AddItemProps> = ({
                   margin="normal"
                   fullWidth
                   id="description"
-                  label={`${itemType} description`}
+                  label={t(`description_${itemType}`)}
                   defaultValue=""
                   multiline
                   rows={4}
@@ -145,11 +145,14 @@ const AddItemButton: React.FC<AddItemProps> = ({
               </div>
             )}
             <Button type="submit" value="Submit" variant="contained">
-              Create {itemType}
+              {t('Create')} {t(itemType)}
+            </Button>
+            <Button variant="outlined" sx={{ margin: '10px' }} onClick={toggle}>
+              {t('cancel')}
             </Button>
           </Box>
         </form>
-      </Modal>
+      </BasicModal>
     </>
   );
 };

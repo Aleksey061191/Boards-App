@@ -1,12 +1,14 @@
 import * as React from 'react';
-import { Box, Card, CardHeader, IconButton, Modal, Button, Typography } from '@mui/material';
-import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import { useTranslation } from 'react-i18next';
+import { Box, Card, CardHeader, IconButton, Button, Typography } from '@mui/material';
+import DeleteForever from '@mui/icons-material/DeleteForever';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../store/store';
 import AddItemButton from '../addItemButton/AddItemButton';
 import TaskItem from '../taskItem/TaskItem';
 import { getAllTasks } from '../../store/reducers/helpers/tasksHelper';
 import { deleteColumn } from '../../store/reducers/helpers/columnHelpers';
+import BasicModal from '../basicModal/BasicModal';
 import { useTitleInput } from '../../hooks/appHooks';
 import TitleInput from '../titleInput/TitleInput';
 import { ItemType } from '../addItemButton/AddItemButton';
@@ -43,6 +45,7 @@ const ColumnItem: React.FC<ColumnItemProps> = ({ title, id, boardId, order }) =>
   const handleOpen = () => setModalOpen(true);
   const handleClose = () => setModalOpen(false);
   const dispatch = useDispatch<AppDispatch>();
+  const { t } = useTranslation();
 
   const { isTitleChanged, inputOpened, inputClosed } = useTitleInput();
 
@@ -58,7 +61,7 @@ const ColumnItem: React.FC<ColumnItemProps> = ({ title, id, boardId, order }) =>
             title={title}
             action={
               <IconButton aria-label="delete" onClick={handleOpen}>
-                <HighlightOffIcon />
+                <DeleteForever />
               </IconButton>
             }
             onClick={() => inputOpened()}
@@ -85,11 +88,11 @@ const ColumnItem: React.FC<ColumnItemProps> = ({ title, id, boardId, order }) =>
           ))}
         <AddItemButton itemType="Task" boardId={boardId} columnId={id} />
       </Card>
-      <Modal open={isModalOpen} onClose={handleClose}>
+      <BasicModal open={isModalOpen} handleClose={handleClose}>
         <Box sx={style}>
-          <Typography variant="h5"> Are you sure you want to delete this Column?</Typography>
+          <Typography variant="h5">{t('delete_col_message')}</Typography>
           <Button variant="outlined" sx={{ margin: '10px' }} onClick={handleClose}>
-            Cancel
+            {t('cancel')}
           </Button>
           <Button
             variant="contained"
@@ -97,10 +100,10 @@ const ColumnItem: React.FC<ColumnItemProps> = ({ title, id, boardId, order }) =>
             sx={{ margin: '10px' }}
             onClick={() => dispatch(deleteColumn({ id, boardId }))}
           >
-            Delete
+            {t('delete')}
           </Button>
         </Box>
-      </Modal>
+      </BasicModal>
     </>
   );
 };
