@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import AddItemButton from '../../components/addItemButton/AddItemButton';
@@ -11,6 +12,7 @@ import cl from './BoardPage.module.scss';
 function BoardPage(): JSX.Element {
   const { id } = useParams() as { id: string };
   const board = useSelector((state: RootState) => state.boards.selectedBoard);
+  const { t } = useTranslation();
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -21,7 +23,9 @@ function BoardPage(): JSX.Element {
 
   return (
     <main className={cl.container}>
-      <h5>Board {board.title}</h5>
+      <h5>
+        {t('Board')} {board.title}
+      </h5>
       <AddItemButton itemType="Column" boardId={id} />
       <Columns boardId={id} />
     </main>

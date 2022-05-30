@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useTranslation } from 'react-i18next';
 import { TextField, Button } from '@mui/material';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -23,6 +24,7 @@ const TitleInput: React.FunctionComponent<TitleInputProps> = ({
   order,
 }) => {
   const dispatch = useDispatch<AppDispatch>();
+  const { t } = useTranslation();
 
   const formik = useFormik({
     initialValues: {
@@ -62,7 +64,7 @@ const TitleInput: React.FunctionComponent<TitleInputProps> = ({
       />
       {formik.touched.title && formik.errors.title && <div>{formik.errors.title}</div>}
       <Button sx={{ marginLeft: '10px' }} variant="outlined" onClick={cancel} size="small">
-        Cancel
+        {t('cancel')}
       </Button>
       <Button
         sx={{ marginLeft: '10px' }}
@@ -71,7 +73,7 @@ const TitleInput: React.FunctionComponent<TitleInputProps> = ({
         type="submit"
         size="small"
       >
-        Submit
+        {t('save')}
       </Button>
     </form>
   );
