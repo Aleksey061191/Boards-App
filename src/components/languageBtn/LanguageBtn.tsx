@@ -17,7 +17,6 @@ function LanguageBtn(): JSX.Element {
     setAnchorEl(null);
   };
   const changeLanguage = (lang: string) => {
-    console.log(i18n.changeLanguage(lang));
     i18n.changeLanguage(lang);
     handleClose();
   };

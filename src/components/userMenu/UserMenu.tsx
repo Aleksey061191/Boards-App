@@ -1,8 +1,8 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import { Avatar, IconButton, MenuItem, Divider, ListItemIcon, Menu } from '@mui/material';
-import { Link, useNavigate } from 'react-router-dom';
+import { Avatar, IconButton, MenuItem, ListItemIcon, Menu } from '@mui/material';
+import { Link } from 'react-router-dom';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { blue } from '@mui/material/colors';
 import { RootState } from '../../store/store';

@@ -35,7 +35,7 @@ const TitleInput: React.FunctionComponent<TitleInputProps> = ({
     onSubmit: async (values) => {
       const column = {
         boardId,
-        id,
+        columnId: id,
         order,
         title: values.title,
       };

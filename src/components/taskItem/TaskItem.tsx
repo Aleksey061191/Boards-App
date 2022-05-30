@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import React, { useRef, useState } from 'react';
+import { useDrag, useDrop } from 'react-dnd';
+import type { XYCoord } from 'dnd-core';
 import { Card, CardContent, CardHeader, IconButton, Typography, Box, Button } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import DeleteForever from '@mui/icons-material/DeleteForever';
@@ -12,8 +14,8 @@ import { deleteTask, getAllTasks } from '../../store/reducers/helpers/tasksHelpe
 import cl from './TaskItem.module.scss';
 
 const cardStyle = {
-  minWidth: 300,
-  minHeight: 100,
+  minWidth: 200,
+  maxHeight: 100,
   maxWidth: 300,
   border: '1px solid #b7d2e6',
   backgroundColor: `#c7ccfe40`,
@@ -33,19 +35,99 @@ const style = {
 
 const iconButtonStyles = {
   position: 'absolute',
-  top: '10px',
+  top: '5px',
   right: '10px',
 };
 
 export interface ITaskItemProps extends ITask {
   boardId: string;
   columnId: string;
+  index: number;
+  moveItem: (dragIndex: number, hoverIndex: number, targetColumnId: string, taskId: string) => void;
+  changeColumn: (taskId: string, targetColumnId: string, draggedColumnId: string) => void;
+  indexColumn: number;
+}
+
+interface IItems {
+  boardId: string;
+  columnId: string;
+  description: string;
+  id: string;
+  index: number;
+  order: number;
+  title: string;
+  userId: string;
+  indexColumn: number;
+}
+
+interface IDropRez {
+  dropEffect: string;
+  id: string;
 }
 
 function TaskItem(props: ITaskItemProps): JSX.Element {
   const [modalContent, setModalContent] = useState('');
   const { open, toggle } = useModal();
   const dispatch = useDispatch<AppDispatch>();
+  const ref = useRef<HTMLInputElement>(null);
+
+  const [, drop] = useDrop({
+    accept: 'task',
+    hover(item: IItems, monitor) {
+      const draggedColumnIndex = item.indexColumn;
+      const targetColumnIndex = props.indexColumn;
+
+      if (!ref.current) {
+        return;
+      }
+
+      const dragIndex = item.index;
+      const hoverIndex = props.index;
+
+      if (dragIndex === hoverIndex && draggedColumnIndex === targetColumnIndex) {
+        return;
+      }
+
+      const hoverBoundingRect = ref.current?.getBoundingClientRect();
+      const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
+      const clientOffset = monitor.getClientOffset();
+      const hoverClientY = (clientOffset as XYCoord).y - hoverBoundingRect.top;
+
+      if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
+        return;
+      }
+
+      if (dragIndex > hoverIndex && hoverClientY < hoverMiddleY) {
+        return;
+      }
+
+      const targetColumnId = props.columnId;
+      const taskId = item.id;
+      props.moveItem(dragIndex, hoverIndex, targetColumnId, taskId);
+
+      item.index = hoverIndex;
+      item.indexColumn = targetColumnIndex;
+    },
+  });
+
+  const [{ isDragging }, drag] = useDrag({
+    type: 'task',
+    item: { ...props },
+    end: (item, monitor) => {
+      const dropResult: IDropRez | null = monitor.getDropResult();
+      if (dropResult) {
+        const { id } = dropResult;
+        const itemId = item.id;
+        const colId = item.columnId;
+        props.changeColumn(itemId, id, colId);
+      }
+    },
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
+    }),
+  });
+
+  drag(drop(ref));
   const { t } = useTranslation();
 
   const handleModalDelete = () => {
@@ -68,12 +150,12 @@ function TaskItem(props: ITaskItemProps): JSX.Element {
     await dispatch(getAllTasks(props.boardId));
   };
   return (
-    <div className={cl.container}>
+    <div ref={ref} className={`${cl.container} ${isDragging && cl.drag}`}>
       <IconButton aria-label="delete" onClick={handleModalDelete} sx={iconButtonStyles}>
         <DeleteForever />
       </IconButton>
       <Card sx={cardStyle} onClick={handleTaskClick}>
-        <CardHeader title={props.title}></CardHeader>
+        <CardHeader className={`${cl.header} ${cl.headerT}`} title={props.title}></CardHeader>
         <CardContent>
           {props.description && (
             <Typography variant="body2" color="text.secondary">
