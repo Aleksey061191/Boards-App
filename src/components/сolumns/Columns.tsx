@@ -4,7 +4,7 @@ import { AppDispatch, RootState } from '../../store/store';
 import cl from './Columns.module.scss';
 import { fetchColumns, updateColumn } from '../../store/reducers/helpers/columnHelpers';
 import { changeColumns } from '../../store/reducers/columnReducer';
-import ColumnsItem, { IColumn } from '../columnItem/ColumnItem';
+import { ColumnsItem, IColumn } from '../ColumnItem/ColumnItem';
 
 interface ColumnsProps {
   boardId: string;
