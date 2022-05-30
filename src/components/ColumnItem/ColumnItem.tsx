@@ -5,7 +5,7 @@ import { Box, Card, CardHeader, IconButton, Button, Typography } from '@mui/mate
 import DeleteForever from '@mui/icons-material/DeleteForever';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../store/store';
-import AddItemButton from '../addItemButton/AddItemButton';
+import AddItemButton, { ItemType } from '../addItemButton/AddItemButton';
 import TaskItem from '../taskItem/TaskItem';
 import { getAllTasks, ITask, updateTask } from '../../store/reducers/helpers/tasksHelper';
 import { deleteColumn } from '../../store/reducers/helpers/columnHelpers';
@@ -15,7 +15,6 @@ import { IUpdateTaskParams } from '../../services/tasksApi';
 import BasicModal from '../basicModal/BasicModal';
 import { useTitleInput } from '../../hooks/appHooks';
 import TitleInput from '../titleInput/TitleInput';
-import { ItemType } from '../addItemButton/AddItemButton';
 
 export interface IColumn {
   id: string;
@@ -56,7 +55,7 @@ interface IDropItem {
 const columnStyle = {
   minWidth: 300,
   minHeight: 100,
-  maxWidth: 500,
+  maxWidth: 300,
   backgroundColor: '#eeeaea',
   padding: '5px',
 };

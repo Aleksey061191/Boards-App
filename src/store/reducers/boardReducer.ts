@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { IBoard } from '../../components/BoardItem/BoardItem';
 
-import { addBoard, fetchBoards, deleteBoard, updateBoard, getBoard } from './helpers/boardHelpers';
+import { addBoard, fetchBoards, deleteBoard, getBoard } from './helpers/boardHelpers';
 
 interface IBoardsState {
   boards: IBoard[];

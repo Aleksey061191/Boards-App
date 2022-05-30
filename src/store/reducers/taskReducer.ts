@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { createTask, getAllTasks, deleteTask, updateTask } from './helpers/tasksHelper';
+import { createTask, getAllTasks, deleteTask } from './helpers/tasksHelper';
 
 export interface IColumn {
   id: string;
@@ -38,12 +38,10 @@ export interface IAllTasks {
 
 interface ITaskState {
   tasks: IAllTasks[];
-  // status: string | null;
   error: string | null;
 }
 const initialState: ITaskState = {
   tasks: [],
-  // status: null,
   error: null,
 };
 
@@ -57,23 +55,16 @@ const tasksSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(createTask.pending, (state) => {
-      // state.status = 'loading';
       state.error = null;
     });
     builder.addCase(getAllTasks.pending, (state) => {
-      // state.status = 'loading';
       state.error = null;
     });
     builder.addCase(getAllTasks.fulfilled, (state, { payload }) => {
-      // state.status = 'resolved';
       state.tasks = payload;
     });
     builder.addCase(deleteTask.pending, (state) => {
-      // state.status = 'loading';
       state.error = null;
-    });
-    builder.addCase(deleteTask.fulfilled, (state, { payload }) => {
-      // state.status = 'resolved';
     });
   },
 });

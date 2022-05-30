@@ -60,7 +60,7 @@ const Col = (props: IColParams) => {
   });
   const style = {
     minHeight: 50,
-    maxHeight: 250,
+    maxHeight: 200,
     overflow: 'auto',
     backgroundColor: isOver ? 'yellow' : '',
   };

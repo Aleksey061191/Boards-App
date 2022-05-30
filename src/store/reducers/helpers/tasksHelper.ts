@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosError } from 'axios';
-import tasksApi, { ITasksParams, IUpdateTaskParams } from '../../../services/tasksApi';
+import tasksApi, { ITasksParams } from '../../../services/tasksApi';
 import boardsApi from '../../../services/boardsApi';
 
 interface ICreateTaskApi {

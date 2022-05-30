@@ -14,8 +14,8 @@ import { deleteTask, getAllTasks } from '../../store/reducers/helpers/tasksHelpe
 import cl from './TaskItem.module.scss';
 
 const cardStyle = {
-  minWidth: 250,
-  maxHeight: 150,
+  minWidth: 200,
+  maxHeight: 100,
   maxWidth: 300,
   border: '1px solid #b7d2e6',
   backgroundColor: `#c7ccfe40`,
@@ -35,7 +35,7 @@ const style = {
 
 const iconButtonStyles = {
   position: 'absolute',
-  top: '10px',
+  top: '5px',
   right: '10px',
 };
 
@@ -155,7 +155,7 @@ function TaskItem(props: ITaskItemProps): JSX.Element {
         <DeleteForever />
       </IconButton>
       <Card sx={cardStyle} onClick={handleTaskClick}>
-        <CardHeader title={props.title}></CardHeader>
+        <CardHeader className={`${cl.header} ${cl.headerT}`} title={props.title}></CardHeader>
         <CardContent>
           {props.description && (
             <Typography variant="body2" color="text.secondary">
